@@ -10,7 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        /* Desain Modern & Profesional */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
         body { 
@@ -33,84 +32,28 @@
             border-radius: 24px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
-        h1 { 
-            color: #1a1a1a; 
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
+        h1 { color: #1a1a1a; font-size: 24px; margin-bottom: 5px; }
+        .subtitle { color: #666; font-size: 14px; margin-bottom: 30px; }
         input { 
-            padding: 15px; 
-            width: 100%; 
-            box-sizing: border-box; 
-            border-radius: 12px; 
-            font-size: 18px; 
-            border: 2px solid #e1e4e8;
-            text-align: center; 
-            font-weight: 600;
-            color: #333;
-            transition: border-color 0.3s;
-            margin-bottom: 20px;
+            padding: 15px; width: 100%; box-sizing: border-box; border-radius: 12px; 
+            font-size: 18px; border: 2px solid #e1e4e8; text-align: center; 
+            font-weight: 600; color: #333; margin-bottom: 20px;
         }
-        input:focus {
-            outline: none;
-            border-color: #0056b3;
-        }
+        input:focus { outline: none; border-color: #0056b3; }
         button { 
-            padding: 15px; 
-            width: 100%; 
-            border-radius: 12px; 
-            font-size: 16px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            border: none; 
-            transition: transform 0.1s, box-shadow 0.2s;
-            margin-bottom: 15px;
+            padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; 
+            font-weight: 600; cursor: pointer; border: none; margin-bottom: 15px;
         }
-        button:active { transform: scale(0.98); }
-        .btn-host { 
-            background-color: #0056b3; 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3);
-        }
-        .btn-host:hover { background-color: #004494; }
-        
-        .btn-listener { 
-            background-color: #f0f2f5; 
-            color: #333; 
-        }
-        .btn-listener:hover { background-color: #e4e6e9; }
-        
+        .btn-host { background-color: #0056b3; color: white; box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3); }
+        .btn-listener { background-color: #f0f2f5; color: #333; }
         .hidden { display: none !important; }
         
-        #status { 
-            margin-top: 15px; 
-            font-size: 15px;
-            font-weight: 500; 
-            color: #666; 
-            line-height: 1.6; 
-        }
-        #qrcode { 
-            margin-top: 25px; 
-            display: flex; 
-            justify-content: center; 
-            padding: 20px;
-            background: #fff;
-            border-radius: 16px;
-            border: 2px dashed #e1e4e8;
-        }
+        #status { margin-top: 15px; font-size: 15px; font-weight: 500; color: #666; line-height: 1.6; }
+        #qrcode { margin-top: 25px; display: flex; justify-content: center; padding: 20px; background: #fff; border-radius: 16px; border: 2px dashed #e1e4e8; }
         
         .listening-animation {
-            width: 50px;
-            height: 50px;
-            background: #28a745;
-            border-radius: 50%;
-            margin: 20px auto;
-            animation: pulse 1.5s infinite;
+            width: 50px; height: 50px; background: #28a745; border-radius: 50%;
+            margin: 20px auto; animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
@@ -127,7 +70,6 @@
         
         <div id="setup-area">
             <input type="text" id="roomName" placeholder="Masukkan ID Ruangan" value="1234">
-
             <div id="controls">
                 <button class="btn-host" onclick="joinRoom('host')">Buat Ruangan (Pemandu)</button>
                 <button class="btn-listener" onclick="joinRoom('listener')">Gabung Pendengar</button>
@@ -152,10 +94,8 @@
                 nbf: Math.floor(Date.now() / 1000),
                 exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
                 video: {
-                    roomJoin: true,
-                    room: roomName,
-                    canPublish: isHost, 
-                    canSubscribe: true  
+                    roomJoin: true, room: roomName,
+                    canPublish: isHost, canSubscribe: true  
                 }
             });
             return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
@@ -195,15 +135,13 @@
                     
                     qrBox.classList.remove('hidden');
                     qrBox.innerHTML = ""; 
-                    new QRCode(qrBox, {
-                        text: listenerLink,
-                        width: 180,
-                        height: 180,
-                        colorDark : "#1a1a1a",
-                        colorLight : "#ffffff"
-                    });
+                    new QRCode(qrBox, { text: listenerLink, width: 180, height: 180, colorDark : "#1a1a1a", colorLight : "#ffffff" });
 
                 } else {
+                    // --- RENCANA B DIMULAI DI SINI ---
+                    // 1. Paksa buka kunci audio browser segera setelah terhubung
+                    await room.startAudio();
+
                     statusBox.innerHTML = "🎧 <b>Terhubung!</b><br><span style='font-size:13px; color:#666;'>Audio pemandu akan terdengar otomatis.</span>";
                     statusBox.style.color = "#28a745";
                     
@@ -213,6 +151,9 @@
                     room.on('trackSubscribed', (track) => {
                         if (track.kind === 'audio') {
                             const audioElement = track.attach();
+                            // 2. Tambahkan atribut pengaman ganda agar tidak diblokir
+                            audioElement.setAttribute('autoplay', 'true');
+                            audioElement.setAttribute('playsinline', 'true');
                             document.body.appendChild(audioElement);
                         }
                     });
@@ -229,7 +170,6 @@
             }
         }
 
-        // --- PERBAIKAN BUG AUTOPLAY ---
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const autoJoin = urlParams.get('autoJoin');
@@ -238,9 +178,7 @@
 
             if (room) document.getElementById('roomName').value = room;
             
-            // Jika pengunjung datang dari hasil scan QR Code
             if (autoJoin === '1' && role === 'listener') {
-                // Sembunyikan tombol Pemandu, dan perbesar tombol Pendengar
                 document.getElementById('controls').innerHTML = `
                     <button class="btn-listener" style="background-color: #28a745; color: white; padding: 20px; font-size: 18px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);" onclick="joinRoom('listener')">
                         🔊 Ketuk untuk Mendengar
