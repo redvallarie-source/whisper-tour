@@ -13,37 +13,18 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
         body { 
-            font-family: 'Inter', sans-serif; 
-            text-align: center; 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            box-sizing: border-box;
+            font-family: 'Inter', sans-serif; text-align: center; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;
         }
-        .container { 
-            width: 100%;
-            max-width: 420px; 
-            background: white; 
-            padding: 40px 30px; 
-            border-radius: 24px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
-        }
+        .container { width: 100%; max-width: 420px; background: white; padding: 40px 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         h1 { color: #1a1a1a; font-size: 24px; margin-bottom: 5px; }
         .subtitle { color: #666; font-size: 14px; margin-bottom: 30px; }
         input { 
-            padding: 15px; width: 100%; box-sizing: border-box; border-radius: 12px; 
-            font-size: 18px; border: 2px solid #e1e4e8; text-align: center; 
-            font-weight: 600; color: #333; margin-bottom: 20px;
+            padding: 15px; width: 100%; box-sizing: border-box; border-radius: 12px; font-size: 18px; border: 2px solid #e1e4e8; 
+            text-align: center; font-weight: 600; color: #333; margin-bottom: 20px;
         }
         input:focus { outline: none; border-color: #0056b3; }
-        button { 
-            padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; 
-            font-weight: 600; cursor: pointer; border: none; margin-bottom: 15px;
-        }
+        button { padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; border: none; margin-bottom: 15px; }
         .btn-host { background-color: #0056b3; color: white; box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3); }
         .btn-listener { background-color: #f0f2f5; color: #333; }
         .hidden { display: none !important; }
@@ -51,18 +32,16 @@
         #status { margin-top: 15px; font-size: 15px; font-weight: 500; color: #666; line-height: 1.6; }
         #qrcode { margin-top: 25px; display: flex; justify-content: center; padding: 20px; background: #fff; border-radius: 16px; border: 2px dashed #e1e4e8; }
         
-        .listening-animation {
-            width: 50px; height: 50px; background: #28a745; border-radius: 50%;
-            margin: 20px auto; animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(40, 167, 69, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
-        }
+        .listening-animation { width: 50px; height: 50px; background: #28a745; border-radius: 50%; margin: 20px auto; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(40, 167, 69, 0); } 100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
+        
+        /* Tombol Darurat Kuning */
+        #force-play-btn { background-color: #ffc107; color: #000; display: none; margin-top: 15px; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4); }
     </style>
 </head>
 <body>
+
+    <audio id="audio-player" autoplay playsinline></audio>
 
     <div class="container">
         <h1>🎙️ Whisper Tour</h1>
@@ -79,12 +58,16 @@
         <div id="status" class="hidden"></div>
         <div id="visual-indicator" class="hidden"></div>
         <div id="qrcode" class="hidden"></div>
+        
+        <button id="force-play-btn" onclick="forcePlayAudio()">⚠️ Pencet Jika Tidak Ada Suara</button>
     </div>
 
     <script>
         const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
         const API_KEY = "API5mBWCdaKNLLQ";
         const API_SECRET = "xfZhky6tUeDAYufb8ewdUZOy2vmaJXqOZpfDhpCybiGB";
+        
+        let audioTrack = null; 
 
         function generateToken(roomName, isHost) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
@@ -93,10 +76,7 @@
                 sub: isHost ? "pemandu-" + Math.floor(Math.random() * 1000) : "pengunjung-" + Math.floor(Math.random() * 1000),
                 nbf: Math.floor(Date.now() / 1000),
                 exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
-                video: {
-                    roomJoin: true, room: roomName,
-                    canPublish: isHost, canSubscribe: true  
-                }
+                video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
             });
             return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
         }
@@ -111,13 +91,16 @@
             const qrBox = document.getElementById('qrcode');
             const visualBox = document.getElementById('visual-indicator');
             const subtitle = document.getElementById('subtitle');
+            const audioElement = document.getElementById('audio-player');
             
             setupArea.classList.add('hidden');
             statusBox.classList.remove('hidden');
             subtitle.innerText = "Ruangan: " + roomName;
-            
             statusBox.innerHTML = "⏳ Menghubungkan ke server...";
             statusBox.style.color = "#f39c12";
+
+            // Pancing speaker nyala saat tombol hijau ditekan
+            audioElement.play().catch(e => console.log("Menunggu suara..."));
 
             try {
                 const token = generateToken(roomName, isHost);
@@ -132,29 +115,29 @@
                     await room.localParticipant.setMicrophoneEnabled(true);
 
                     const listenerLink = window.location.origin + window.location.pathname + "?room=" + roomName + "&role=listener&autoJoin=1";
-                    
                     qrBox.classList.remove('hidden');
                     qrBox.innerHTML = ""; 
                     new QRCode(qrBox, { text: listenerLink, width: 180, height: 180, colorDark : "#1a1a1a", colorLight : "#ffffff" });
 
                 } else {
-                    // --- RENCANA B DIMULAI DI SINI ---
-                    // 1. Paksa buka kunci audio browser segera setelah terhubung
                     await room.startAudio();
-
-                    statusBox.innerHTML = "🎧 <b>Terhubung!</b><br><span style='font-size:13px; color:#666;'>Audio pemandu akan terdengar otomatis.</span>";
+                    statusBox.innerHTML = "🎧 <b>Terhubung!</b><br><span style='font-size:13px; color:#666;'>Audio pemandu sedang disiarkan.</span>";
                     statusBox.style.color = "#28a745";
-                    
                     visualBox.classList.remove('hidden');
                     visualBox.innerHTML = "<div class='listening-animation'></div>";
                     
+                    // Munculkan tombol darurat sebagai cadangan
+                    document.getElementById('force-play-btn').style.display = "block";
+                    
                     room.on('trackSubscribed', (track) => {
                         if (track.kind === 'audio') {
-                            const audioElement = track.attach();
-                            // 2. Tambahkan atribut pengaman ganda agar tidak diblokir
-                            audioElement.setAttribute('autoplay', 'true');
-                            audioElement.setAttribute('playsinline', 'true');
-                            document.body.appendChild(audioElement);
+                            audioTrack = track;
+                            track.attach(audioElement);
+                            
+                            // Jika suara berhasil nyala sendiri, tombol darurat akan hilang
+                            audioElement.play().then(() => {
+                                document.getElementById('force-play-btn').style.display = "none";
+                            }).catch(e => console.log("Menunggu ketukan manual..."));
                         }
                     });
                 }
@@ -169,16 +152,20 @@
                 }, 2000);
             }
         }
+        
+        // Fungsi Penjebol Blokir Audio
+        function forcePlayAudio() {
+            const audioElement = document.getElementById('audio-player');
+            if (audioTrack) { audioTrack.attach(audioElement); }
+            audioElement.play();
+            document.getElementById('force-play-btn').style.display = "none";
+        }
 
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const autoJoin = urlParams.get('autoJoin');
-            const role = urlParams.get('role');
-            const room = urlParams.get('room');
-
-            if (room) document.getElementById('roomName').value = room;
+            if (urlParams.get('room')) document.getElementById('roomName').value = urlParams.get('room');
             
-            if (autoJoin === '1' && role === 'listener') {
+            if (urlParams.get('autoJoin') === '1' && urlParams.get('role') === 'listener') {
                 document.getElementById('controls').innerHTML = `
                     <button class="btn-listener" style="background-color: #28a745; color: white; padding: 20px; font-size: 18px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);" onclick="joinRoom('listener')">
                         🔊 Ketuk untuk Mendengar
