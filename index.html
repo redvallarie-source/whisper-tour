@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        /* Desain Premium - Inspirasi: Tzu Chi Green + Modern Minimalist */
+        /* Premium Design - Inspiration: Tzu Chi Green + Modern Minimalist */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
         :root {
@@ -35,7 +35,7 @@
             border: 1px solid rgba(255,255,255,0.5);
         }
 
-        /* Tipografi */
+        /* Typography */
         h1 { color: var(--tcu-dark); font-size: 26px; margin-bottom: 5px; font-weight: 700; letter-spacing: -0.5px;}
         .subtitle { color: #666; font-size: 14px; margin-bottom: 30px; font-weight: 400; }
         
@@ -48,7 +48,7 @@
         }
         input:focus { outline: none; border-color: var(--tcu-green); box-shadow: 0 0 0 4px var(--tcu-light); }
         
-        /* Tombol-tombol */
+        /* Buttons */
         button { 
             padding: 16px; width: 100%; border-radius: 14px; font-size: 16px; 
             font-weight: 600; cursor: pointer; border: none; margin-bottom: 12px;
@@ -72,7 +72,7 @@
         }
         .btn-danger:hover { background: var(--danger); color: white; border-color: var(--danger); }
 
-        /* Area Dinamis */
+        /* Dynamic Areas */
         .hidden { display: none !important; }
         #status-card {
             background: var(--tcu-light); padding: 20px; border-radius: 16px;
@@ -80,7 +80,7 @@
         }
         #status-text { font-size: 15px; font-weight: 500; color: var(--tcu-dark); line-height: 1.5; }
         
-        /* QR Code & Animasi */
+        /* QR Code & Animation */
         #qrcode { 
             margin-top: 20px; display: flex; justify-content: center; 
             padding: 20px; background: #fff; border-radius: 20px; 
@@ -102,32 +102,32 @@
 
     <div class="container">
         <h1>🍃 Whisper Tour</h1>
-        <p class="subtitle" id="subtitle">Sistem Pemandu Audio Satu Arah</p>
+        <p class="subtitle" id="subtitle">One-Way Audio Guide System</p>
         
         <div id="setup-area">
-            <input type="text" id="roomName" placeholder="Masukkan ID Ruangan" value="1234">
-            <button class="btn-primary" onclick="joinRoom('host')">🎙️ Buat Ruangan (Pemandu)</button>
-            <button class="btn-secondary" onclick="joinRoom('listener')">🎧 Gabung Pendengar</button>
+            <input type="text" id="roomName" placeholder="Enter Room ID" value="1234">
+            <button class="btn-primary" onclick="joinRoom('host')">🎙️ Create Room (Host)</button>
+            <button class="btn-secondary" onclick="joinRoom('listener')">🎧 Join as Listener</button>
         </div>
 
         <div id="qr-landing-area" class="hidden">
             <div id="status-card" style="margin-bottom: 20px;">
-                <p id="status-text">Kamu diundang ke Tour Ruangan <br><b style="font-size: 24px;" id="landing-room-id"></b></p>
+                <p id="status-text">You are invited to Room Tour <br><b style="font-size: 24px;" id="landing-room-id"></b></p>
             </div>
             <button class="btn-primary" onclick="joinRoom('listener')" style="padding: 20px; font-size: 18px;">
-                ▶️ Masuk & Dengarkan
+                ▶️ Enter & Listen
             </button>
         </div>
 
         <div id="active-area" class="hidden">
             <div id="status-card">
-                <div id="status-text">⏳ Menghubungkan...</div>
+                <div id="status-text">⏳ Connecting...</div>
             </div>
             
             <div id="qrcode" class="hidden"></div>
             <div id="visual-indicator" class="hidden"></div>
             
-            <button id="btn-leave" class="btn-danger hidden" onclick="leaveRoom()">🚪 Keluar</button>
+            <button id="btn-leave" class="btn-danger hidden" onclick="leaveRoom()">🚪 Leave</button>
         </div>
     </div>
 
@@ -136,12 +136,12 @@
         const API_KEY = "API5mBWCdaKNLLQ";
         const API_SECRET = "xfZhky6tUeDAYufb8ewdUZOy2vmaJXqOZpfDhpCybiGB";
         
-        let currentRoom = null; // Menyimpan data ruangan agar bisa dimatikan nanti
+        let currentRoom = null; 
 
         function generateToken(roomName, isHost) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
             const payload = JSON.stringify({
-                iss: API_KEY, sub: isHost ? "pemandu-" + Math.random() : "pengunjung-" + Math.random(),
+                iss: API_KEY, sub: isHost ? "host-" + Math.random() : "listener-" + Math.random(),
                 nbf: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
                 video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
             });
@@ -150,11 +150,10 @@
 
         async function joinRoom(role) {
             const roomName = document.getElementById('roomName').value;
-            if (!roomName) return alert("ID ruangan tidak boleh kosong!");
+            if (!roomName) return alert("Room ID cannot be empty!");
 
             const isHost = role === 'host';
             
-            // Atur perpindahan tampilan layar
             document.getElementById('setup-area').classList.add('hidden');
             document.getElementById('qr-landing-area').classList.add('hidden');
             document.getElementById('active-area').classList.remove('hidden');
@@ -164,92 +163,9 @@
             const visualBox = document.getElementById('visual-indicator');
             const btnLeave = document.getElementById('btn-leave');
             
-            document.getElementById('subtitle').innerText = "Ruangan Aktif: " + roomName;
-            statusText.innerHTML = "⏳ Menghubungkan ke server LiveKit...";
+            document.getElementById('subtitle').innerText = "Active Room: " + roomName;
+            statusText.innerHTML = "⏳ Connecting to LiveKit server...";
 
             try {
                 const token = generateToken(roomName, isHost);
-                currentRoom = new LivekitClient.Room();
-
-                await currentRoom.connect(LIVEKIT_URL, token);
-
-                if (isHost) {
-                    statusText.innerHTML = "✅ <b>Kamu sedang LIVE!</b><br><span style='font-size:13px;'>Minta pengunjung scan QR Code di bawah:</span>";
-                    await currentRoom.localParticipant.setMicrophoneEnabled(true);
-
-                    const listenerLink = window.location.origin + window.location.pathname + "?room=" + roomName + "&role=listener&autoJoin=1";
-                    qrBox.classList.remove('hidden');
-                    qrBox.innerHTML = ""; 
-                    new QRCode(qrBox, { text: listenerLink, width: 180, height: 180, colorDark : "#00563B", colorLight : "#ffffff" });
-                    
-                    btnLeave.innerHTML = "⏹️ Akhiri Tour";
-                    btnLeave.classList.remove('hidden');
-
-                } else {
-                    statusText.innerHTML = "🎧 <b>Terhubung!</b><br><span style='font-size:13px;'>Suara pemandu akan otomatis diputar.</span>";
-                    visualBox.classList.remove('hidden');
-                    visualBox.innerHTML = "<div class='listening-animation'>🔊</div>";
-                    
-                    btnLeave.innerHTML = "🚪 Keluar Ruangan";
-                    btnLeave.classList.remove('hidden');
-                    
-                    currentRoom.on('trackSubscribed', (track) => {
-                        if (track.kind === 'audio') {
-                            const audioElement = track.attach();
-                            audioElement.play();
-                            document.body.appendChild(audioElement);
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error(error);
-                statusText.innerHTML = "❌ Gagal terhubung ke server!";
-                setTimeout(() => leaveRoom(), 2000); // Otomatis kembali ke awal jika gagal
-            }
-        }
-
-        // Fungsi Baru: Tombol Keluar / Akhiri Tour
-        function leaveRoom() {
-            if (currentRoom) {
-                currentRoom.disconnect();
-                currentRoom = null;
-            }
-            
-            // Kembalikan semua tampilan ke kondisi semula
-            document.getElementById('active-area').classList.add('hidden');
-            document.getElementById('qrcode').classList.add('hidden');
-            document.getElementById('visual-indicator').classList.add('hidden');
-            document.getElementById('btn-leave').classList.add('hidden');
-            
-            // Cek apakah tadi masuk lewat QR atau normal
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('autoJoin') === '1') {
-                document.getElementById('qr-landing-area').classList.remove('hidden');
-                document.getElementById('subtitle').innerText = "Sistem Pemandu Audio Satu Arah";
-            } else {
-                document.getElementById('setup-area').classList.remove('hidden');
-                document.getElementById('subtitle').innerText = "Sistem Pemandu Audio Satu Arah";
-            }
-        }
-
-        // Deteksi Kedatangan Pengunjung via QR Code
-        window.onload = () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const room = urlParams.get('room');
-            const autoJoin = urlParams.get('autoJoin');
-            const role = urlParams.get('role');
-
-            if (room) {
-                document.getElementById('roomName').value = room;
-                document.getElementById('landing-room-id').innerText = room;
-            }
-            
-            // Jika pengunjung datang dari hasil scan QR Code, Tahan di Landing Page!
-            if (autoJoin === '1' && role === 'listener') {
-                document.getElementById('setup-area').classList.add('hidden');
-                document.getElementById('qr-landing-area').classList.remove('hidden');
-            }
-        };
-    </script>
-</body>
-</html>
+                currentRoom = new Livekit
