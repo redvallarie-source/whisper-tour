@@ -3,68 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whisper Tour - Sistem Pemandu</title>
+    <title>Whisper Tour - Live</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.9.0/jsrsasign-all-min.js"></script>
+    
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f9;
-            padding: 20px;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        h1 { color: #333; }
-        .card {
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 10px;
-            background-color: #fafafa;
-        }
-        button {
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .btn-host {
-            background-color: #0056b3;
-            color: white;
-        }
-        .btn-listener {
-            background-color: #28a745;
-            color: white;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f9; padding: 20px; }
+        .container { max-width: 400px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input, button { padding: 12px; margin-top: 10px; width: 100%; box-sizing: border-box; border-radius: 8px; font-size: 16px; }
+        input { border: 1px solid #ccc; text-align: center; font-weight: bold;}
+        button { cursor: pointer; border: none; font-weight: bold; }
+        .btn-host { background-color: #0056b3; color: white; }
+        .btn-listener { background-color: #28a745; color: white; }
+        .hidden { display: none; }
+        #status { margin-top: 20px; font-weight: bold; color: #666; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>🎙️ Whisper Tour</h1>
-        <p>Pilih peranmu untuk memulai sesi tour hari ini.</p>
+        <p>Masukkan Nomor Ruangan Tour:</p>
+        
+        <input type="text" id="roomName" placeholder="Contoh: 1234" value="1234">
 
-        <div class="card">
-            <h2>Saya Pemandu</h2>
-            <p>Buat ruangan dan mulai berbicara.</p>
-            <button class="btn-host">Buat Ruangan (Host)</button>
+        <div id="controls">
+            <button class="btn-host" onclick="joinRoom('host')">Masuk sebagai Pemandu</button>
+            <br><br>
+            <button class="btn-listener" onclick="joinRoom('listener')">Mulai Mendengarkan</button>
         </div>
 
-        <div class="card">
-            <h2>Saya Pengunjung</h2>
-            <p>Scan QR Code atau masuk untuk mendengarkan.</p>
-            <button class="btn-listener">Mulai Mendengarkan</button>
-        </div>
+        <div id="status">Pilih peranmu untuk memulai...</div>
     </div>
 
+    <script>
+        // Kunci Rahasia LiveKit Milikmu (Sudah aku pasangkan!)
+        const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
+        const API_KEY = "API5mBWCdaKNLLQ";
+        const API_SECRET = "xfZhky6tUeDAYufb8ewdUZOy2vmaJXqOZpfDhpCybiGB";
+
+        // Fungsi ajaib untuk membuat "Tiket Masuk" secara otomatis
+        function generateToken(roomName, isHost) {
+            const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
+            const payload = JSON.stringify({
+                iss: API_KEY,
+                sub: isHost ? "pemandu-" + Math.floor(Math.random() * 1000) : "pengunjung-" + Math.floor(Math.random() * 1000),
+                nbf: Math.floor(Date.now() / 1000),
+                exp: Math.floor(Date.now() / 1000) + (3600 * 2), // Tiket hangus dalam 2 jam
+                video: {
+                    roomJoin: true,
+                    room: roomName,
+                    canPublish: isHost, // Hanya Host (Pemandu) yang diizinkan bicara
+                    canSubscribe: true  // Semua orang boleh mendengarkan
+                }
+            });
+            return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
+        }
+
+        // Fungsi utama menyambungkan ke Server Suara
+        async function joinRoom(role) {
+            const roomName = document.getElementById('roomName').value;
+            if (!roomName) return alert("Nomor ruangan tidak boleh kosong!");
+
+            const isHost = role === 'host';
+            const statusText = document.getElementById('status');
+            
+            statusText.innerText = "⏳ Sedang menyambungkan...";
+            statusText.style.color = "orange";
+            document.getElementById('controls').classList.add('hidden'); // Sembunyikan tombol biar rapi
+
+            // Buat tiket masuknya
+            const token = generateToken(roomName, isHost);
+            
+            // Siapkan mesin LiveKit
+            const room = new LiveKit.Room();
+
+            try {
+                // Proses mengetuk pintu server LiveKit
+                await room.connect(LIVEKIT_URL, token);
+
+                if (isHost) {
+                    statusText.innerText = "✅ Kamu sedang LIVE! Suaramu sudah mengudara.";
+                    statusText.style.color = "blue";
+                    // Meminta izin menyalakan mikrofon komputermu
+                    await room.localParticipant.setMicrophoneEnabled(true);
+                } else {
+                    statusText.innerText = "🎧 Berhasil masuk. Selamat mendengarkan!";
+                    statusText.style.color = "green";
+                    
+                    // Menangkap suara yang datang dan memutarnya
+                    room.on('trackSubscribed', (track) => {
+                        if (track.kind === 'audio') {
+                            const audioElement = track.attach();
+                            document.body.appendChild(audioElement);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                statusText.innerText = "❌ Gagal terhubung ke ruangan!";
+                statusText.style.color = "red";
+                document.getElementById('controls').classList.remove('hidden');
+            }
+        }
+    </script>
 </body>
 </html>
