@@ -3,63 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whisper Tour - Live Audio</title>
+    <title>Whisper Tour - Premium Audio Guide</title>
     
     <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.9.0/jsrsasign-all-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        /* Desain Premium - Inspirasi: Tzu Chi Green + Modern Minimalist */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        :root {
+            --tcu-green: #007A53;
+            --tcu-dark: #00563B;
+            --tcu-light: #E8F5E9;
+            --danger: #FF4B4B;
+        }
 
         body { 
-            font-family: 'Inter', sans-serif; text-align: center; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Poppins', sans-serif; 
+            text-align: center; 
+            background: linear-gradient(135deg, #e0ebd4 0%, #b2d2a4 100%);
             min-height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;
         }
-        .container { width: 100%; max-width: 420px; background: white; padding: 40px 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        h1 { color: #1a1a1a; font-size: 24px; margin-bottom: 5px; }
-        .subtitle { color: #666; font-size: 14px; margin-bottom: 30px; }
-        input { 
-            padding: 15px; width: 100%; box-sizing: border-box; border-radius: 12px; font-size: 18px; border: 2px solid #e1e4e8; 
-            text-align: center; font-weight: 600; color: #333; margin-bottom: 20px;
+        
+        .container { 
+            width: 100%; max-width: 400px; background: rgba(255, 255, 255, 0.95); 
+            padding: 40px 30px; border-radius: 28px; 
+            box-shadow: 0 20px 40px rgba(0, 122, 83, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.5);
         }
-        input:focus { outline: none; border-color: #0056b3; }
-        button { padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; border: none; margin-bottom: 15px; }
-        .btn-host { background-color: #0056b3; color: white; box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3); }
-        .btn-listener { background-color: #f0f2f5; color: #333; }
+
+        /* Tipografi */
+        h1 { color: var(--tcu-dark); font-size: 26px; margin-bottom: 5px; font-weight: 700; letter-spacing: -0.5px;}
+        .subtitle { color: #666; font-size: 14px; margin-bottom: 30px; font-weight: 400; }
+        
+        /* Input & Form */
+        input { 
+            padding: 16px; width: 100%; box-sizing: border-box; border-radius: 14px; 
+            font-size: 18px; border: 2px solid #ddd; text-align: center; 
+            font-weight: 600; color: #333; margin-bottom: 20px; font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+        input:focus { outline: none; border-color: var(--tcu-green); box-shadow: 0 0 0 4px var(--tcu-light); }
+        
+        /* Tombol-tombol */
+        button { 
+            padding: 16px; width: 100%; border-radius: 14px; font-size: 16px; 
+            font-weight: 600; cursor: pointer; border: none; margin-bottom: 12px;
+            transition: all 0.2s ease; font-family: 'Poppins', sans-serif;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        button:active { transform: scale(0.97); }
+        
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--tcu-green) 0%, var(--tcu-dark) 100%); 
+            color: white; box-shadow: 0 8px 20px rgba(0, 122, 83, 0.25); 
+        }
+        .btn-primary:hover { box-shadow: 0 8px 20px rgba(0, 122, 83, 0.4); transform: translateY(-2px); }
+        
+        .btn-secondary { background-color: #f0f4f1; color: var(--tcu-dark); font-weight: 500; }
+        .btn-secondary:hover { background-color: #e2e8e4; }
+
+        .btn-danger { 
+            background: rgba(255, 75, 75, 0.1); color: var(--danger); 
+            border: 2px solid rgba(255, 75, 75, 0.2); margin-top: 25px; 
+        }
+        .btn-danger:hover { background: var(--danger); color: white; border-color: var(--danger); }
+
+        /* Area Dinamis */
         .hidden { display: none !important; }
+        #status-card {
+            background: var(--tcu-light); padding: 20px; border-radius: 16px;
+            margin-top: 15px; border: 1px dashed var(--tcu-green);
+        }
+        #status-text { font-size: 15px; font-weight: 500; color: var(--tcu-dark); line-height: 1.5; }
         
-        #status { margin-top: 15px; font-size: 15px; font-weight: 500; color: #666; line-height: 1.6; }
-        #qrcode { margin-top: 25px; display: flex; justify-content: center; padding: 20px; background: #fff; border-radius: 16px; border: 2px dashed #e1e4e8; }
-        
-        .listening-animation { width: 50px; height: 50px; background: #28a745; border-radius: 50%; margin: 20px auto; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(40, 167, 69, 0); } 100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); } }
-        
-        /* Tombol Darurat Kuning */
-        #force-play-btn { background-color: #ffc107; color: #000; display: none; margin-top: 15px; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4); }
+        /* QR Code & Animasi */
+        #qrcode { 
+            margin-top: 20px; display: flex; justify-content: center; 
+            padding: 20px; background: #fff; border-radius: 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee;
+        }
+        .listening-animation {
+            width: 60px; height: 60px; background: var(--tcu-green); border-radius: 50%;
+            margin: 30px auto 10px; animation: pulse-green 1.5s infinite;
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(0, 122, 83, 0.5); }
+            70% { box-shadow: 0 0 0 25px rgba(0, 122, 83, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 122, 83, 0); }
+        }
     </style>
 </head>
 <body>
 
-    <audio id="audio-player" autoplay playsinline></audio>
-
     <div class="container">
-        <h1>🎙️ Whisper Tour</h1>
+        <h1>🍃 Whisper Tour</h1>
         <p class="subtitle" id="subtitle">Sistem Pemandu Audio Satu Arah</p>
         
         <div id="setup-area">
             <input type="text" id="roomName" placeholder="Masukkan ID Ruangan" value="1234">
-            <div id="controls">
-                <button class="btn-host" onclick="joinRoom('host')">Buat Ruangan (Pemandu)</button>
-                <button class="btn-listener" onclick="joinRoom('listener')">Gabung Pendengar</button>
-            </div>
+            <button class="btn-primary" onclick="joinRoom('host')">🎙️ Buat Ruangan (Pemandu)</button>
+            <button class="btn-secondary" onclick="joinRoom('listener')">🎧 Gabung Pendengar</button>
         </div>
 
-        <div id="status" class="hidden"></div>
-        <div id="visual-indicator" class="hidden"></div>
-        <div id="qrcode" class="hidden"></div>
-        
-        <button id="force-play-btn" onclick="forcePlayAudio()">⚠️ Pencet Jika Tidak Ada Suara</button>
+        <div id="qr-landing-area" class="hidden">
+            <div id="status-card" style="margin-bottom: 20px;">
+                <p id="status-text">Kamu diundang ke Tour Ruangan <br><b style="font-size: 24px;" id="landing-room-id"></b></p>
+            </div>
+            <button class="btn-primary" onclick="joinRoom('listener')" style="padding: 20px; font-size: 18px;">
+                ▶️ Masuk & Dengarkan
+            </button>
+        </div>
+
+        <div id="active-area" class="hidden">
+            <div id="status-card">
+                <div id="status-text">⏳ Menghubungkan...</div>
+            </div>
+            
+            <div id="qrcode" class="hidden"></div>
+            <div id="visual-indicator" class="hidden"></div>
+            
+            <button id="btn-leave" class="btn-danger hidden" onclick="leaveRoom()">🚪 Keluar</button>
+        </div>
     </div>
 
     <script>
@@ -67,15 +136,13 @@
         const API_KEY = "API5mBWCdaKNLLQ";
         const API_SECRET = "xfZhky6tUeDAYufb8ewdUZOy2vmaJXqOZpfDhpCybiGB";
         
-        let audioTrack = null; 
+        let currentRoom = null; // Menyimpan data ruangan agar bisa dimatikan nanti
 
         function generateToken(roomName, isHost) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
             const payload = JSON.stringify({
-                iss: API_KEY,
-                sub: isHost ? "pemandu-" + Math.floor(Math.random() * 1000) : "pengunjung-" + Math.floor(Math.random() * 1000),
-                nbf: Math.floor(Date.now() / 1000),
-                exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
+                iss: API_KEY, sub: isHost ? "pemandu-" + Math.random() : "pengunjung-" + Math.random(),
+                nbf: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
                 video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
             });
             return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
@@ -86,91 +153,101 @@
             if (!roomName) return alert("ID ruangan tidak boleh kosong!");
 
             const isHost = role === 'host';
-            const statusBox = document.getElementById('status');
-            const setupArea = document.getElementById('setup-area');
+            
+            // Atur perpindahan tampilan layar
+            document.getElementById('setup-area').classList.add('hidden');
+            document.getElementById('qr-landing-area').classList.add('hidden');
+            document.getElementById('active-area').classList.remove('hidden');
+            
+            const statusText = document.getElementById('status-text');
             const qrBox = document.getElementById('qrcode');
             const visualBox = document.getElementById('visual-indicator');
-            const subtitle = document.getElementById('subtitle');
-            const audioElement = document.getElementById('audio-player');
+            const btnLeave = document.getElementById('btn-leave');
             
-            setupArea.classList.add('hidden');
-            statusBox.classList.remove('hidden');
-            subtitle.innerText = "Ruangan: " + roomName;
-            statusBox.innerHTML = "⏳ Menghubungkan ke server...";
-            statusBox.style.color = "#f39c12";
-
-            // Pancing speaker nyala saat tombol hijau ditekan
-            audioElement.play().catch(e => console.log("Menunggu suara..."));
+            document.getElementById('subtitle').innerText = "Ruangan Aktif: " + roomName;
+            statusText.innerHTML = "⏳ Menghubungkan ke server LiveKit...";
 
             try {
                 const token = generateToken(roomName, isHost);
-                const room = new LivekitClient.Room();
+                currentRoom = new LivekitClient.Room();
 
-                await room.connect(LIVEKIT_URL, token);
+                await currentRoom.connect(LIVEKIT_URL, token);
 
                 if (isHost) {
-                    statusBox.innerHTML = "✅ <b>Kamu sedang LIVE!</b><br><span style='font-size:13px; color:#666;'>Minta pengunjung scan QR Code ini:</span>";
-                    statusBox.style.color = "#0056b3";
-                    
-                    await room.localParticipant.setMicrophoneEnabled(true);
+                    statusText.innerHTML = "✅ <b>Kamu sedang LIVE!</b><br><span style='font-size:13px;'>Minta pengunjung scan QR Code di bawah:</span>";
+                    await currentRoom.localParticipant.setMicrophoneEnabled(true);
 
                     const listenerLink = window.location.origin + window.location.pathname + "?room=" + roomName + "&role=listener&autoJoin=1";
                     qrBox.classList.remove('hidden');
                     qrBox.innerHTML = ""; 
-                    new QRCode(qrBox, { text: listenerLink, width: 180, height: 180, colorDark : "#1a1a1a", colorLight : "#ffffff" });
+                    new QRCode(qrBox, { text: listenerLink, width: 180, height: 180, colorDark : "#00563B", colorLight : "#ffffff" });
+                    
+                    btnLeave.innerHTML = "⏹️ Akhiri Tour";
+                    btnLeave.classList.remove('hidden');
 
                 } else {
-                    await room.startAudio();
-                    statusBox.innerHTML = "🎧 <b>Terhubung!</b><br><span style='font-size:13px; color:#666;'>Audio pemandu sedang disiarkan.</span>";
-                    statusBox.style.color = "#28a745";
+                    statusText.innerHTML = "🎧 <b>Terhubung!</b><br><span style='font-size:13px;'>Suara pemandu akan otomatis diputar.</span>";
                     visualBox.classList.remove('hidden');
-                    visualBox.innerHTML = "<div class='listening-animation'></div>";
+                    visualBox.innerHTML = "<div class='listening-animation'>🔊</div>";
                     
-                    // Munculkan tombol darurat sebagai cadangan
-                    document.getElementById('force-play-btn').style.display = "block";
+                    btnLeave.innerHTML = "🚪 Keluar Ruangan";
+                    btnLeave.classList.remove('hidden');
                     
-                    room.on('trackSubscribed', (track) => {
+                    currentRoom.on('trackSubscribed', (track) => {
                         if (track.kind === 'audio') {
-                            audioTrack = track;
-                            track.attach(audioElement);
-                            
-                            // Jika suara berhasil nyala sendiri, tombol darurat akan hilang
-                            audioElement.play().then(() => {
-                                document.getElementById('force-play-btn').style.display = "none";
-                            }).catch(e => console.log("Menunggu ketukan manual..."));
+                            const audioElement = track.attach();
+                            audioElement.play();
+                            document.body.appendChild(audioElement);
                         }
                     });
                 }
             } catch (error) {
                 console.error(error);
-                statusBox.innerHTML = "❌ Gagal terhubung!";
-                statusBox.style.color = "#dc3545";
-                setTimeout(() => {
-                    setupArea.classList.remove('hidden');
-                    statusBox.classList.add('hidden');
-                    subtitle.innerText = "Sistem Pemandu Audio Satu Arah";
-                }, 2000);
+                statusText.innerHTML = "❌ Gagal terhubung ke server!";
+                setTimeout(() => leaveRoom(), 2000); // Otomatis kembali ke awal jika gagal
             }
         }
-        
-        // Fungsi Penjebol Blokir Audio
-        function forcePlayAudio() {
-            const audioElement = document.getElementById('audio-player');
-            if (audioTrack) { audioTrack.attach(audioElement); }
-            audioElement.play();
-            document.getElementById('force-play-btn').style.display = "none";
+
+        // Fungsi Baru: Tombol Keluar / Akhiri Tour
+        function leaveRoom() {
+            if (currentRoom) {
+                currentRoom.disconnect();
+                currentRoom = null;
+            }
+            
+            // Kembalikan semua tampilan ke kondisi semula
+            document.getElementById('active-area').classList.add('hidden');
+            document.getElementById('qrcode').classList.add('hidden');
+            document.getElementById('visual-indicator').classList.add('hidden');
+            document.getElementById('btn-leave').classList.add('hidden');
+            
+            // Cek apakah tadi masuk lewat QR atau normal
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('autoJoin') === '1') {
+                document.getElementById('qr-landing-area').classList.remove('hidden');
+                document.getElementById('subtitle').innerText = "Sistem Pemandu Audio Satu Arah";
+            } else {
+                document.getElementById('setup-area').classList.remove('hidden');
+                document.getElementById('subtitle').innerText = "Sistem Pemandu Audio Satu Arah";
+            }
         }
 
+        // Deteksi Kedatangan Pengunjung via QR Code
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('room')) document.getElementById('roomName').value = urlParams.get('room');
+            const room = urlParams.get('room');
+            const autoJoin = urlParams.get('autoJoin');
+            const role = urlParams.get('role');
+
+            if (room) {
+                document.getElementById('roomName').value = room;
+                document.getElementById('landing-room-id').innerText = room;
+            }
             
-            if (urlParams.get('autoJoin') === '1' && urlParams.get('role') === 'listener') {
-                document.getElementById('controls').innerHTML = `
-                    <button class="btn-listener" style="background-color: #28a745; color: white; padding: 20px; font-size: 18px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);" onclick="joinRoom('listener')">
-                        🔊 Ketuk untuk Mendengar
-                    </button>
-                `;
+            // Jika pengunjung datang dari hasil scan QR Code, Tahan di Landing Page!
+            if (autoJoin === '1' && role === 'listener') {
+                document.getElementById('setup-area').classList.add('hidden');
+                document.getElementById('qr-landing-area').classList.remove('hidden');
             }
         };
     </script>
