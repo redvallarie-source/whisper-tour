@@ -38,30 +38,27 @@
     </div>
 
     <script>
-        // Kunci Rahasia LiveKit Milikmu (Sudah aku pasangkan!)
         const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
         const API_KEY = "API5mBWCdaKNLLQ";
         const API_SECRET = "xfZhky6tUeDAYufb8ewdUZOy2vmaJXqOZpfDhpCybiGB";
 
-        // Fungsi ajaib untuk membuat "Tiket Masuk" secara otomatis
         function generateToken(roomName, isHost) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
             const payload = JSON.stringify({
                 iss: API_KEY,
                 sub: isHost ? "pemandu-" + Math.floor(Math.random() * 1000) : "pengunjung-" + Math.floor(Math.random() * 1000),
                 nbf: Math.floor(Date.now() / 1000),
-                exp: Math.floor(Date.now() / 1000) + (3600 * 2), // Tiket hangus dalam 2 jam
+                exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
                 video: {
                     roomJoin: true,
                     room: roomName,
-                    canPublish: isHost, // Hanya Host (Pemandu) yang diizinkan bicara
-                    canSubscribe: true  // Semua orang boleh mendengarkan
+                    canPublish: isHost, 
+                    canSubscribe: true  
                 }
             });
             return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
         }
 
-        // Fungsi utama menyambungkan ke Server Suara
         async function joinRoom(role) {
             const roomName = document.getElementById('roomName').value;
             if (!roomName) return alert("Nomor ruangan tidak boleh kosong!");
@@ -71,28 +68,25 @@
             
             statusText.innerText = "⏳ Sedang menyambungkan...";
             statusText.style.color = "orange";
-            document.getElementById('controls').classList.add('hidden'); // Sembunyikan tombol biar rapi
-
-            // Buat tiket masuknya
-            const token = generateToken(roomName, isHost);
-            
-            // Siapkan mesin LiveKit
-            const room = new LiveKit.Room();
+            document.getElementById('controls').classList.add('hidden');
 
             try {
-                // Proses mengetuk pintu server LiveKit
+                // Semua proses dipindah ke dalam zona aman (try)
+                const token = generateToken(roomName, isHost);
+                
+                // PERBAIKAN: Nama yang benar adalah LivekitClient
+                const room = new LivekitClient.Room();
+
                 await room.connect(LIVEKIT_URL, token);
 
                 if (isHost) {
                     statusText.innerText = "✅ Kamu sedang LIVE! Suaramu sudah mengudara.";
                     statusText.style.color = "blue";
-                    // Meminta izin menyalakan mikrofon komputermu
                     await room.localParticipant.setMicrophoneEnabled(true);
                 } else {
                     statusText.innerText = "🎧 Berhasil masuk. Selamat mendengarkan!";
                     statusText.style.color = "green";
                     
-                    // Menangkap suara yang datang dan memutarnya
                     room.on('trackSubscribed', (track) => {
                         if (track.kind === 'audio') {
                             const audioElement = track.attach();
@@ -101,7 +95,7 @@
                     });
                 }
             } catch (error) {
-                console.error(error);
+                console.error("Detail Error:", error);
                 statusText.innerText = "❌ Gagal terhubung ke ruangan!";
                 statusText.style.color = "red";
                 document.getElementById('controls').classList.remove('hidden');
