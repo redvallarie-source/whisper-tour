@@ -104,7 +104,6 @@
             border: 2px dashed #e1e4e8;
         }
         
-        /* Animasi sinyal suara untuk listener */
         .listening-animation {
             width: 50px;
             height: 50px;
@@ -230,6 +229,7 @@
             }
         }
 
+        // --- PERBAIKAN BUG AUTOPLAY ---
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const autoJoin = urlParams.get('autoJoin');
@@ -237,7 +237,16 @@
             const room = urlParams.get('room');
 
             if (room) document.getElementById('roomName').value = room;
-            if (autoJoin === '1' && role === 'listener') joinRoom('listener');
+            
+            // Jika pengunjung datang dari hasil scan QR Code
+            if (autoJoin === '1' && role === 'listener') {
+                // Sembunyikan tombol Pemandu, dan perbesar tombol Pendengar
+                document.getElementById('controls').innerHTML = `
+                    <button class="btn-listener" style="background-color: #28a745; color: white; padding: 20px; font-size: 18px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);" onclick="joinRoom('listener')">
+                        🔊 Ketuk untuk Mendengar
+                    </button>
+                `;
+            }
         };
     </script>
 </body>
