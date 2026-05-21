@@ -3,10 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whisper Tour - Sistem Pemandu Audio</title>
+    <title>Whisper Tour - Sistem Pemandu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            background-color: #fafafa;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-host {
+            background-color: #0056b3;
+            color: white;
+        }
+        .btn-listener {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <h1>Selamat Datang di Whisper Tour</h1>
-    <p>Ini adalah prototipe website sistem tour guide audio 1-arah.</p>
+
+    <div class="container">
+        <h1>🎙️ Whisper Tour</h1>
+        <p>Pilih peranmu untuk memulai sesi tour hari ini.</p>
+
+        <div class="card">
+            <h2>Saya Pemandu</h2>
+            <p>Buat ruangan dan mulai berbicara.</p>
+            <button class="btn-host">Buat Ruangan (Host)</button>
+        </div>
+
+        <div class="card">
+            <h2>Saya Pengunjung</h2>
+            <p>Scan QR Code atau masuk untuk mendengarkan.</p>
+            <button class="btn-listener">Mulai Mendengarkan</button>
+        </div>
+    </div>
+
 </body>
 </html>
