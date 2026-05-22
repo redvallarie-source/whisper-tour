@@ -36,11 +36,16 @@
             --muted: #647067;
             --line: #dfe8e3;
             --tcu-blue: #1f5d7a;
+            --surface: rgba(255, 255, 255, 0.86);
+            --surface-strong: #ffffff;
         }
 
         body { 
             font-family: 'Poppins', 'Noto Sans TC', sans-serif; 
-            background: linear-gradient(180deg, #f7faf8 0%, #eef5f1 100%);
+            background:
+                radial-gradient(circle at 14% 12%, rgba(0, 122, 83, 0.12), transparent 28%),
+                radial-gradient(circle at 84% 18%, rgba(31, 93, 122, 0.1), transparent 26%),
+                linear-gradient(180deg, #f8fbf9 0%, #edf6f2 100%);
             margin: 0; min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
             position: relative;
@@ -59,34 +64,37 @@
         .tcu-premium-header {
             position: absolute; top: 20px; left: 30px;
             display: flex; align-items: center; gap: 15px;
+            z-index: 2;
         }
         .tcu-logo { width: 70px; height: auto; mix-blend-mode: multiply; }
         .tcu-logo-fallback {
             width: 70px; height: 52px; display: none; align-items: center; justify-content: center;
-            border: 1px solid var(--line); border-radius: 8px; color: var(--tcu-dark);
-            background: white; font-weight: 700; letter-spacing: 0;
+            border: 1px solid rgba(0, 122, 83, 0.16); border-radius: 18px; color: var(--tcu-dark);
+            background: rgba(255,255,255,0.84); font-weight: 700; letter-spacing: 0;
+            box-shadow: 0 14px 30px rgba(0, 86, 59, 0.08);
         }
         .vertical-divider { width: 2px; height: 60px; background-color: var(--tcu-green); border-radius: 2px; }
         .tcu-title { color: var(--tcu-dark); margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
 
-        .nav-lang { width: 100%; display: flex; justify-content: flex-end; padding: 18px 28px; box-sizing: border-box; }
+        .nav-lang { width: 100%; display: flex; justify-content: flex-end; padding: 18px 28px; box-sizing: border-box; position: relative; z-index: 2; }
         .nav-lang select {
-            padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line);
-            background: white; color: var(--tcu-dark); font-weight: 600; cursor: pointer; outline: none;
-            box-shadow: 0 6px 16px rgba(0, 86, 59, 0.06);
+            padding: 11px 16px; border-radius: 16px; border: 1px solid rgba(0, 122, 83, 0.14);
+            background: rgba(255,255,255,0.88); color: var(--tcu-dark); font-weight: 600; cursor: pointer; outline: none;
+            box-shadow: 0 14px 28px rgba(0, 86, 59, 0.08);
+            backdrop-filter: blur(12px);
         }
 
-        .header { text-align: center; margin-top: 100px; margin-bottom: 28px; padding: 0 20px; }
-        .header h1 { color: var(--tcu-dark); margin: 0; font-size: 32px; font-weight: 700; }
-        .header p { color: var(--muted); margin: 6px 0 0; font-size: 14px; }
+        .header { text-align: center; margin-top: 105px; margin-bottom: 32px; padding: 0 20px; position: relative; z-index: 1; }
+        .header h1 { color: var(--tcu-dark); margin: 0; font-size: 38px; font-weight: 700; }
+        .header p { color: var(--muted); margin: 8px 0 0; font-size: 14px; }
 
         .main-grid {
-            display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 850px; padding: 0 20px; box-sizing: border-box;
+            display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; width: 100%; max-width: 900px; padding: 0 22px; box-sizing: border-box;
             position: relative;
         }
         .main-grid::before {
-            content: ""; position: absolute; inset: -18px 8px 18px;
-            border: 1px solid rgba(0, 122, 83, 0.16); border-radius: 8px;
+            content: ""; position: absolute; inset: -20px 8px 20px;
+            border: 1px solid rgba(0, 122, 83, 0.14); border-radius: 30px;
             background:
                 linear-gradient(90deg, transparent 49.8%, rgba(31,93,122,0.1) 50%, transparent 50.2%),
                 linear-gradient(180deg, rgba(0,122,83,0.08), transparent 18%, transparent 82%, rgba(0,122,83,0.08));
@@ -94,14 +102,15 @@
         }
         
         .role-card {
-            background: white; flex: 1; min-width: 300px; padding: 35px 25px;
-            border-radius: 8px; box-shadow: 0 14px 35px rgba(0, 86, 59, 0.08);
-            text-align: center; transition: transform 0.2s ease, border-color 0.2s ease;
-            border: 1px solid var(--line);
+            background: var(--surface); flex: 1; min-width: 300px; padding: 42px 28px 34px;
+            border-radius: 26px; box-shadow: 0 24px 60px rgba(0, 86, 59, 0.12);
+            text-align: center; transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+            border: 1px solid rgba(0, 122, 83, 0.13);
             position: relative; overflow: hidden; z-index: 1;
+            backdrop-filter: blur(14px);
         }
         .role-card::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px;
             background: linear-gradient(90deg, var(--tcu-green), var(--tcu-blue));
         }
         .role-card::after {
@@ -109,35 +118,37 @@
             border-right: 2px solid rgba(0, 122, 83, 0.22);
             border-bottom: 2px solid rgba(31, 93, 122, 0.2);
         }
-        .role-card:hover { transform: translateY(-3px); border-color: rgba(0, 122, 83, 0.35); }
-        .role-card h2 { color: var(--tcu-dark); margin-top: 0; }
+        .role-card:hover { transform: translateY(-5px); border-color: rgba(0, 122, 83, 0.32); box-shadow: 0 30px 70px rgba(0, 86, 59, 0.16); }
+        .role-card h2 { color: var(--tcu-dark); margin-top: 0; font-size: 28px; }
         .role-card p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
         
         input { 
-            padding: 14px; width: 100%; box-sizing: border-box; border-radius: 8px; 
-            font-size: 16px; border: 1px solid var(--line); text-align: center; 
+            padding: 15px; width: 100%; box-sizing: border-box; border-radius: 16px; 
+            font-size: 16px; border: 1px solid rgba(0, 122, 83, 0.14); text-align: center; 
             margin-bottom: 10px; font-weight: bold; font-family: 'Poppins', sans-serif;
-            background: #fbfdfc;
+            background: rgba(255,255,255,0.82);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 10px 22px rgba(0, 86, 59, 0.05);
         }
-        input:focus { outline: none; border-color: var(--tcu-green); }
+        input:focus { outline: none; border-color: var(--tcu-green); box-shadow: 0 0 0 4px rgba(0, 122, 83, 0.08); }
 
         .error-text { color: var(--error-red); font-size: 13px; font-weight: 500; margin-bottom: 15px; min-height: 20px; display: none; }
 
         button { 
-            padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; 
+            padding: 15px; width: 100%; border-radius: 16px; font-size: 16px; 
             font-weight: 700; cursor: pointer; border: none; transition: 0.2s;
             font-family: 'Poppins', sans-serif;
         }
-        .btn-host { background: var(--tcu-green); color: white; }
-        .btn-listener { background: #444; color: white; }
-        button:hover { opacity: 0.9; transform: scale(1.02); }
+        .btn-host { background: linear-gradient(135deg, var(--tcu-green), #06986c); color: white; box-shadow: 0 14px 28px rgba(0, 122, 83, 0.22); }
+        .btn-listener { background: linear-gradient(135deg, #2f3d3a, #55615d); color: white; box-shadow: 0 14px 28px rgba(31, 41, 51, 0.16); }
+        button:hover { opacity: 0.96; transform: translateY(-2px); }
         button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         .dashboard {
-            width: 100%; max-width: 450px; background: white; padding: 40px;
-            border-radius: 8px; box-shadow: 0 20px 45px rgba(0,122,83,0.1);
-            text-align: center; margin-top: 50px; border: 1px solid var(--line);
+            width: 100%; max-width: 450px; background: var(--surface); padding: 42px;
+            border-radius: 26px; box-shadow: 0 26px 70px rgba(0,122,83,0.14);
+            text-align: center; margin-top: 50px; border: 1px solid rgba(0, 122, 83, 0.13);
             position: relative; overflow: hidden;
+            backdrop-filter: blur(14px);
         }
         .dashboard::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px;
@@ -145,12 +156,12 @@
         }
 
         .participant-badge {
-            background: var(--tcu-light); color: var(--tcu-dark); padding: 8px 20px;
-            border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 20px;
+            background: rgba(240, 247, 244, 0.92); color: var(--tcu-dark); padding: 9px 20px;
+            border-radius: 999px; display: inline-block; font-weight: bold; margin-bottom: 20px;
             border: 1px solid rgba(0, 122, 83, 0.2);
         }
 
-        #visualizer { width: 100%; height: 60px; background: #eef3f0; border-radius: 8px; margin: 15px 0; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 3px; }
+        #visualizer { width: 100%; height: 60px; background: #eef3f0; border-radius: 18px; margin: 15px 0; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 3px; }
         .bar { width: 5px; background: var(--tcu-green); border-radius: 10px; transition: height 0.1s; }
 
         .qr-area { background: #fbfdfc; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px dashed #b9cbc2; }
@@ -160,8 +171,40 @@
         .qr-warning { display: none; color: var(--error-red); font-size: 12px; margin: 10px 0 0; }
         .btn-audio { background: var(--tcu-green); color: white; margin-top: 12px; display: none; }
 
-        .btn-mute { background: #f4b400; color: white; margin-bottom: 10px; }
-        .btn-danger { background: #ea4335; color: white; margin-top: 20px; }
+        .btn-mute { background: #d9a318; color: white; margin-bottom: 10px; }
+        .btn-danger { background: linear-gradient(135deg, #c94a40, #e86d5e); color: white; margin-top: 20px; }
+
+        .modal-backdrop {
+            position: fixed; inset: 0; background: rgba(15, 34, 28, 0.42);
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px; z-index: 10; opacity: 0; pointer-events: none;
+            transition: opacity 0.22s ease; backdrop-filter: blur(6px);
+        }
+        .modal-backdrop.show { opacity: 1; pointer-events: auto; }
+        .modal-card {
+            width: 100%; max-width: 390px; background: var(--surface-strong);
+            border-radius: 24px; padding: 30px; text-align: center;
+            border: 1px solid rgba(0, 122, 83, 0.14);
+            box-shadow: 0 30px 90px rgba(0, 46, 31, 0.28);
+            transform: translateY(12px) scale(0.98); transition: transform 0.22s ease;
+            position: relative; overflow: hidden;
+        }
+        .modal-backdrop.show .modal-card { transform: translateY(0) scale(1); }
+        .modal-card::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, var(--tcu-green), var(--tcu-blue));
+        }
+        .modal-icon {
+            width: 54px; height: 54px; border-radius: 18px; margin: 4px auto 16px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--tcu-light); color: var(--tcu-dark); font-size: 24px; font-weight: 700;
+            border: 1px solid rgba(0, 122, 83, 0.15);
+        }
+        .modal-card h3 { margin: 0; color: var(--tcu-dark); font-size: 22px; }
+        .modal-card p { margin: 10px 0 24px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn-cancel { background: #edf4f1; color: var(--tcu-dark); border: 1px solid rgba(0, 122, 83, 0.12); }
+        .btn-confirm-leave { background: linear-gradient(135deg, var(--tcu-green), #06986c); color: white; box-shadow: 0 14px 26px rgba(0, 122, 83, 0.2); }
 
         .hidden { display: none !important; }
         .pulse { animation: pulse-green 2s infinite; }
@@ -170,7 +213,7 @@
         @media (max-width: 600px) {
             .tcu-premium-header { top: 18px; left: 20px; gap: 9px; max-width: calc(100% - 190px); }
             .tcu-logo { width: 54px; }
-            .tcu-logo-fallback { width: 54px; height: 46px; font-size: 13px; }
+            .tcu-logo-fallback { width: 54px; height: 46px; font-size: 13px; border-radius: 14px; }
             .vertical-divider { height: 50px; }
             .tcu-title { display: block; font-size: 14px; line-height: 1.15; max-width: 92px; letter-spacing: 0; }
             .nav-lang { padding: 22px 20px 0 0; }
@@ -178,6 +221,9 @@
             .header { margin-top: 150px; }
             .main-grid { padding: 0 28px 32px; }
             .main-grid::before { inset: -14px 16px 18px; }
+            .role-card { border-radius: 24px; padding: 40px 24px 32px; }
+            .dashboard { margin: 28px 20px 0; max-width: calc(100% - 40px); padding: 34px 24px; }
+            .modal-card { padding: 28px 22px; }
         }
     </style>
 </head>
@@ -247,7 +293,19 @@
             <div id="remote-audio-container" aria-hidden="true"></div>
         </div>
 
-        <button class="btn-danger" onclick="leaveRoom()" id="txt-end">End / Leave</button>
+        <button class="btn-danger" onclick="openLeaveModal()" id="txt-end">End / Leave</button>
+    </div>
+
+    <div id="leave-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="leave-modal-title" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-icon">?</div>
+            <h3 id="leave-modal-title">Keluar dari ruangan?</h3>
+            <p>Sesi audio akan terputus dan kamu akan kembali ke halaman awal.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeLeaveModal()">Batal</button>
+                <button type="button" class="btn-confirm-leave" onclick="confirmLeaveRoom()">Ya, Keluar</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -665,7 +723,25 @@
             document.getElementById('btnMute').style.background = isMutedGlobal ? "#ea4335" : "#f4b400";
         }
 
+        function openLeaveModal() {
+            const modal = document.getElementById('leave-modal');
+            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeLeaveModal() {
+            const modal = document.getElementById('leave-modal');
+            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        function confirmLeaveRoom() {
+            closeLeaveModal();
+            leaveRoom();
+        }
+
         function leaveRoom() {
+            closeLeaveModal();
             if (currentRoom) { currentRoom.disconnect(); currentRoom = null; }
             if (audioCtx) { audioCtx.close(); audioCtx = null; }
             if (visualizerStream) {
