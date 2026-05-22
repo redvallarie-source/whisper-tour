@@ -5,12 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whisper Tour - TCU Edition</title>
     
-    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.9.0/jsrsasign-all-min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        window.dependencyLoaders = [];
+        function loadScriptFallback(url) {
+            const promise = new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = url;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+            window.dependencyLoaders.push(promise);
+            return promise;
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js" onerror="loadScriptFallback('https://unpkg.com/livekit-client/dist/livekit-client.umd.min.js')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.9.0/jsrsasign-all-min.js" onerror="loadScriptFallback('https://cdn.jsdelivr.net/npm/jsrsasign/lib/jsrsasign-all-min.js')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" onerror="loadScriptFallback('https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js')"></script>
     
     <style>
-        /* SEMUA DESAIN PREMIUM TETAP DIPERTAHANKAN */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
 
         :root {
@@ -46,7 +59,6 @@
         .header h1 { color: var(--tcu-dark); margin: 0; font-size: 28px; }
         .header p { color: #666; margin: 5px 0 0; font-size: 14px; }
 
-        /* KOTAK 2 BAGIAN TETAP ADA */
         .main-grid {
             display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 850px; padding: 0 20px; box-sizing: border-box;
         }
@@ -95,6 +107,10 @@
 
         .qr-area { background: #f9f9f9; padding: 20px; border-radius: 20px; margin-top: 20px; border: 1px dashed #ccc; }
         #qrcode { display: flex; justify-content: center; margin-top: 15px; }
+        #qrcode img, #qrcode canvas { width: 160px; height: 160px; }
+        .qr-link { display: block; margin-top: 12px; color: var(--tcu-dark); font-size: 12px; overflow-wrap: anywhere; text-decoration: none; }
+        .qr-warning { display: none; color: var(--error-red); font-size: 12px; margin: 10px 0 0; }
+        .btn-audio { background: var(--tcu-green); color: white; margin-top: 12px; display: none; }
 
         .btn-mute { background: #f4b400; color: white; margin-bottom: 10px; }
         .btn-danger { background: #ea4335; color: white; margin-top: 20px; }
@@ -163,12 +179,16 @@
             <div class="qr-area">
                 <p id="txt-scan-desc" style="margin:0; font-size:14px; font-weight:bold; color:var(--tcu-dark);">Share this QR with guests:</p>
                 <div id="qrcode"></div>
+                <a id="qr-link" class="qr-link" href="#" target="_blank" rel="noopener"></a>
+                <p id="qr-warning" class="qr-warning"></p>
             </div>
         </div>
 
         <div id="listener-controls" class="hidden">
             <div id="listener-pulse" class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
             <p id="txt-connected" style="font-weight: bold; margin-top: 20px;">Connected. Hearing the guide...</p>
+            <button id="btnEnableAudio" class="btn-audio" onclick="enableListenerAudio()">Enable Audio</button>
+            <div id="remote-audio-container" aria-hidden="true"></div>
         </div>
 
         <button class="btn-danger" onclick="leaveRoom()" id="txt-end">End / Leave</button>
@@ -181,27 +201,27 @@
                 hostDesc: "Create a room and start broadcasting.", listenerDesc: "Enter an active room ID to listen.",
                 startBtn: "🚀 Create Room", joinBtn: "🎧 Join Room", active: "Room Active", micStatus: "Microphone Activity:",
                 mute: "Mute", unmute: "Unmute", scan: "Share this QR with guests:", connected: "Connected. Hearing the guide...", end: "End / Leave",
-                emptyId: "⚠️ Please enter a Room ID!", connecting: "⏳ Connecting...", micError: "⚠️ Check Microphone permission!", 
-                connError: "⚠️ Connection Failed. Try again.", partLabel: "Participants:",
-                waitingHost: "⏳ Room is empty. Waiting for Guide..."
+                emptyId: "⚠️ Please enter a Room ID!", connecting: "⏳ Connecting...", micError: "⚠️ Microphone blocked by browser!", 
+                connError: "⚠️ Connection Failed. Check internet.", partLabel: "Participants:",
+                waitingHost: "⏳ Room is empty. Waiting for Guide to join..."
             },
             id: {
                 title: "Whisper Tour", subtitle: "Sistem Pemandu Profesional", imHost: "Host / Pemandu", imListener: "Pendengar / Tamu",
                 hostDesc: "Buat ruangan dan siarkan suaramu.", listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
                 startBtn: "🚀 Buat Ruangan", joinBtn: "🎧 Gabung Ruangan", active: "Ruangan Aktif", micStatus: "Aktivitas Mikrofon:",
                 mute: "Bisu", unmute: "Nyalakan Suara", scan: "Bagikan QR ini ke tamu:", connected: "Terhubung. Mendengarkan pemandu...", end: "Akhiri / Keluar",
-                emptyId: "⚠️ Masukkan ID Ruangan dulu!", connecting: "⏳ Menghubungkan...", micError: "⚠️ Periksa Izin Mikrofon!", 
-                connError: "⚠️ Koneksi Gagal. Coba lagi.", partLabel: "Peserta:",
-                waitingHost: "⏳ Ruangan kosong. Menunggu Pemandu..."
+                emptyId: "⚠️ Masukkan ID Ruangan dulu!", connecting: "⏳ Menghubungkan...", micError: "⚠️ Izin mikrofon ditolak browser!", 
+                connError: "⚠️ Koneksi Gagal. Cek internet.", partLabel: "Peserta:",
+                waitingHost: "⏳ Ruangan kosong. Menunggu Pemandu masuk..."
             },
             zh: {
                 title: "隨身導覽系統", subtitle: "專業語音導覽", imHost: "導覽員 / 主持人", imListener: "聽眾 / 遊客",
                 hostDesc: "建立房間並開始廣播。", listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
                 startBtn: "🚀 建立房間", joinBtn: "🎧 加入房間", active: "房間使用中", micStatus: "麥克風活動：",
                 mute: "靜音", unmute: "解除靜音", scan: "分享二維碼給遊客：", connected: "已連線。正在收聽導覽...", end: "結束 / 離開",
-                emptyId: "⚠️ 請輸入房間 ID！", connecting: "⏳ 連線中...", micError: "⚠️ 請檢查麥克風權限！", 
-                connError: "⚠️ 連線失敗。請重試。", partLabel: "參與人數:",
-                waitingHost: "⏳ 房間是空的。等待導覽員..."
+                emptyId: "⚠️ 請輸入房間 ID！", connecting: "⏳ 連線中...", micError: "⚠️ 瀏覽器拒絕了麥克風權限！", 
+                connError: "⚠️ 連線失敗，請檢查網路。", partLabel: "參與人數:",
+                waitingHost: "⏳ 房間是空的。等待導覽員加入..."
             }
         };
 
@@ -212,7 +232,9 @@
         let currentRoom = null;
         let audioCtx = null;
         let isMutedGlobal = false;
-        let radarInterval = null; 
+        let radarInterval = null;
+        let visualizerStream = null;
+        const attachedAudioTracks = new Map();
 
         function changeLanguage() {
             const lang = document.getElementById('langSelect').value;
@@ -237,42 +259,208 @@
             }
         }
 
-        // RUMUS TOKEN ANTI-GAGAL (Tanpa NBF, Valid 2 Jam)
         function generateToken(roomName, isHost) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
+            const now = Math.floor(Date.now() / 1000);
             const payload = JSON.stringify({
                 iss: API_KEY, 
                 sub: isHost ? "host-" + Math.floor(Math.random()*10000) : "listener-" + Math.floor(Math.random()*10000),
-                exp: Math.floor(Date.now() / 1000) + 7200, 
+                nbf: now - 300, 
+                exp: now + 7200, 
                 video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
             });
             return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
         }
 
+        function getRemoteParticipants() {
+            if (!currentRoom) return new Map();
+            return currentRoom.remoteParticipants || currentRoom.participants || new Map();
+        }
+
         function updateParticipantCount() {
             if (!currentRoom) return;
-            const totalCount = currentRoom.participants.size + 1;
+            const totalCount = getRemoteParticipants().size + 1;
             document.getElementById('participant-count-value').innerText = totalCount;
         }
 
-        function showInlineError(role, message) {
+        function showInlineError(role, message, duration = 4000) {
             const errorDiv = role === 'host' ? document.getElementById('host-error') : document.getElementById('listener-error');
             errorDiv.innerText = message;
             errorDiv.style.display = 'block';
-            setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
+            setTimeout(() => { errorDiv.style.display = 'none'; }, duration);
+        }
+
+        async function ensureDependencies(isHost) {
+            if (window.dependencyLoaders && window.dependencyLoaders.length) {
+                await Promise.allSettled(window.dependencyLoaders);
+            }
+
+            const missing = [];
+            if (typeof LivekitClient === 'undefined') missing.push('LiveKit');
+            if (typeof KJUR === 'undefined') missing.push('token library');
+            if (isHost && (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)) missing.push('microphone access');
+
+            if (missing.length) {
+                const err = new Error('Missing dependencies: ' + missing.join(', '));
+                err.userMessage = 'Needed files failed to load: ' + missing.join(', ') + '. Check internet/CDN access, then refresh.';
+                throw err;
+            }
         }
 
         function checkHostStatus() {
             if(!currentRoom || document.getElementById('host-controls').classList.contains('hidden') === false) return;
+            
             const statusText = document.getElementById('txt-connected');
             const lang = document.getElementById('langSelect').value;
-            if(currentRoom.participants.size === 0) {
+            
+            if(getRemoteParticipants().size === 0) {
                 statusText.innerText = translations[lang].waitingHost;
                 statusText.style.color = "#d93025"; 
             } else {
                 statusText.innerText = translations[lang].connected;
                 statusText.style.color = "#007A53"; 
             }
+        }
+
+        function buildListenerLink(roomName) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('room', roomName);
+            url.searchParams.set('role', 'listener');
+            url.searchParams.set('autoJoin', '1');
+            return url.toString();
+        }
+
+        function renderQRCode(roomName) {
+            const listenerLink = buildListenerLink(roomName);
+            const qrBox = document.getElementById('qrcode');
+            const qrLink = document.getElementById('qr-link');
+            const qrWarning = document.getElementById('qr-warning');
+
+            qrBox.innerHTML = "";
+            qrLink.href = listenerLink;
+            qrLink.innerText = listenerLink;
+            qrWarning.style.display = 'none';
+            qrWarning.innerText = "";
+
+            try {
+                if (typeof QRCode === 'function') {
+                    new QRCode(qrBox, { text: listenerLink, width: 160, height: 160 });
+                    return;
+                }
+                throw new Error('QRCode library is not available');
+            } catch (qrErr) {
+                const img = document.createElement('img');
+                img.alt = 'Listener QR code';
+                img.width = 160;
+                img.height = 160;
+                img.src = "https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=" + encodeURIComponent(listenerLink);
+                img.onerror = () => {
+                    qrWarning.innerText = "QR failed to load. Share the link below.";
+                    qrWarning.style.display = 'block';
+                    qrBox.innerHTML = "";
+                };
+                qrBox.appendChild(img);
+            }
+
+            if (window.location.protocol === 'file:') {
+                qrWarning.innerText = "For phones, open this page from a shared URL or local server. file:// links only work on this computer.";
+                qrWarning.style.display = 'block';
+            }
+        }
+
+        function getAudioTrackKey(track, publication, participant) {
+            return [
+                participant && participant.identity ? participant.identity : 'participant',
+                publication && publication.trackSid ? publication.trackSid : '',
+                track && track.sid ? track.sid : ''
+            ].filter(Boolean).join('-');
+        }
+
+        function attachAudioTrack(track, publication, participant) {
+            if (!track || track.kind !== 'audio') return;
+
+            const key = getAudioTrackKey(track, publication, participant);
+            if (attachedAudioTracks.has(key)) return;
+
+            const audioContainer = document.getElementById('remote-audio-container');
+            const audioElement = track.attach();
+            audioElement.autoplay = true;
+            audioElement.playsInline = true;
+            audioElement.controls = false;
+            audioElement.dataset.trackKey = key;
+            audioContainer.appendChild(audioElement);
+            attachedAudioTracks.set(key, { track, audioElement });
+
+            let playPromise = null;
+            try {
+                playPromise = audioElement.play();
+            } catch (playErr) {
+                document.getElementById('btnEnableAudio').style.display = 'block';
+            }
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => {
+                    document.getElementById('btnEnableAudio').style.display = 'block';
+                });
+            }
+        }
+
+        function detachAudioTrack(track, publication, participant) {
+            const key = getAudioTrackKey(track, publication, participant);
+            const attached = attachedAudioTracks.get(key);
+            if (!attached) return;
+
+            try {
+                if (attached.track && attached.audioElement) {
+                    attached.track.detach(attached.audioElement);
+                }
+            } catch (detachErr) {
+                // The element can already be detached when a participant leaves quickly.
+            }
+            attached.audioElement.remove();
+            attachedAudioTracks.delete(key);
+        }
+
+        function attachExistingAudioTracks() {
+            getRemoteParticipants().forEach((participant) => {
+                const publications = participant.trackPublications || participant.audioTrackPublications || new Map();
+                publications.forEach((publication) => {
+                    if (publication.kind === 'audio' && publication.track) {
+                        attachAudioTrack(publication.track, publication, participant);
+                    }
+                });
+            });
+        }
+
+        function onRoomEvent(room, eventName, handler) {
+            if (eventName) room.on(eventName, handler);
+        }
+
+        function registerRoomEvents(room, isHost) {
+            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantConnected, () => { updateParticipantCount(); checkHostStatus(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantDisconnected, () => { updateParticipantCount(); checkHostStatus(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.Connected, () => { updateParticipantCount(); checkHostStatus(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.Reconnected, () => { updateParticipantCount(); checkHostStatus(); attachExistingAudioTracks(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.Disconnected, () => { clearInterval(radarInterval); radarInterval = null; });
+
+            if (!isHost) {
+                onRoomEvent(room, LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+                    attachAudioTrack(track, publication, participant);
+                    checkHostStatus();
+                });
+                onRoomEvent(room, LivekitClient.RoomEvent.TrackUnsubscribed, (track, publication, participant) => {
+                    detachAudioTrack(track, publication, participant);
+                    checkHostStatus();
+                });
+            }
+        }
+
+        async function enableListenerAudio() {
+            const button = document.getElementById('btnEnableAudio');
+            const elements = document.querySelectorAll('#remote-audio-container audio');
+            for (const element of elements) {
+                try { await element.play(); } catch (e) {}
+            }
+            button.style.display = 'none';
         }
 
         async function joinRoom(role) {
@@ -289,69 +477,49 @@
             btn.disabled = true;
 
             try {
+                await ensureDependencies(isHost);
                 const token = generateToken(roomName, isHost);
                 currentRoom = new LivekitClient.Room();
-                
-                await currentRoom.connect(LIVEKIT_URL, token);
+                registerRoomEvents(currentRoom, isHost);
+                await currentRoom.connect(LIVEKIT_URL, token, { autoSubscribe: true });
 
                 document.getElementById('landing-page').classList.add('hidden');
                 document.getElementById('active-dashboard').classList.remove('hidden');
 
                 updateParticipantCount();
-                currentRoom.on('participantConnected', () => { updateParticipantCount(); checkHostStatus(); });
-                currentRoom.on('participantDisconnected', () => { updateParticipantCount(); checkHostStatus(); });
 
-                // RADAR PESERTA SETIAP 2 DETIK
                 radarInterval = setInterval(() => {
-                    if(currentRoom) { updateParticipantCount(); checkHostStatus(); }
+                    if(currentRoom) {
+                        updateParticipantCount();
+                        checkHostStatus();
+                    }
                 }, 2000);
 
                 if (isHost) {
-                    document.getElementById('host-controls').classList.remove('hidden');
-                    
-                    // PERBAIKAN FATAL: MENGGAMBAR QR CODE SEBELUM MIKROFON NYALA
-                    // Jadi meskipun mikrofon eror, QR Code dijamin 100% sudah tergambar duluan
-                    const listenerLink = window.location.origin + window.location.pathname + "?room=" + encodeURIComponent(roomName) + "&role=listener&autoJoin=1";
-                    const qrContainer = document.getElementById('qrcode');
-                    qrContainer.innerHTML = "";
-                    new QRCode(qrContainer, { text: listenerLink, width: 160, height: 160 });
-
-                    // BARU URUS MIKROFON
                     try {
+                        document.getElementById('host-controls').classList.remove('hidden');
                         await currentRoom.localParticipant.setMicrophoneEnabled(true);
                         isMutedGlobal = false;
                         startVisualizer();
+                        renderQRCode(roomName);
+                        
                     } catch (micErr) {
+                        leaveRoom();
                         showInlineError('host', translations[lang].micError);
                     }
                 } else {
                     document.getElementById('listener-controls').classList.remove('hidden');
+                    attachExistingAudioTracks();
                     checkHostStatus(); 
-
-                    // MEMASTIKAN AUDIO JALAN DI HP
-                    currentRoom.on('trackSubscribed', (track) => {
-                        if (track.kind === 'audio') {
-                            const audioElement = track.attach();
-                            audioElement.autoplay = true;
-                            document.body.appendChild(audioElement);
-                            
-                            audioElement.play().catch(error => {
-                                // Paksaan jika HP menolak putar suara otomatis
-                                const playBtn = document.createElement('button');
-                                playBtn.innerText = "▶️ Tap to Hear Audio";
-                                playBtn.style.position = "fixed"; playBtn.style.bottom = "20px";
-                                playBtn.style.zIndex = "9999"; playBtn.style.background = "#007A53";
-                                playBtn.style.color = "white"; playBtn.style.width = "90%"; playBtn.style.left = "5%";
-                                playBtn.onclick = () => { audioElement.play(); playBtn.remove(); };
-                                document.body.appendChild(playBtn);
-                            });
-                        }
-                    });
                 }
             } catch (e) {
-                console.error("Connection Error:", e);
-                leaveRoom();
-                showInlineError(role, translations[lang].connError);
+                console.error("Error Detail:", e);
+                if (currentRoom) {
+                    try { currentRoom.disconnect(); } catch (disconnectErr) {}
+                    currentRoom = null;
+                }
+                if (radarInterval) { clearInterval(radarInterval); radarInterval = null; }
+                showInlineError(role, e.userMessage || translations[lang].connError, e.userMessage ? 8000 : 4000);
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
@@ -369,6 +537,7 @@
             }
 
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                visualizerStream = stream;
                 audioCtx = new AudioContext();
                 const source = audioCtx.createMediaStreamSource(stream);
                 const analyser = audioCtx.createAnalyser();
@@ -400,11 +569,21 @@
         function leaveRoom() {
             if (currentRoom) { currentRoom.disconnect(); currentRoom = null; }
             if (audioCtx) { audioCtx.close(); audioCtx = null; }
-            if (radarInterval) { clearInterval(radarInterval); radarInterval = null; } 
+            if (visualizerStream) {
+                visualizerStream.getTracks().forEach(track => track.stop());
+                visualizerStream = null;
+            }
+            if (radarInterval) { clearInterval(radarInterval); radarInterval = null; }
+            attachedAudioTracks.forEach(({ audioElement }) => audioElement.remove());
+            attachedAudioTracks.clear();
             
             document.getElementById('active-dashboard').classList.add('hidden');
             document.getElementById('host-controls').classList.add('hidden');
             document.getElementById('listener-controls').classList.add('hidden');
+            document.getElementById('btnEnableAudio').style.display = 'none';
+            document.getElementById('qrcode').innerHTML = "";
+            document.getElementById('qr-link').innerText = "";
+            document.getElementById('qr-warning').style.display = 'none';
             document.getElementById('landing-page').classList.remove('hidden');
             
             const lang = document.getElementById('langSelect').value;
@@ -417,10 +596,10 @@
             if (urlParams.get('room')) {
                 document.getElementById('listenerRoom').value = urlParams.get('room');
             }
+            changeLanguage();
             if (urlParams.get('autoJoin') === '1' && urlParams.get('role') === 'listener') {
                 joinRoom('listener');
             }
-            changeLanguage();
         };
     </script>
 </body>
