@@ -11,52 +11,136 @@
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
-        :root { --tcu-green: #007A53; --tcu-dark: #00563B; --tcu-light: #f0f7f4; --white: #ffffff; --error-red: #d93025; }
-        body { font-family: 'Poppins', 'Noto Sans TC', sans-serif; background: #f4f7f6; margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; position: relative; }
-        .tcu-premium-header { position: absolute; top: 20px; left: 30px; display: flex; align-items: center; gap: 15px; }
+
+        :root {
+            --tcu-green: #007A53;
+            --tcu-dark: #00563B;
+            --tcu-light: #f0f7f4;
+            --white: #ffffff;
+            --error-red: #d93025;
+        }
+
+        body { 
+            font-family: 'Poppins', 'Noto Sans TC', sans-serif; 
+            background: #f4f7f6; margin: 0; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+            position: relative;
+        }
+
+        .tcu-premium-header {
+            position: absolute; top: 20px; left: 30px;
+            display: flex; align-items: center; gap: 15px;
+        }
         .tcu-logo { width: 70px; height: auto; mix-blend-mode: multiply; }
         .vertical-divider { width: 2px; height: 60px; background-color: var(--tcu-green); border-radius: 2px; }
         .tcu-title { color: var(--tcu-dark); margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+
         .nav-lang { width: 100%; display: flex; justify-content: flex-end; padding: 15px 25px; box-sizing: border-box; }
-        .nav-lang select { padding: 8px 15px; border-radius: 20px; border: 1px solid var(--tcu-green); background: white; color: var(--tcu-green); font-weight: 600; cursor: pointer; outline: none; }
+        .nav-lang select {
+            padding: 8px 15px; border-radius: 20px; border: 1px solid var(--tcu-green);
+            background: white; color: var(--tcu-green); font-weight: 600; cursor: pointer; outline: none;
+        }
+
         .header { text-align: center; margin-top: 100px; margin-bottom: 30px; padding: 0 20px; }
         .header h1 { color: var(--tcu-dark); margin: 0; font-size: 28px; }
         .header p { color: #666; margin: 5px 0 0; font-size: 14px; }
-        .main-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 850px; padding: 0 20px; box-sizing: border-box; }
-        .role-card { background: white; flex: 1; min-width: 300px; padding: 35px 25px; border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; border: 2px solid transparent; }
-        input { padding: 15px; width: 100%; box-sizing: border-box; border-radius: 12px; font-size: 16px; border: 2px solid #eee; text-align: center; margin-bottom: 10px; font-weight: bold; }
-        .error-text { color: var(--error-red); font-size: 13px; font-weight: 500; margin-bottom: 15px; display: none; }
-        button { padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; border: none; margin-bottom: 12px; }
+
+        .main-grid {
+            display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 850px; padding: 0 20px; box-sizing: border-box;
+        }
+        
+        .role-card {
+            background: white; flex: 1; min-width: 300px; padding: 35px 25px;
+            border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            text-align: center; transition: transform 0.3s ease; border: 2px solid transparent;
+        }
+        .role-card:hover { transform: translateY(-5px); border-color: var(--tcu-green); }
+        .role-card h2 { color: var(--tcu-dark); margin-top: 0; }
+        .role-card p { color: #666; font-size: 14px; margin-bottom: 20px; }
+        
+        input { 
+            padding: 15px; width: 100%; box-sizing: border-box; border-radius: 12px; 
+            font-size: 16px; border: 2px solid #eee; text-align: center; 
+            margin-bottom: 10px; font-weight: bold; font-family: 'Poppins', sans-serif;
+        }
+        input:focus { outline: none; border-color: var(--tcu-green); }
+
+        .error-text { color: var(--error-red); font-size: 13px; font-weight: 500; margin-bottom: 15px; min-height: 20px; display: none; }
+
+        button { 
+            padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; 
+            font-weight: 700; cursor: pointer; border: none; transition: 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
         .btn-host { background: var(--tcu-green); color: white; }
         .btn-listener { background: #444; color: white; }
-        .dashboard { width: 100%; max-width: 450px; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,122,83,0.1); text-align: center; margin-top: 50px; }
-        .participant-badge { background: var(--tcu-light); color: var(--tcu-dark); padding: 8px 20px; border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 20px; border: 1px solid rgba(0, 122, 83, 0.2); }
+        button:hover { opacity: 0.9; transform: scale(1.02); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .dashboard {
+            width: 100%; max-width: 450px; background: white; padding: 40px;
+            border-radius: 30px; box-shadow: 0 20px 50px rgba(0,122,83,0.1); text-align: center; margin-top: 50px;
+        }
+
+        .participant-badge {
+            background: var(--tcu-light); color: var(--tcu-dark); padding: 8px 20px;
+            border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 20px;
+            border: 1px solid rgba(0, 122, 83, 0.2);
+        }
+
         #visualizer { width: 100%; height: 60px; background: #eee; border-radius: 10px; margin: 15px 0; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 3px; }
-        .bar { width: 5px; background: var(--tcu-green); border-radius: 10px; }
+        .bar { width: 5px; background: var(--tcu-green); border-radius: 10px; transition: height 0.1s; }
+
         .qr-area { background: #f9f9f9; padding: 20px; border-radius: 20px; margin-top: 20px; border: 1px dashed #ccc; }
         #qrcode { display: flex; justify-content: center; margin-top: 15px; }
-        .btn-danger { background: rgba(255, 75, 75, 0.1); color: var(--error-red); border: 2px solid rgba(255, 75, 75, 0.2); margin-top: 20px; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+
+        .btn-mute { background: #f4b400; color: white; margin-bottom: 10px; }
+        .btn-danger { background: #ea4335; color: white; margin-top: 20px; }
+
         .hidden { display: none !important; }
+        .pulse { animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(0,122,83,0.4); } 70% { box-shadow: 0 0 0 20px rgba(0,122,83,0); } 100% { box-shadow: 0 0 0 0 rgba(0,122,83,0); } }
+        
+        @media (max-width: 600px) {
+            .tcu-premium-header { top: 15px; left: 15px; }
+            .tcu-title { display: none; }
+            .nav-lang { top: 15px; right: 15px; }
+        }
     </style>
 </head>
 <body>
+
     <div class="tcu-premium-header">
         <img src="tcu-logo.png" class="tcu-logo" alt="TCU Logo">
         <div class="vertical-divider"></div>
         <h1 class="tcu-title">Tzu Chi University</h1>
     </div>
-    <div class="nav-lang"><select id="langSelect" onchange="changeLanguage()"><option value="en">English</option><option value="id">Bahasa Indonesia</option><option value="zh">繁體中文</option></select></div>
-    <div class="header"><h1 id="txt-title">Whisper Tour</h1><p id="txt-subtitle">Professional Guide System</p></div>
+
+    <div class="nav-lang">
+        <select id="langSelect" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="id">Bahasa Indonesia</option>
+            <option value="zh">繁體中文</option>
+        </select>
+    </div>
+
+    <div class="header">
+        <h1 id="txt-title">Whisper Tour</h1>
+        <p id="txt-subtitle">Professional Guide System</p>
+    </div>
 
     <div class="main-grid" id="landing-page">
         <div class="role-card">
             <h2 id="txt-im-host">Host / Guide</h2>
-            <input type="text" id="hostRoom" placeholder="Room ID" value="1234">
+            <p id="txt-host-desc">Create a room and start broadcasting.</p>
+            <input type="text" id="hostRoom" placeholder="Room ID (e.g. 1234)" value="1234">
             <div id="host-error" class="error-text"></div>
             <button class="btn-host" onclick="joinRoom('host')" id="btn-host-action">🚀 Create Room</button>
         </div>
+
         <div class="role-card">
             <h2 id="txt-im-listener">Listener / Guest</h2>
+            <p id="txt-listener-desc">Enter an active room ID to listen.</p>
             <input type="text" id="listenerRoom" placeholder="Room ID" value="">
             <div id="listener-error" class="error-text"></div>
             <button class="btn-listener" onclick="joinRoom('listener')" id="btn-listener-action">🎧 Join Room</button>
@@ -65,20 +149,58 @@
 
     <div id="active-dashboard" class="dashboard hidden">
         <h2 id="txt-active-room">Room Active</h2>
-        <div class="participant-badge">👥 <span id="txt-part-label">Participants:</span> <span id="participant-count-value">1</span></div>
-        <div id="host-controls" class="hidden">
-            <div id="visualizer"></div>
-            <div class="qr-area"><div id="qrcode"></div></div>
+        
+        <div class="participant-badge">
+            👥 <span id="txt-part-label">Participants:</span> <span id="participant-count-value">1</span>
         </div>
-        <div id="listener-controls" class="hidden"><p id="txt-connected" style="font-weight:bold;">Connected...</p></div>
+        
+        <div id="host-controls" class="hidden">
+            <p id="txt-mic-status" style="margin:0; font-size:14px; font-weight:bold; color:#666;">Microphone Activity:</p>
+            <div id="visualizer"></div>
+            <button id="btnMute" class="btn-mute" onclick="toggleMute()">🔇 Mute</button>
+            <div class="qr-area">
+                <p id="txt-scan-desc" style="margin:0; font-size:14px; font-weight:bold; color:var(--tcu-dark);">Share this QR with guests:</p>
+                <div id="qrcode"></div>
+            </div>
+        </div>
+
+        <div id="listener-controls" class="hidden">
+            <div id="listener-pulse" class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
+            <p id="txt-connected" style="font-weight: bold; margin-top: 20px;">Connected. Hearing the guide...</p>
+        </div>
+
         <button class="btn-danger" onclick="leaveRoom()" id="txt-end">End / Leave</button>
     </div>
 
     <script>
         const translations = {
-            en: { title: "Whisper Tour", startBtn: "🚀 Create Room", joinBtn: "🎧 Join Room", end: "End / Leave", connError: "Connection Failed!" },
-            id: { title: "Whisper Tour", startBtn: "🚀 Buat Ruangan", joinBtn: "🎧 Gabung Ruangan", end: "Akhiri / Keluar", connError: "Koneksi Gagal!" },
-            zh: { title: "隨身導覽系統", startBtn: "🚀 建立房間", joinBtn: "🎧 加入房間", end: "結束 / 離開", connError: "連線失敗!" }
+            en: {
+                title: "Whisper Tour", subtitle: "Professional Guide System", imHost: "Host / Guide", imListener: "Listener / Guest",
+                hostDesc: "Create a room and start broadcasting.", listenerDesc: "Enter an active room ID to listen.",
+                startBtn: "🚀 Create Room", joinBtn: "🎧 Join Room", active: "Room Active", micStatus: "Microphone Activity:",
+                mute: "Mute", unmute: "Unmute", scan: "Share this QR with guests:", connected: "Connected. Hearing the guide...", end: "End / Leave",
+                emptyId: "⚠️ Please enter a Room ID!", connecting: "⏳ Connecting...", micError: "⚠️ Microphone blocked by browser!", 
+                connError: "⚠️ Connection Failed. Check internet.", partLabel: "Participants:",
+                waitingHost: "⏳ Room is empty. Waiting for Guide to join..."
+            },
+            id: {
+                title: "Whisper Tour", subtitle: "Sistem Pemandu Profesional", imHost: "Host / Pemandu", imListener: "Pendengar / Tamu",
+                hostDesc: "Buat ruangan dan siarkan suaramu.", listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
+                startBtn: "🚀 Buat Ruangan", joinBtn: "🎧 Gabung Ruangan", active: "Ruangan Aktif", micStatus: "Aktivitas Mikrofon:",
+                mute: "Bisu", unmute: "Nyalakan Suara", scan: "Bagikan QR ini ke tamu:", connected: "Terhubung. Mendengarkan pemandu...", end: "Akhiri / Keluar",
+                emptyId: "⚠️ Masukkan ID Ruangan dulu!", connecting: "⏳ Menghubungkan...", micError: "⚠️ Izin mikrofon ditolak browser!", 
+                connError: "⚠️ Koneksi Gagal. Cek internet.", partLabel: "Peserta:",
+                waitingHost: "⏳ Ruangan kosong. Menunggu Pemandu masuk..."
+            },
+            zh: {
+                title: "隨身導覽系統", subtitle: "專業語音導覽", imHost: "導覽員 / 主持人", imListener: "聽眾 / 遊客",
+                hostDesc: "建立房間並開始廣播。", listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
+                startBtn: "🚀 建立房間", joinBtn: "🎧 加入房間", active: "房間使用中", micStatus: "麥克風活動：",
+                mute: "靜音", unmute: "解除靜音", scan: "分享二維碼給遊客：", connected: "已連線。正在收聽導覽...", end: "結束 / 離開",
+                emptyId: "⚠️ 請輸入房間 ID！", connecting: "⏳ 連線中...", micError: "⚠️ 瀏覽器拒絕了麥克風權限！", 
+                connError: "⚠️ 連線失敗，請檢查網路。", partLabel: "參與人數:",
+                waitingHost: "⏳ 房間是空的。等待導覽員加入..."
+            }
         };
 
         const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
@@ -86,50 +208,211 @@
         const API_SECRET = "xfZhky6tUeDAYufb8ewdUZOy2vmaJXqOZpfDhpCybiGB";
         
         let currentRoom = null;
+        let audioCtx = null;
+        let isMutedGlobal = false;
+        let radarInterval = null; // CCTV Radar untuk menghitung peserta
+
+        function changeLanguage() {
+            const lang = document.getElementById('langSelect').value;
+            const t = translations[lang];
+            document.getElementById('txt-title').innerText = t.title;
+            document.getElementById('txt-subtitle').innerText = t.subtitle;
+            document.getElementById('txt-im-host').innerText = t.imHost;
+            document.getElementById('txt-im-listener').innerText = t.imListener;
+            document.getElementById('txt-host-desc').innerText = t.hostDesc;
+            document.getElementById('txt-listener-desc').innerText = t.listenerDesc;
+            document.getElementById('txt-active-room').innerText = t.active;
+            document.getElementById('txt-mic-status').innerText = t.micStatus;
+            document.getElementById('txt-scan-desc').innerText = t.scan;
+            document.getElementById('txt-end').innerText = t.end;
+            document.getElementById('txt-part-label').innerText = t.partLabel;
+            
+            document.getElementById('btn-host-action').innerText = t.startBtn;
+            document.getElementById('btn-listener-action').innerText = t.joinBtn;
+            if(currentRoom) {
+                document.getElementById('btnMute').innerText = isMutedGlobal ? t.unmute : t.mute;
+                checkHostStatus();
+            }
+        }
 
         function generateToken(roomName, isHost) {
+            const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
+            const now = Math.floor(Date.now() / 1000);
             const payload = JSON.stringify({
                 iss: API_KEY, 
-                sub: isHost ? "host" : "listener",
-                exp: Math.floor(Date.now() / 1000) + 7200, 
+                sub: isHost ? "host-" + Math.floor(Math.random()*10000) : "listener-" + Math.floor(Math.random()*10000),
+                nbf: now - 300, 
+                exp: now + 7200, 
                 video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
             });
-            return KJUR.jws.JWS.sign("HS256", JSON.stringify({alg: "HS256", typ: "JWT"}), payload, {utf8: API_SECRET});
+            return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
+        }
+
+        function updateParticipantCount() {
+            if (!currentRoom) return;
+            // .size menghitung orang lain. Ditambah 1 (diri sendiri).
+            const totalCount = currentRoom.participants.size + 1;
+            document.getElementById('participant-count-value').innerText = totalCount;
+        }
+
+        function showInlineError(role, message) {
+            const errorDiv = role === 'host' ? document.getElementById('host-error') : document.getElementById('listener-error');
+            errorDiv.innerText = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
+        }
+
+        function checkHostStatus() {
+            if(!currentRoom || document.getElementById('host-controls').classList.contains('hidden') === false) return;
+            
+            const statusText = document.getElementById('txt-connected');
+            const lang = document.getElementById('langSelect').value;
+            
+            if(currentRoom.participants.size === 0) {
+                statusText.innerText = translations[lang].waitingHost;
+                statusText.style.color = "#d93025"; 
+            } else {
+                statusText.innerText = translations[lang].connected;
+                statusText.style.color = "#007A53"; 
+            }
         }
 
         async function joinRoom(role) {
             const isHost = role === 'host';
-            const roomName = (isHost ? document.getElementById('hostRoom').value : document.getElementById('listenerRoom').value).trim();
+            const roomInput = isHost ? document.getElementById('hostRoom') : document.getElementById('listenerRoom');
+            const roomName = roomInput.value.trim(); 
+            const lang = document.getElementById('langSelect').value;
+            
+            if (!roomName) { showInlineError(role, translations[lang].emptyId); return; }
+
+            const btn = isHost ? document.getElementById('btn-host-action') : document.getElementById('btn-listener-action');
+            const originalText = btn.innerText;
+            btn.innerText = translations[lang].connecting;
+            btn.disabled = true;
+
             try {
-                currentRoom = new LivekitClient.Room();
                 const token = generateToken(roomName, isHost);
+                currentRoom = new LivekitClient.Room();
                 await currentRoom.connect(LIVEKIT_URL, token);
-                
+
                 document.getElementById('landing-page').classList.add('hidden');
                 document.getElementById('active-dashboard').classList.remove('hidden');
-                
-                if(isHost) {
-                    document.getElementById('host-controls').classList.remove('hidden');
-                    const link = window.location.origin + window.location.pathname + "?room=" + encodeURIComponent(roomName);
-                    document.getElementById('qrcode').innerHTML = "";
-                    new QRCode(document.getElementById("qrcode"), { text: link, width: 160, height: 160 });
+
+                // Update jumlah secara manual pertama kali
+                updateParticipantCount();
+
+                // Menggunakan kode resmi mesin LiveKit untuk deteksi masuk/keluar
+                currentRoom.on(LivekitClient.RoomEvent.ParticipantConnected, () => { updateParticipantCount(); checkHostStatus(); });
+                currentRoom.on(LivekitClient.RoomEvent.ParticipantDisconnected, () => { updateParticipantCount(); checkHostStatus(); });
+                currentRoom.on(LivekitClient.RoomEvent.Connected, () => { updateParticipantCount(); checkHostStatus(); });
+
+                // RADAR SAPU JAGAT: Cek paksa setiap 2 detik 
+                radarInterval = setInterval(() => {
+                    if(currentRoom) {
+                        updateParticipantCount();
+                        checkHostStatus();
+                    }
+                }, 2000);
+
+                if (isHost) {
+                    try {
+                        document.getElementById('host-controls').classList.remove('hidden');
+                        await currentRoom.localParticipant.setMicrophoneEnabled(true);
+                        isMutedGlobal = false;
+                        startVisualizer();
+                        
+                        const listenerLink = window.location.origin + window.location.pathname + "?room=" + encodeURIComponent(roomName) + "&role=listener&autoJoin=1";
+                        document.getElementById('qrcode').innerHTML = "";
+                        new QRCode(document.getElementById("qrcode"), { text: listenerLink, width: 160, height: 160 });
+                        
+                    } catch (micErr) {
+                        leaveRoom();
+                        showInlineError('host', translations[lang].micError);
+                    }
                 } else {
                     document.getElementById('listener-controls').classList.remove('hidden');
-                    currentRoom.on('trackSubscribed', t => t.attach());
+                    checkHostStatus(); 
+
+                    currentRoom.on(LivekitClient.RoomEvent.TrackSubscribed, (track) => {
+                        if (track.kind === 'audio') {
+                            const el = track.attach();
+                            document.body.appendChild(el);
+                        }
+                    });
                 }
-            } catch(e) { 
-                alert("Connection Failed!"); 
-                leaveRoom();
+            } catch (e) {
+                console.error("Error Detail:", e);
+                showInlineError(role, translations[lang].connError);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
             }
         }
 
-        function leaveRoom() {
-            if(currentRoom) currentRoom.disconnect();
-            currentRoom = null;
-            location.reload();
+        function startVisualizer() {
+            const container = document.getElementById('visualizer');
+            container.innerHTML = "";
+            const bars = [];
+            for (let i = 0; i < 20; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'bar'; bar.style.height = '10px';
+                container.appendChild(bar); bars.push(bar);
+            }
+
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                audioCtx = new AudioContext();
+                const source = audioCtx.createMediaStreamSource(stream);
+                const analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 64; source.connect(analyser);
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                function draw() {
+                    if (!currentRoom || !audioCtx) return;
+                    requestAnimationFrame(draw);
+                    analyser.getByteFrequencyData(dataArray);
+                    bars.forEach((bar, i) => {
+                        const val = isMutedGlobal ? 0 : (dataArray[i] || 0);
+                        bar.style.height = (val / 2) + 5 + 'px';
+                    });
+                }
+                draw();
+            }).catch(e => console.log("Visualizer Mic Error"));
         }
 
-        function changeLanguage() {}
+        async function toggleMute() {
+            if (!currentRoom) return;
+            isMutedGlobal = !isMutedGlobal;
+            await currentRoom.localParticipant.setMicrophoneEnabled(!isMutedGlobal);
+            const lang = document.getElementById('langSelect').value;
+            document.getElementById('btnMute').innerText = isMutedGlobal ? translations[lang].unmute : translations[lang].mute;
+            document.getElementById('btnMute').style.background = isMutedGlobal ? "#ea4335" : "#f4b400";
+        }
+
+        function leaveRoom() {
+            if (currentRoom) { currentRoom.disconnect(); currentRoom = null; }
+            if (audioCtx) { audioCtx.close(); audioCtx = null; }
+            if (radarInterval) { clearInterval(radarInterval); radarInterval = null; } // Matikan radar
+            
+            document.getElementById('active-dashboard').classList.add('hidden');
+            document.getElementById('host-controls').classList.add('hidden');
+            document.getElementById('listener-controls').classList.add('hidden');
+            document.getElementById('landing-page').classList.remove('hidden');
+            
+            const lang = document.getElementById('langSelect').value;
+            document.getElementById('btn-host-action').innerText = translations[lang].startBtn;
+            document.getElementById('btn-listener-action').innerText = translations[lang].joinBtn;
+        }
+
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('room')) {
+                document.getElementById('listenerRoom').value = urlParams.get('room');
+            }
+            if (urlParams.get('autoJoin') === '1' && urlParams.get('role') === 'listener') {
+                joinRoom('listener');
+            }
+            changeLanguage();
+        };
     </script>
 </body>
 </html>
