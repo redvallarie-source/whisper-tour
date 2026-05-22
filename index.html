@@ -16,7 +16,6 @@
             --tcu-green: #007A53;
             --tcu-dark: #00563B;
             --tcu-light: #f0f7f4;
-            --accent: #FFD700;
             --white: #ffffff;
         }
 
@@ -24,7 +23,42 @@
             font-family: 'Poppins', 'Noto Sans TC', sans-serif; 
             background: #f4f7f6; margin: 0; min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
+            position: relative; /* Penting untuk posisi header */
         }
+
+        /* --- DESIGN BARU: PREMIUM HEADER DI POJOK KIRI ATAS --- */
+        .tcu-premium-header {
+            position: absolute; /* Kunci untuk menaruh di pojok */
+            top: 20px;
+            left: 30px;
+            display: flex;
+            align-items: center; /* Meratakan elemen di tengah secara vertikal */
+            gap: 15px; /* Jarak antar elemen */
+        }
+
+        .tcu-logo {
+            width: 70px;
+            height: auto;
+            /* --- TRIK CSS: MEMBUAT BACKGROUND PUTIH JADI TRANSPARAN --- */
+            mix-blend-mode: multiply; 
+        }
+
+        .vertical-divider {
+            width: 2px;
+            height: 60px; /* Panjang garis */
+            background-color: var(--tcu-green);
+            border-radius: 2px;
+        }
+
+        .tcu-title {
+            color: var(--tcu-dark);
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* --- AKHIR DESIGN HEADER BARU --- */
 
         /* Language Switcher */
         .nav-lang {
@@ -35,9 +69,8 @@
             background: white; color: var(--tcu-green); font-weight: 600; cursor: pointer;
         }
 
-        /* Header TCU */
-        .header { text-align: center; margin-bottom: 30px; padding: 0 20px; }
-        .tcu-logo { width: 80px; height: auto; margin-bottom: 15px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        /* Tampilan Utama Di tengah */
+        .header { text-align: center; margin-top: 100px; /* Jarak dari header atas */ margin-bottom: 30px; padding: 0 20px; }
         .header h1 { color: var(--tcu-dark); margin: 0; font-size: 28px; }
         .header p { color: #666; margin: 5px 0 0; font-size: 14px; }
 
@@ -73,7 +106,7 @@
         /* Dashboard Active */
         .dashboard {
             width: 100%; max-width: 450px; background: white; padding: 40px;
-            border-radius: 30px; box-shadow: 0 20px 50px rgba(0,122,83,0.1); text-align: center;
+            border-radius: 30px; box-shadow: 0 20px 50px rgba(0,122,83,0.1); text-align: center; margin-top: 50px;
         }
 
         /* Mic Visualizer */
@@ -93,6 +126,11 @@
 </head>
 <body>
 
+    <div class="tcu-premium-header">
+        <img src="tcu-logo.png" class="tcu-logo" alt="TCU Logo">
+        <div class="vertical-divider"></div>
+        <h1 class="tcu-title">Tzu Chi University</h1>
+    </div>
     <div class="nav-lang">
         <select id="langSelect" onchange="changeLanguage()">
             <option value="en">English</option>
@@ -102,7 +140,6 @@
     </div>
 
     <div class="header">
-        <img src="tcu-logo.png" class="tcu-logo" alt="TCU Logo">
         <h1 id="txt-title">Whisper Tour</h1>
         <p id="txt-subtitle">Professional Guide System</p>
     </div>
