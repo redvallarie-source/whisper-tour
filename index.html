@@ -27,7 +27,6 @@
             position: relative;
         }
 
-        /* TCU Premium Header Kiri Atas */
         .tcu-premium-header {
             position: absolute; top: 20px; left: 30px;
             display: flex; align-items: center; gap: 15px;
@@ -36,7 +35,6 @@
         .vertical-divider { width: 2px; height: 60px; background-color: var(--tcu-green); border-radius: 2px; }
         .tcu-title { color: var(--tcu-dark); margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
 
-        /* Pilihan Bahasa Kanan Atas */
         .nav-lang { width: 100%; display: flex; justify-content: flex-end; padding: 15px 25px; box-sizing: border-box; }
         .nav-lang select {
             padding: 8px 15px; border-radius: 20px; border: 1px solid var(--tcu-green);
@@ -47,7 +45,6 @@
         .header h1 { color: var(--tcu-dark); margin: 0; font-size: 28px; }
         .header p { color: #666; margin: 5px 0 0; font-size: 14px; }
 
-        /* KEMBALI KE DESAIN 2 KOTAK KEKINIAN */
         .main-grid {
             display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 850px; padding: 0 20px; box-sizing: border-box;
         }
@@ -80,7 +77,6 @@
         button:hover { opacity: 0.9; transform: scale(1.02); }
         button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-        /* Dashboard Ruangan Aktif */
         .dashboard {
             width: 100%; max-width: 450px; background: white; padding: 40px;
             border-radius: 30px; box-shadow: 0 20px 50px rgba(0,122,83,0.1); text-align: center; margin-top: 50px;
@@ -214,6 +210,7 @@
         let currentRoom = null;
         let audioCtx = null;
         let isMutedGlobal = false;
+        let radarInterval = null; 
 
         function changeLanguage() {
             const lang = document.getElementById('langSelect').value;
@@ -238,7 +235,6 @@
             }
         }
 
-        // RUMUS WAKTU AMAN - Toleransi 5 menit (300 detik) untuk jam HP yang telat
         function generateToken(roomName, isHost) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
             const now = Math.floor(Date.now() / 1000);
@@ -265,7 +261,6 @@
             setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
         }
 
-        // FUNGSI CEK HOST TANPA MENENDANG KELUAR
         function checkHostStatus() {
             if(!currentRoom || document.getElementById('host-controls').classList.contains('hidden') === false) return;
             
@@ -303,8 +298,18 @@
                 document.getElementById('active-dashboard').classList.remove('hidden');
 
                 updateParticipantCount();
+
+                // PERBAIKAN FATAL: Memakai String biasa yang kebal error!
                 currentRoom.on('participantConnected', () => { updateParticipantCount(); checkHostStatus(); });
                 currentRoom.on('participantDisconnected', () => { updateParticipantCount(); checkHostStatus(); });
+                currentRoom.on('connected', () => { updateParticipantCount(); checkHostStatus(); });
+
+                radarInterval = setInterval(() => {
+                    if(currentRoom) {
+                        updateParticipantCount();
+                        checkHostStatus();
+                    }
+                }, 2000);
 
                 if (isHost) {
                     try {
@@ -313,7 +318,6 @@
                         isMutedGlobal = false;
                         startVisualizer();
                         
-                        // GAMBAR QR CODE INSTAN
                         const listenerLink = window.location.origin + window.location.pathname + "?room=" + encodeURIComponent(roomName) + "&role=listener&autoJoin=1";
                         document.getElementById('qrcode').innerHTML = "";
                         new QRCode(document.getElementById("qrcode"), { text: listenerLink, width: 160, height: 160 });
@@ -335,6 +339,8 @@
                 }
             } catch (e) {
                 console.error("Error Detail:", e);
+                // MENCEGAH ZOMBIE UI: Kalau gagal nyambung, langsung bersihkan layar dan kembali ke halaman awal
+                leaveRoom();
                 showInlineError(role, translations[lang].connError);
             } finally {
                 btn.innerText = originalText;
@@ -384,6 +390,7 @@
         function leaveRoom() {
             if (currentRoom) { currentRoom.disconnect(); currentRoom = null; }
             if (audioCtx) { audioCtx.close(); audioCtx = null; }
+            if (radarInterval) { clearInterval(radarInterval); radarInterval = null; } 
             
             document.getElementById('active-dashboard').classList.add('hidden');
             document.getElementById('host-controls').classList.add('hidden');
