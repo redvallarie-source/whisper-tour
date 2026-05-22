@@ -77,7 +77,6 @@
             border-radius: 30px; box-shadow: 0 20px 50px rgba(0,122,83,0.1); text-align: center; margin-top: 50px;
         }
 
-        /* Lencana Jumlah Peserta */
         .participant-badge {
             background: var(--tcu-light); color: var(--tcu-dark); padding: 8px 20px;
             border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 20px;
@@ -154,4 +153,221 @@
             </div>
         </div>
 
-        <div id="
+        <div id="listener-controls" class="hidden">
+            <div id="listener-pulse" class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
+            <p id="txt-connected">Connected. Hearing the guide...</p>
+        </div>
+
+        <button class="btn-danger" style="margin-top:20px" onclick="leaveRoom()" id="txt-end">End / Leave</button>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                title: "Whisper Tour", subtitle: "Professional Guide System", imHost: "Host / Guide", imListener: "Listener / Guest",
+                hostDesc: "Create a room and start broadcasting.", listenerDesc: "Enter an active room ID to listen.",
+                startBtn: "🚀 Create Room", joinBtn: "🎧 Join Room", active: "Room Active", micStatus: "Microphone Activity:",
+                mute: "Mute", unmute: "Unmute", scan: "Share this QR with guests:", connected: "Connected. Hearing the guide...", end: "End / Leave",
+                roomNotExist: "Room does not exist! Please wait for the Guide to create it first.", partLabel: "Participants:",
+                micError: "Microphone access blocked! Please allow microphone access in your browser URL bar (the lock icon)."
+            },
+            id: {
+                title: "Whisper Tour", subtitle: "Sistem Pemandu Profesional", imHost: "Host / Pemandu", imListener: "Pendengar / Tamu",
+                hostDesc: "Buat ruangan dan siarkan suaramu.", listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
+                startBtn: "🚀 Buat Ruangan", joinBtn: "🎧 Gabung Ruangan", active: "Ruangan Aktif", micStatus: "Aktivitas Mikrofon:",
+                mute: "Bisu", unmute: "Nyalakan Suara", scan: "Bagikan QR ini ke tamu:", connected: "Terhubung. Mendengarkan pemandu...", end: "Akhiri / Keluar",
+                roomNotExist: "Ruangan tidak ditemukan! Tunggu Pemandu membuat ruangan terlebih dahulu.", partLabel: "Peserta:",
+                micError: "Akses mikrofon diblokir! Tolong izinkan akses mikrofon di pengaturan browser laptopmu (ikon gembok di sebelah link)."
+            },
+            zh: {
+                title: "隨身導覽系統", subtitle: "專業語音導覽", imHost: "導覽員 / 主持人", imListener: "聽眾 / 遊客",
+                hostDesc: "建立房間並開始廣播。", listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
+                startBtn: "🚀 建立房間", joinBtn: "🎧 加入房間", active: "房間使用中", micStatus: "麥克風活動：",
+                mute: "靜音", unmute: "解除靜音", scan: "分享二維碼給遊客：", connected: "已連線。正在收聽導覽...", end: "結束 / 離開",
+                roomNotExist: "找不到房間！請等待導覽員建立房間。", partLabel: "參與人數:",
+                micError: "麥克風存取被拒絕！請在瀏覽器設定中允許麥克風存取。"
+            }
+        };
+
+        const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
+        const API_KEY = "API5mBWCdaKNLLQ";
+        const API_SECRET = "xfZhky6tUeDAYufb8ewdUZOy2vmaJXqOZpfDhpCybiGB";
+        
+        let currentRoom = null;
+        let audioCtx = null;
+        let isMutedGlobal = false; // Memastikan status mute tidak bocor
+
+        function changeLanguage() {
+            const lang = document.getElementById('langSelect').value;
+            const t = translations[lang];
+            document.getElementById('txt-title').innerText = t.title;
+            document.getElementById('txt-subtitle').innerText = t.subtitle;
+            document.getElementById('txt-im-host').innerText = t.imHost;
+            document.getElementById('txt-im-listener').innerText = t.imListener;
+            document.getElementById('txt-host-desc').innerText = t.hostDesc;
+            document.getElementById('txt-listener-desc').innerText = t.listenerDesc;
+            document.getElementById('txt-active-room').innerText = t.active;
+            document.getElementById('txt-mic-status').innerText = t.micStatus;
+            document.getElementById('txt-scan-desc').innerText = t.scan;
+            document.getElementById('txt-connected').innerText = t.connected;
+            document.getElementById('txt-end').innerText = t.end;
+            document.getElementById('txt-part-label').innerText = t.partLabel;
+            
+            document.querySelector('.btn-host').innerText = t.startBtn;
+            document.querySelector('.btn-listener').innerText = t.joinBtn;
+            if(currentRoom) {
+                document.getElementById('btnMute').innerText = isMutedGlobal ? t.unmute : t.mute;
+            }
+        }
+
+        function generateToken(roomName, isHost) {
+            const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
+            const payload = JSON.stringify({
+                iss: API_KEY, sub: isHost ? "host-" + Math.random() : "listener-" + Math.random(),
+                nbf: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
+                video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
+            });
+            return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
+        }
+
+        function updateParticipantCount() {
+            if (!currentRoom) return;
+            const totalCount = currentRoom.participants.size + 1;
+            document.getElementById('participant-count-value').innerText = totalCount;
+        }
+
+        async function joinRoom(role) {
+            const isHost = role === 'host';
+            const roomName = isHost ? document.getElementById('hostRoom').value : document.getElementById('listenerRoom').value;
+            const lang = document.getElementById('langSelect').value;
+            
+            if (!roomName) return alert("Please enter Room ID!");
+
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('active-dashboard').classList.remove('hidden');
+
+            try {
+                const token = generateToken(roomName, isHost);
+                currentRoom = new LivekitClient.Room();
+                await currentRoom.connect(LIVEKIT_URL, token);
+
+                updateParticipantCount();
+                currentRoom.on('participantConnected', updateParticipantCount);
+                currentRoom.on('participantDisconnected', updateParticipantCount);
+
+                if (isHost) {
+                    try {
+                        document.getElementById('host-controls').classList.remove('hidden');
+                        // Nyalakan mic host
+                        await currentRoom.localParticipant.setMicrophoneEnabled(true);
+                        isMutedGlobal = false;
+                        startVisualizer();
+                        
+                        const listenerLink = window.location.origin + window.location.pathname + "?room=" + roomName;
+                        document.getElementById('qrcode').innerHTML = "";
+                        new QRCode(document.getElementById("qrcode"), { text: listenerLink, width: 150, height: 150 });
+                    } catch (micErr) {
+                        alert(translations[lang].micError); // Notifikasi jika mic laptop diblokir
+                        leaveRoom();
+                    }
+                } else {
+                    // JEDA 0.5 DETIK agar radar peserta LiveKit sempat mendeteksi Host
+                    setTimeout(() => {
+                        if (currentRoom && currentRoom.participants.size === 0) {
+                            alert(translations[lang].roomNotExist);
+                            leaveRoom();
+                            return;
+                        }
+                    }, 500);
+
+                    document.getElementById('listener-controls').classList.remove('hidden');
+                    currentRoom.on('trackSubscribed', (track) => {
+                        if (track.kind === 'audio') {
+                            const el = track.attach();
+                            document.body.appendChild(el);
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Connection Failed!");
+                leaveRoom();
+            }
+        }
+
+        function startVisualizer() {
+            const container = document.getElementById('visualizer');
+            container.innerHTML = "";
+            const bars = [];
+            for (let i = 0; i < 20; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                bar.style.height = '10px';
+                container.appendChild(bar);
+                bars.push(bar);
+            }
+
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                audioCtx = new AudioContext();
+                const source = audioCtx.createMediaStreamSource(stream);
+                const analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 64;
+                source.connect(analyser);
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                function draw() {
+                    if (!currentRoom || !audioCtx) return;
+                    requestAnimationFrame(draw);
+                    analyser.getByteFrequencyData(dataArray);
+                    bars.forEach((bar, i) => {
+                        // Jika di-mute, matikan visualizer juga biar sinkron
+                        const val = isMutedGlobal ? 0 : (dataArray[i] || 0);
+                        bar.style.height = (val / 2) + 5 + 'px';
+                    });
+                }
+                draw();
+            }).catch(e => console.log("Visualizer Mic Error", e));
+        }
+
+        // PERBAIKAN BUG MUTE (Menambahkan await agar tidak bocor)
+        async function toggleMute() {
+            if (!currentRoom) return;
+            
+            // Toggle status global
+            isMutedGlobal = !isMutedGlobal;
+            
+            // Tunggu perintah ke server selesai
+            await currentRoom.localParticipant.setMicrophoneEnabled(!isMutedGlobal);
+            
+            const lang = document.getElementById('langSelect').value;
+            document.getElementById('btnMute').innerText = isMutedGlobal ? translations[lang].unmute : translations[lang].mute;
+            document.getElementById('btnMute').style.background = isMutedGlobal ? "#ea4335" : "#f4b400";
+        }
+
+        // PERBAIKAN BUG RELOAD (Kembali ke halaman utama tanpa me-refresh paksa layar)
+        function leaveRoom() {
+            if (currentRoom) {
+                currentRoom.disconnect();
+                currentRoom = null;
+            }
+            if (audioCtx) {
+                audioCtx.close();
+                audioCtx = null;
+            }
+            
+            document.getElementById('active-dashboard').classList.add('hidden');
+            document.getElementById('host-controls').classList.add('hidden');
+            document.getElementById('listener-controls').classList.add('hidden');
+            document.getElementById('landing-page').classList.remove('hidden');
+        }
+
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('room')) {
+                document.getElementById('listenerRoom').value = urlParams.get('room');
+            }
+            changeLanguage();
+        };
+    </script>
+</body>
+</html>
