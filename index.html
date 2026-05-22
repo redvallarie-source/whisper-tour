@@ -1,27 +1,13 @@
 <!DOCTYPE html>
-<!-- saved from url=(0095)file:///C:/Users/redva/OneDrive/%EB%AC%B8%EC%84%9C/New%20project/gemini-code-1779436327835.html -->
+<!-- saved from url=(0052)http://127.0.0.1:8765/gemini-code-1779436327835.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whisper Tour - TCU Edition</title>
     
-    <script>
-        window.dependencyLoaders = [];
-        function loadScriptFallback(url) {
-            const promise = new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = url;
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-            window.dependencyLoaders.push(promise);
-            return promise;
-        }
-    </script>
-    <script src="./Whisper Tour - TCU Edition_files/livekit-client.umd.min.js.download" onerror="loadScriptFallback(&#39;https://unpkg.com/livekit-client/dist/livekit-client.umd.min.js&#39;)"></script>
-    <script src="./Whisper Tour - TCU Edition_files/jsrsasign-all-min.js.download" onerror="loadScriptFallback(&#39;https://cdn.jsdelivr.net/npm/jsrsasign/lib/jsrsasign-all-min.js&#39;)"></script>
-    <script src="./Whisper Tour - TCU Edition_files/qrcode.min.js.download" onerror="loadScriptFallback(&#39;https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js&#39;)"></script>
+    <script src="./Whisper Tour - TCU Edition_files/livekit-client.umd.min.js.download"></script>
+    <script src="./Whisper Tour - TCU Edition_files/jsrsasign-all-min.js.download"></script>
+    <script src="./Whisper Tour - TCU Edition_files/qrcode.min.js.download"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
@@ -82,12 +68,6 @@
             position: relative;
         }
         .tcu-logo { width: 70px; height: auto; mix-blend-mode: multiply; }
-        .tcu-logo-fallback {
-            width: 70px; height: 52px; display: none; align-items: center; justify-content: center;
-            border: 1px solid rgba(0, 122, 83, 0.16); border-radius: 18px; color: var(--tcu-dark);
-            background: rgba(255,255,255,0.84); font-weight: 700; letter-spacing: 0;
-            box-shadow: 0 14px 30px rgba(0, 86, 59, 0.08);
-        }
         .vertical-divider { width: 2px; height: 60px; background-color: var(--tcu-green); border-radius: 2px; }
         .tcu-title { color: var(--tcu-dark); margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
 
@@ -357,7 +337,6 @@
         @media (max-width: 600px) {
             .tcu-premium-header { min-height: 86px; padding: 14px 18px; gap: 9px; }
             .tcu-logo { width: 54px; }
-            .tcu-logo-fallback { width: 54px; height: 46px; font-size: 13px; border-radius: 14px; }
             .vertical-divider { height: 50px; }
             .tcu-title { display: block; font-size: 14px; line-height: 1.15; max-width: 92px; letter-spacing: 0; }
             .nav-lang { padding: 22px 20px 0 0; }
@@ -378,8 +357,7 @@
 <body>
 
     <div class="tcu-premium-header">
-        <img src="file:///C:/Users/redva/OneDrive/%EB%AC%B8%EC%84%9C/New%20project/tcu-logo.png" class="tcu-logo" alt="TCU Logo" onerror="this.style.display=&#39;none&#39;; document.getElementById(&#39;logoFallback&#39;).style.display=&#39;flex&#39;;" style="display: none;">
-        <div id="logoFallback" class="tcu-logo-fallback" style="display: flex;">TCU</div>
+        <img src="./Whisper Tour - TCU Edition_files/tcu-logo.png" class="tcu-logo" alt="TCU Logo">
         <div class="vertical-divider"></div>
         <h1 class="tcu-title">Tzu Chi University</h1>
     </div>
@@ -419,7 +397,7 @@
                     </svg>
                 </button>
             </div>
-            <input type="text" id="hostName" placeholder="Nama Anda" value="Pemandu TCU">
+            <input type="text" id="hostName" placeholder="Your Name" value="Pemandu TCU">
             <div id="host-error" class="error-text"></div>
             <button class="btn-host" onclick="joinRoom(&#39;host&#39;)" id="btn-host-action">Create Room</button>
         </div>
@@ -436,7 +414,7 @@
             <h2 id="txt-im-listener">Listener / Guest</h2>
             <p id="txt-listener-desc">Enter an active room ID to listen.</p>
             <input type="text" id="listenerRoom" placeholder="Room ID" value="">
-            <input type="text" id="listenerName" placeholder="Nama Anda" value="">
+            <input type="text" id="listenerName" placeholder="Your Name" value="">
             <div id="listener-error" class="error-text"></div>
             <button class="btn-listener" onclick="joinRoom(&#39;listener&#39;)" id="btn-listener-action">Join Room</button>
         </div>
@@ -468,15 +446,12 @@
             </div>
             <button id="btnMute" class="btn-mute" onclick="toggleMute()">🔇 Mute</button>
             <div class="host-action-grid">
-                <button id="btnCamera" class="btn-soft btn-camera" onclick="toggleHostCamera()">📷 Turn Camera On</button>
-                <button class="btn-soft" onclick="mockHostAction(&#39;Pengumuman terkirim ke peserta.&#39;)">Kirim Pengumuman</button>
-                <button class="btn-soft" onclick="mockHostAction(&#39;Peta tur dibagikan ke peserta.&#39;)">Bagikan Peta</button>
-                <button class="btn-soft" onclick="copyListenerLink()">Salin Undangan</button>
+                <button id="btnCamera" class="btn-soft btn-camera" onclick="toggleHostCamera()">Turn on Camera</button>
             </div>
             <div class="qr-area">
                 <p id="txt-scan-desc" style="margin:0; font-size:14px; font-weight:bold; color:var(--tcu-dark);">Share this QR with guests:</p>
                 <div id="qrcode"></div>
-                <a id="qr-link" class="qr-link" href="file:///C:/Users/redva/OneDrive/%EB%AC%B8%EC%84%9C/New%20project/gemini-code-1779436327835.html#" target="_blank" rel="noopener"></a>
+                <a id="qr-link" class="qr-link" href="http://127.0.0.1:8765/gemini-code-1779436327835.html#" target="_blank" rel="noopener"></a>
                 <button type="button" id="btn-copy-link" class="copy-link-btn" onclick="copyListenerLink()">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M8.75 8.25h7.5a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-7.5a2 2 0 0 1-2-2v-7.5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-linejoin="round"></path>
@@ -501,7 +476,7 @@
         <button class="btn-danger" onclick="openLeaveModal()" id="txt-end">End / Leave</button>
         </div>
         <aside class="participants-panel">
-            <h3 id="txt-participant-panel">Participants</h3>
+            <h3 id="txt-participant-panel">Participant List</h3>
             <ul id="participant-list" class="participant-list"></ul>
         </aside>
     </div>
@@ -537,10 +512,23 @@
                 copyLink: "Copy Link",
                 copied: "Link copied!",
                 emptyName: "Please enter your name!",
+                namePlaceholder: "Your Name",
                 participantPanel: "Participants",
                 cameraOn: "📷 Turn Camera On",
                 cameraOff: "Turn Camera Off",
-                handRaised: "Your hand is raised."
+                handRaised: "Your hand is raised.",
+                participantPanel: "參與者名單",
+                roleHost: "主持人",
+                roleListener: "聽眾",
+                youLabel: "您",
+                cameraOn: "開啟相機",
+                cameraOff: "關閉相機",
+                participantPanel: "Participant List",
+                roleHost: "Host",
+                roleListener: "Listener",
+                youLabel: "You",
+                cameraOn: "Turn on Camera",
+                cameraOff: "Turn off Camera"
             },
             id: {
                 title: "Whisper Tour", subtitle: "Sistem Pemandu Profesional", imHost: "Host / Pemandu", imListener: "Pendengar / Tamu",
@@ -558,12 +546,28 @@
                 copyLink: "Salin Link",
                 copied: "Link berhasil disalin!",
                 emptyName: "Masukkan nama Anda dulu!",
+                namePlaceholder: "Nama Anda",
                 participantPanel: "Daftar Peserta",
                 cameraOn: "📷 Nyalakan Kamera",
                 cameraOff: "Matikan Kamera",
-                handRaised: "Tangan Anda sudah terangkat."
+                handRaised: "Tangan Anda sudah terangkat.",
+                participantPanel: "Daftar Peserta",
+                roleHost: "Host",
+                roleListener: "Pendengar",
+                youLabel: "Anda",
+                cameraOn: "Nyalakan Kamera",
+                cameraOff: "Matikan Kamera"
             },
             zh: {
+                namePlaceholder: "您的名字",
+                emptyName: "Please enter your name!",
+                participantPanel: "參與者名單",
+                roleHost: "主持人",
+                roleListener: "聽眾",
+                youLabel: "您",
+                cameraOn: "開啟相機",
+                cameraOff: "關閉相機",
+                handRaised: "Your hand is raised.",
                 title: "隨身導覽系統", subtitle: "專業語音導覽", imHost: "導覽員 / 主持人", imListener: "聽眾 / 遊客",
                 hostDesc: "建立房間並開始廣播。", listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
                 startBtn: "建立房間", joinBtn: "加入房間", active: "房間使用中", micStatus: "麥克風活動：",
@@ -580,6 +584,126 @@
                 copied: "連結已複製！"
             }
         };
+
+        Object.assign(translations, {
+            en: {
+                title: "Whisper Tour",
+                subtitle: "Professional Guide System",
+                imHost: "Host / Guide",
+                imListener: "Listener / Guest",
+                hostDesc: "Create a room and start broadcasting.",
+                listenerDesc: "Enter an active room ID to listen.",
+                startBtn: "Create Room",
+                joinBtn: "Join Room",
+                active: "Room Active",
+                micStatus: "Microphone Activity:",
+                mute: "Mute Microphone",
+                unmute: "Unmute Microphone",
+                scan: "Share this QR with guests:",
+                connected: "Connected. Hearing the guide...",
+                end: "End / Leave",
+                emptyId: "Please enter a Room ID!",
+                connecting: "Connecting...",
+                micError: "Microphone blocked by browser!",
+                connError: "Connection failed. Check internet.",
+                partLabel: "Participants:",
+                waitingHost: "Room is empty. Waiting for Guide to join...",
+                inactiveRoom: "Room is not active yet. Please wait for the guide to create it.",
+                modalTitle: "Leave this room?",
+                modalDesc: "The audio session will disconnect and you will return to the start page.",
+                modalCancel: "Cancel",
+                modalConfirm: "Yes, Leave",
+                copyLink: "Copy Link",
+                copied: "Link copied!",
+                emptyName: "Please enter your name!",
+                namePlaceholder: "Your Name",
+                participantPanel: "Participant List",
+                roleHost: "Host",
+                roleListener: "Listener",
+                youLabel: "You",
+                cameraOn: "Turn on Camera",
+                cameraOff: "Turn off Camera",
+                handRaised: "Your hand is raised."
+            },
+            id: {
+                title: "Whisper Tour",
+                subtitle: "Sistem Pemandu Profesional",
+                imHost: "Host / Pemandu",
+                imListener: "Pendengar / Tamu",
+                hostDesc: "Buat ruangan dan siarkan suaramu.",
+                listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
+                startBtn: "Buat Ruangan",
+                joinBtn: "Gabung Ruangan",
+                active: "Ruangan Aktif",
+                micStatus: "Aktivitas Mikrofon:",
+                mute: "Bisukan Mikrofon",
+                unmute: "Nyalakan Mikrofon",
+                scan: "Bagikan QR ini ke tamu:",
+                connected: "Terhubung. Mendengarkan pemandu...",
+                end: "Akhiri / Keluar",
+                emptyId: "Masukkan ID Ruangan dulu!",
+                connecting: "Menghubungkan...",
+                micError: "Izin mikrofon ditolak browser!",
+                connError: "Koneksi gagal. Cek internet.",
+                partLabel: "Peserta:",
+                waitingHost: "Ruangan kosong. Menunggu Pemandu masuk...",
+                inactiveRoom: "Ruangan belum aktif. Tunggu pemandu membuat ruangan dulu.",
+                modalTitle: "Keluar dari ruangan?",
+                modalDesc: "Sesi audio akan terputus dan kamu akan kembali ke halaman awal.",
+                modalCancel: "Batal",
+                modalConfirm: "Ya, Keluar",
+                copyLink: "Salin Link",
+                copied: "Link berhasil disalin!",
+                emptyName: "Masukkan nama Anda dulu!",
+                namePlaceholder: "Nama Anda",
+                participantPanel: "Daftar Peserta",
+                roleHost: "Host",
+                roleListener: "Pendengar",
+                youLabel: "Anda",
+                cameraOn: "Nyalakan Kamera",
+                cameraOff: "Matikan Kamera",
+                handRaised: "Tangan Anda sudah terangkat."
+            },
+            zh: {
+                title: "隨身導覽系統",
+                subtitle: "專業語音導覽",
+                imHost: "導覽員 / 主持人",
+                imListener: "聽眾 / 遊客",
+                hostDesc: "建立房間並開始廣播。",
+                listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
+                startBtn: "建立房間",
+                joinBtn: "加入房間",
+                active: "房間使用中",
+                micStatus: "麥克風活動：",
+                mute: "麥克風靜音",
+                unmute: "解除麥克風靜音",
+                scan: "分享二維碼給遊客：",
+                connected: "已連線。正在收聽導覽...",
+                end: "結束 / 離開",
+                emptyId: "請輸入房間 ID！",
+                connecting: "連線中...",
+                micError: "瀏覽器拒絕了麥克風權限！",
+                connError: "連線失敗，請檢查網路。",
+                partLabel: "參與人數：",
+                waitingHost: "房間是空的。等待導覽員加入...",
+                inactiveRoom: "房間尚未啟用，請等待導覽員建立房間。",
+                modalTitle: "要離開房間嗎？",
+                modalDesc: "語音導覽將會中斷，並返回開始頁面。",
+                modalCancel: "取消",
+                modalConfirm: "是，離開",
+                copyLink: "複製連結",
+                copied: "連結已複製！",
+                emptyName: "請輸入您的名字！",
+                namePlaceholder: "您的名字",
+                participantPanel: "參與者名單",
+                roleHost: "主持人",
+                roleListener: "聽眾",
+                youLabel: "您",
+                cameraOn: "開啟相機",
+                cameraOff: "關閉相機",
+                handRaised: "已舉手。"
+            }
+        });
 
         const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
         const API_KEY = "API5mBWCdaKNLLQ";
@@ -618,6 +742,8 @@
             document.getElementById('btn-modal-cancel').innerText = t.modalCancel;
             document.getElementById('btn-modal-confirm').innerText = t.modalConfirm;
             document.getElementById('txt-copy-link').innerText = t.copyLink;
+            document.getElementById('hostName').placeholder = t.namePlaceholder;
+            document.getElementById('listenerName').placeholder = t.namePlaceholder;
             document.getElementById('txt-participant-panel').innerText = t.participantPanel || "Daftar Peserta";
             document.getElementById('btnCamera').innerText = cameraEnabled ? (t.cameraOff || "Turn Camera Off") : (t.cameraOn || "📷 Nyalakan Kamera");
             
@@ -625,6 +751,7 @@
             document.getElementById('btn-listener-action').innerText = t.joinBtn;
             if(currentRoom) {
                 document.getElementById('btnMute').innerText = isMutedGlobal ? t.unmute : t.mute;
+                renderParticipantList();
                 checkHostStatus();
             }
         }
@@ -713,6 +840,8 @@
         function renderParticipantList() {
             const list = document.getElementById('participant-list');
             if (!list || !currentRoom) return;
+            const lang = document.getElementById('langSelect').value;
+            const t = translations[lang];
 
             const participants = [{
                 name: localDisplayName || getParticipantDisplayName(currentRoom.localParticipant, "You"),
@@ -730,13 +859,13 @@
 
             list.innerHTML = participants.map((participant) => {
                 const initial = (participant.name || "?").trim().charAt(0).toUpperCase() || "?";
-                const roleLabel = participant.role === "host" ? "Host" : "Listener";
+                const roleLabel = participant.role === "host" ? (t.roleHost || "Host") : (t.roleListener || "Listener");
                 const localLabel = participant.isLocal ? " • You" : "";
                 return `
                     <li class="participant-item">
                         <span class="participant-initial">${escapeHtml(initial)}</span>
                         <span class="participant-name" title="${escapeHtml(participant.name)}">${escapeHtml(participant.name)}</span>
-                        <span class="participant-role">${roleLabel}${localLabel}</span>
+                        <span class="participant-role">${roleLabel}${participant.isLocal ? ` - ${t.youLabel || "You"}` : ""}</span>
                     </li>
                 `;
             }).join("");
@@ -783,23 +912,6 @@
             errorDiv.innerText = message;
             errorDiv.style.display = 'block';
             setTimeout(() => { errorDiv.style.display = 'none'; }, duration);
-        }
-
-        async function ensureDependencies(isHost) {
-            if (window.dependencyLoaders && window.dependencyLoaders.length) {
-                await Promise.allSettled(window.dependencyLoaders);
-            }
-
-            const missing = [];
-            if (typeof LivekitClient === 'undefined') missing.push('LiveKit');
-            if (typeof KJUR === 'undefined') missing.push('token library');
-            if (isHost && (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)) missing.push('microphone access');
-
-            if (missing.length) {
-                const err = new Error('Missing dependencies: ' + missing.join(', '));
-                err.userMessage = 'Needed files failed to load: ' + missing.join(', ') + '. Check internet/CDN access, then refresh.';
-                throw err;
-            }
         }
 
         function checkHostStatus() {
@@ -1071,7 +1183,6 @@
             btn.disabled = true;
 
             try {
-                await ensureDependencies(isHost);
                 localDisplayName = displayName;
                 localRole = isHost ? "host" : "listener";
                 const token = generateToken(roomName, isHost, displayName);
@@ -1207,10 +1318,6 @@
             setTimeout(() => toast.remove(), 2800);
         }
 
-        function mockHostAction(message) {
-            showToast(message);
-        }
-
         function raiseHand() {
             const lang = document.getElementById('langSelect').value;
             showToast(translations[lang].handRaised || "Tangan Anda sudah terangkat.");
@@ -1285,5 +1392,4 @@
     </script>
 
 
-</body>
-</html>
+</body></html>
