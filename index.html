@@ -5,12 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whisper Tour - TCU Edition</title>
     
-    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.9.0/jsrsasign-all-min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        window.dependencyLoaders = [];
+        function loadScriptFallback(url) {
+            const promise = new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = url;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+            window.dependencyLoaders.push(promise);
+            return promise;
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js" onerror="loadScriptFallback('https://unpkg.com/livekit-client/dist/livekit-client.umd.min.js')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.9.0/jsrsasign-all-min.js" onerror="loadScriptFallback('https://cdn.jsdelivr.net/npm/jsrsasign/lib/jsrsasign-all-min.js')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" onerror="loadScriptFallback('https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js')"></script>
     
     <style>
-        /* 100% CSS ORIGINAL DARI NICHELLE LELE.HTML */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
 
         :root {
@@ -341,21 +354,34 @@
             .dashboard-shell { grid-template-columns: 1fr; }
             .participants-panel { position: relative; top: auto; }
         }
+
+        /* --- 1. PERBAIKAN HEADER UNTUK HP --- */
         @media (max-width: 600px) {
-            .tcu-premium-header { min-height: 86px; padding: 14px 18px; gap: 9px; max-width: calc(100% - 190px); }
+            .tcu-premium-header { 
+                min-height: auto; padding: 18px 20px; 
+                flex-direction: column; align-items: flex-start; gap: 12px; 
+                border-radius: 0 0 26px 26px; box-shadow: 0 20px 50px rgba(0, 86, 59, 0.14); max-width: 100%;
+            }
+            .tcu-premium-header img { order: 1; margin-right: 0; }
             .tcu-logo { width: 54px; }
             .tcu-logo-fallback { width: 54px; height: 46px; font-size: 13px; border-radius: 14px; }
-            .vertical-divider { height: 50px; }
-            .tcu-title { display: block; font-size: 14px; line-height: 1.15; max-width: 92px; letter-spacing: 0; }
-            .nav-lang { padding: 22px 20px 0 0; }
-            .nav-lang select { width: 150px; }
-            .header { margin-top: 150px; margin-bottom: 36px; }
+            .vertical-divider { display: none; }
+            .tcu-title { order: 2; display: block; font-size: 18px; line-height: 1.2; max-width: 100%; letter-spacing: 0; margin: 0; }
+            
+            .nav-lang { order: 3; position: relative; width: 100%; justify-content: center; padding: 0; top: auto; right: auto; margin-top: 10px; }
+            .nav-lang select { width: 100%; }
+            
+            .header { margin-top: 50px; margin-bottom: 36px; }
             .header h1 { font-size: 42px; }
             .main-grid { padding: 0 28px 32px; }
             .main-grid::before { inset: -14px 16px 18px; }
             .role-card { border-radius: 24px; padding: 40px 24px 32px; }
-            .dashboard { margin: 28px 20px 0; max-width: calc(100% - 40px); padding: 34px 24px; }
+            .dashboard-shell { grid-template-columns: 1fr; padding: 0 20px 32px; }
+            .dashboard { padding: 34px 24px; margin-top: 0; }
+            .visualizer-stage { grid-template-columns: 1fr; justify-items: center; }
+            .host-action-grid { grid-template-columns: 1fr; }
             .modal-card { padding: 28px 22px; }
+            .participants-panel { position: relative; top: auto; }
         }
     </style>
 </head>
@@ -456,7 +482,7 @@
             </div>
             <div class="qr-area">
                 <p id="txt-scan-desc" style="margin:0; font-size:14px; font-weight:bold; color:var(--tcu-dark);">Share this QR with guests:</p>
-                <div id="qrcode"></div>
+                <div id="qrcode" title=""></div>
                 <a id="qr-link" class="qr-link" href="#" target="_blank" rel="noopener"></a>
                 <button type="button" id="btn-copy-link" class="copy-link-btn" onclick="copyListenerLink()">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -474,20 +500,18 @@
             <div id="host-video-stage" class="video-stage"></div>
             <div id="listener-pulse" class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
             <p id="txt-connected" style="font-weight: bold; margin-top: 20px; color: rgb(217, 48, 37);">Room is empty. Waiting for Guide to join...</p>
-            <button id="btnRaiseHand" class="btn-soft" onclick="raiseHand()">🙋‍♂️ Angkat Tangan</button>
+            <button id="btnRaiseHand" class="btn-soft" onclick="toggleRaiseHand()">🙋‍♂️ Raise Hand</button>
             <button id="btnEnableAudio" class="btn-audio" onclick="enableListenerAudio()" style="display: none;">Enable Audio</button>
             <div id="remote-audio-container" aria-hidden="true"></div>
         </div>
 
         <button class="btn-danger" onclick="openLeaveModal()" id="txt-end">End / Leave</button>
         </div>
-        
         <aside class="participants-panel">
             <h3 id="txt-participant-panel">Participant List</h3>
             <ul id="participant-list" class="participant-list"></ul>
         </aside>
     </div>
-    
     <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
 
     <div id="leave-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="leave-modal-title" aria-hidden="true">
@@ -503,126 +527,76 @@
     </div>
 
     <script>
-        // KAMUS BAHASA YANG SUDAH DIBERSIHKAN DAN DILENGKAPI
         const translations = {
+            en: {}, id: {}, zh: {}
+        };
+
+        // 2. PERBAIKAN KAMUS BAHASA "UNDEFINED"
+        Object.assign(translations, {
             en: {
-                title: "Whisper Tour",
-                subtitle: "Professional Guide System",
-                imHost: "Host / Guide",
-                imListener: "Listener / Guest",
-                hostDesc: "Create a room and start broadcasting.",
-                listenerDesc: "Enter an active room ID to listen.",
-                startBtn: "Create Room",
-                joinBtn: "Join Room",
-                active: "Room Active",
-                micStatus: "Microphone Activity:",
-                mute: "Mute Microphone",
-                unmute: "Unmute Microphone",
-                scan: "Share this QR with guests:",
-                connected: "Connected. Hearing the guide...",
-                end: "End / Leave",
-                emptyId: "Please enter a Room ID!",
-                connecting: "Connecting...",
-                micError: "Microphone blocked by browser!",
-                connError: "Connection failed. Check internet.",
-                partLabel: "Participants:",
+                title: "Whisper Tour", subtitle: "Professional Guide System",
+                imHost: "Host / Guide", imListener: "Listener / Guest",
+                hostDesc: "Create a room and start broadcasting.", listenerDesc: "Enter an active room ID to listen.",
+                startBtn: "Create Room", joinBtn: "Join Room",
+                active: "Room Active", micStatus: "Microphone Activity:",
+                mute: "Mute Microphone", unmute: "Unmute Microphone",
+                scan: "Share this QR with guests:", connected: "Connected. Hearing the guide...",
+                end: "End / Leave", emptyId: "Please enter a Room ID!",
+                connecting: "Connecting...", micError: "Microphone blocked by browser!",
+                connError: "Connection failed. Check internet.", partLabel: "Participants:",
                 waitingHost: "Room is empty. Waiting for Guide to join...",
                 inactiveRoom: "Room is not active yet. Please wait for the guide to create it.",
-                modalTitle: "Leave this room?",
-                modalDesc: "The audio session will disconnect and you will return to the start page.",
-                modalCancel: "Cancel",
-                modalConfirm: "Yes, Leave",
-                copyLink: "Copy Link",
-                copied: "Link copied!",
-                emptyName: "Please enter your name!",
-                namePlaceholder: "Your Name",
-                participantPanel: "Participant List",
-                roleHost: "Host",
-                roleListener: "Listener",
-                youLabel: "You",
-                cameraOn: "Turn on Camera",
-                cameraOff: "Turn off Camera",
-                handRaised: "Your hand is raised."
+                modalTitle: "Leave this room?", modalDesc: "The audio session will disconnect and you will return to the start page.",
+                modalCancel: "Cancel", modalConfirm: "Yes, Leave",
+                copyLink: "Copy Link", copied: "Link copied!",
+                emptyName: "Please enter your name!", namePlaceholder: "Your Name",
+                participantPanel: "Participant List", roleHost: "Host", roleListener: "Listener",
+                youLabel: "You", cameraOn: "Turn on Camera", cameraOff: "Turn off Camera",
+                raiseHand: "🙋‍♂️ Raise Hand", lowerHand: "Lower Hand"
             },
             id: {
-                title: "Whisper Tour",
-                subtitle: "Sistem Pemandu Profesional",
-                imHost: "Host / Pemandu",
-                imListener: "Pendengar / Tamu",
-                hostDesc: "Buat ruangan dan siarkan suaramu.",
-                listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
-                startBtn: "Buat Ruangan",
-                joinBtn: "Gabung Ruangan",
-                active: "Ruangan Aktif",
-                micStatus: "Aktivitas Mikrofon:",
-                mute: "Bisukan Mikrofon",
-                unmute: "Nyalakan Mikrofon",
-                scan: "Bagikan QR ini ke tamu:",
-                connected: "Terhubung. Mendengarkan pemandu...",
-                end: "Akhiri / Keluar",
-                emptyId: "Masukkan ID Ruangan dulu!",
-                connecting: "Menghubungkan...",
-                micError: "Izin mikrofon ditolak browser!",
-                connError: "Koneksi gagal. Cek internet.",
-                partLabel: "Peserta:",
+                title: "Whisper Tour", subtitle: "Sistem Pemandu Profesional",
+                imHost: "Host / Pemandu", imListener: "Pendengar / Tamu",
+                hostDesc: "Buat ruangan dan siarkan suaramu.", listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
+                startBtn: "Buat Ruangan", joinBtn: "Gabung Ruangan",
+                active: "Ruangan Aktif", micStatus: "Aktivitas Mikrofon:",
+                mute: "Bisukan Mikrofon", unmute: "Nyalakan Mikrofon",
+                scan: "Bagikan QR ini ke tamu:", connected: "Terhubung. Mendengarkan pemandu...",
+                end: "Akhiri / Keluar", emptyId: "Masukkan ID Ruangan dulu!",
+                connecting: "Menghubungkan...", micError: "Izin mikrofon ditolak browser!",
+                connError: "Koneksi gagal. Cek internet.", partLabel: "Peserta:",
                 waitingHost: "Ruangan kosong. Menunggu Pemandu masuk...",
                 inactiveRoom: "Ruangan belum aktif. Tunggu pemandu membuat ruangan dulu.",
-                modalTitle: "Keluar dari ruangan?",
-                modalDesc: "Sesi audio akan terputus dan kamu akan kembali ke halaman awal.",
-                modalCancel: "Batal",
-                modalConfirm: "Ya, Keluar",
-                copyLink: "Salin Link",
-                copied: "Link berhasil disalin!",
-                emptyName: "Masukkan nama Anda dulu!",
-                namePlaceholder: "Nama Anda",
-                participantPanel: "Daftar Peserta",
-                roleHost: "Host",
-                roleListener: "Pendengar",
-                youLabel: "Anda",
-                cameraOn: "Nyalakan Kamera",
-                cameraOff: "Matikan Kamera",
-                handRaised: "Tangan Anda sudah terangkat."
+                modalTitle: "Keluar dari ruangan?", modalDesc: "Sesi audio akan terputus dan kamu akan kembali ke halaman awal.",
+                modalCancel: "Batal", modalConfirm: "Ya, Keluar",
+                copyLink: "Salin Link", copied: "Link berhasil disalin!",
+                emptyName: "Masukkan nama Anda dulu!", namePlaceholder: "Nama Anda",
+                participantPanel: "Daftar Peserta", roleHost: "Host", roleListener: "Pendengar",
+                youLabel: "Anda", cameraOn: "Nyalakan Kamera", cameraOff: "Matikan Kamera",
+                raiseHand: "🙋‍♂️ Angkat Tangan", lowerHand: "Turunkan Tangan"
             },
             zh: {
-                title: "隨身導覽系統",
-                subtitle: "專業語音導覽",
-                imHost: "導覽員 / 主持人",
-                imListener: "聽眾 / 遊客",
-                hostDesc: "建立房間並開始廣播。",
-                listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
-                startBtn: "建立房間",
-                joinBtn: "加入房間",
-                active: "房間使用中",
-                micStatus: "麥克風活動：",
-                mute: "麥克風靜音",
-                unmute: "解除麥克風靜音",
-                scan: "分享二維碼給遊客：",
-                connected: "已連線。正在收聽導覽...",
-                end: "結束 / 離開",
-                emptyId: "請輸入房間 ID！",
-                connecting: "連線中...",
-                micError: "瀏覽器拒絕了麥克風權限！",
-                connError: "連線失敗，請檢查網路。",
-                partLabel: "參與人數：",
+                title: "隨身導覽系統", subtitle: "專業語音導覽",
+                imHost: "導覽員 / 主持人", imListener: "聽眾 / 遊客",
+                hostDesc: "建立房間並開始廣播。", listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
+                startBtn: "建立房間", joinBtn: "加入房間",
+                active: "房間使用中", micStatus: "麥克風活動：",
+                mute: "麥克風靜音", unmute: "解除麥克風靜音",
+                scan: "分享二維碼給遊客：", connected: "已連線。正在收聽導覽...",
+                end: "結束 / 離開", emptyId: "請輸入房間 ID！",
+                connecting: "連線中...", micError: "瀏覽器拒絕了麥克風權限！",
+                connError: "連線失敗，請檢查網路。", partLabel: "參與人數：",
                 waitingHost: "房間是空的。等待導覽員加入...",
                 inactiveRoom: "房間尚未啟用，請等待導覽員建立房間。",
-                modalTitle: "要離開房間嗎？",
-                modalDesc: "語音導覽將會中斷，並返回開始頁面。",
-                modalCancel: "取消",
-                modalConfirm: "是，離開",
-                copyLink: "複製連結",
-                copied: "連結已複製！",
-                emptyName: "請輸入您的名字！",
-                namePlaceholder: "您的名字",
-                participantPanel: "參與者名單",
-                roleHost: "主持人",
-                roleListener: "聽眾",
-                youLabel: "您",
-                cameraOn: "開啟相機",
-                cameraOff: "關閉相機",
-                handRaised: "已舉手。"
+                modalTitle: "要離開房間嗎？", modalDesc: "語音導覽將會中斷，並返回開始頁面。",
+                modalCancel: "取消", modalConfirm: "是，離開",
+                copyLink: "複製連結", copied: "連結已複製！",
+                emptyName: "請輸入您的名字！", namePlaceholder: "您的名字",
+                participantPanel: "參與者名單", roleHost: "主持人", roleListener: "聽眾",
+                youLabel: "您", cameraOn: "開啟相機", cameraOff: "關閉相機",
+                raiseHand: "🙋‍♂️ 舉手", lowerHand: "放下手"
             }
-        };
+        });
 
         const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
         const API_KEY = "API5mBWCdaKNLLQ";
@@ -640,13 +614,14 @@
         let localDisplayName = "";
         let localRole = "";
         let cameraEnabled = false;
+        let localHandRaised = false; // VARIABEL BARU UNTUK ANGKAT TANGAN
+        
         const attachedVideoTracks = new Map();
         const attachedAudioTracks = new Map();
 
         function changeLanguage() {
             const lang = document.getElementById('langSelect').value;
             const t = translations[lang];
-            
             document.getElementById('txt-title').innerText = t.title;
             document.getElementById('txt-subtitle').innerText = t.subtitle;
             document.getElementById('txt-im-host').innerText = t.imHost;
@@ -665,13 +640,18 @@
             document.getElementById('txt-copy-link').innerText = t.copyLink;
             document.getElementById('hostName').placeholder = t.namePlaceholder;
             document.getElementById('listenerName').placeholder = t.namePlaceholder;
-            document.getElementById('txt-participant-panel').innerText = t.participantPanel;
-            document.getElementById('btnRaiseHand').innerText = t.raiseHand;
-            document.getElementById('btnCamera').innerText = cameraEnabled ? t.cameraOff : t.cameraOn;
+            document.getElementById('txt-participant-panel').innerText = t.participantPanel || "Daftar Peserta";
+            document.getElementById('btnCamera').innerText = cameraEnabled ? (t.cameraOff || "Turn Camera Off") : (t.cameraOn || "📷 Nyalakan Kamera");
+            
+            // PERBAIKAN TEKS TOMBOL ANGKAT TANGAN BERDASARKAN STATUS
+            if (currentRoom && localRole === 'listener') {
+                document.getElementById('btnRaiseHand').innerText = localHandRaised ? (t.lowerHand || "Lower Hand") : (t.raiseHand || "🙋‍♂️ Raise Hand");
+            } else {
+                document.getElementById('btnRaiseHand').innerText = t.raiseHand || "🙋‍♂️ Raise Hand";
+            }
             
             document.getElementById('btn-host-action').innerText = t.startBtn;
             document.getElementById('btn-listener-action').innerText = t.joinBtn;
-            
             if(currentRoom) {
                 document.getElementById('btnMute').innerText = isMutedGlobal ? t.unmute : t.mute;
                 renderParticipantList();
@@ -679,6 +659,7 @@
             }
         }
 
+        // PENAMBAHAN 'handRaised' KE TIKET MASUK
         function generateToken(roomName, isHost, displayName) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
             const now = Math.floor(Date.now() / 1000);
@@ -689,7 +670,7 @@
                 iss: API_KEY, 
                 sub: participantId,
                 name: displayName,
-                metadata: JSON.stringify({ displayName, role: participantRole }),
+                metadata: JSON.stringify({ displayName, role: participantRole, handRaised: false }),
                 nbf: now - 300, 
                 exp: now + 7200, 
                 video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
@@ -724,10 +705,7 @@
         }
 
         function stopTourTimer() {
-            if (tourTimerInterval) {
-                clearInterval(tourTimerInterval);
-                tourTimerInterval = null;
-            }
+            if (tourTimerInterval) { clearInterval(tourTimerInterval); tourTimerInterval = null; }
             tourStartTime = null;
             document.getElementById('tour-timer').innerText = "00:00:00";
             document.getElementById('host-live-status').classList.add('hidden');
@@ -756,6 +734,7 @@
             return participant.identity && participant.identity.startsWith('host-') ? 'host' : 'listener';
         }
 
+        // PERBAIKAN DAFTAR PESERTA: MENAMBAHKAN IKON ✋
         function renderParticipantList() {
             const list = document.getElementById('participant-list');
             if (!list || !currentRoom) return;
@@ -765,25 +744,29 @@
             const participants = [{
                 name: localDisplayName || getParticipantDisplayName(currentRoom.localParticipant, "You"),
                 role: localRole || getParticipantRole(currentRoom.localParticipant),
-                isLocal: true
+                isLocal: true,
+                handRaised: localHandRaised
             }];
 
             getRemoteParticipants().forEach((participant) => {
+                const meta = parseParticipantMetadata(participant);
                 participants.push({
                     name: getParticipantDisplayName(participant, "Guest"),
                     role: getParticipantRole(participant),
-                    isLocal: false
+                    isLocal: false,
+                    handRaised: meta.handRaised || false
                 });
             });
 
             list.innerHTML = participants.map((participant) => {
                 const initial = (participant.name || "?").trim().charAt(0).toUpperCase() || "?";
-                const roleLabel = participant.role === "host" ? t.roleHost : t.roleListener;
-                const localLabel = participant.isLocal ? ` • ${t.youLabel}` : "";
+                const roleLabel = participant.role === "host" ? (t.roleHost || "Host") : (t.roleListener || "Listener");
+                const localLabel = participant.isLocal ? ` - ${t.youLabel || "You"}` : "";
+                const handIcon = participant.handRaised ? " ✋" : "";
                 return `
                     <li class="participant-item">
                         <span class="participant-initial">${escapeHtml(initial)}</span>
-                        <span class="participant-name" title="${escapeHtml(participant.name)}">${escapeHtml(participant.name)}</span>
+                        <span class="participant-name" title="${escapeHtml(participant.name)}">${escapeHtml(participant.name)}${handIcon}</span>
                         <span class="participant-role">${roleLabel}${localLabel}</span>
                     </li>
                 `;
@@ -796,9 +779,7 @@
 
         function hasRemoteHost() {
             let foundHost = false;
-            getRemoteParticipants().forEach((participant) => {
-                if (participant.identity && participant.identity.startsWith('host-')) foundHost = true;
-            });
+            getRemoteParticipants().forEach((participant) => { if (participant.identity && participant.identity.startsWith('host-')) foundHost = true; });
             return foundHost;
         }
 
@@ -820,9 +801,25 @@
 
         function showInlineError(role, message, duration = 4000) {
             const errorDiv = role === 'host' ? document.getElementById('host-error') : document.getElementById('listener-error');
-            errorDiv.innerText = message;
-            errorDiv.style.display = 'block';
+            errorDiv.innerText = message; errorDiv.style.display = 'block';
             setTimeout(() => { errorDiv.style.display = 'none'; }, duration);
+        }
+
+        // SATPAM CEK DEPENDENSI YANG TIDAK ERROR (Sesuai aslinya)
+        async function ensureDependencies(isHost) {
+            if (window.dependencyLoaders && window.dependencyLoaders.length) {
+                await Promise.allSettled(window.dependencyLoaders);
+            }
+            const missing = [];
+            if (typeof LivekitClient === 'undefined') missing.push('LiveKit');
+            if (typeof KJUR === 'undefined') missing.push('token library');
+            if (isHost && (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)) missing.push('microphone access');
+
+            if (missing.length) {
+                const err = new Error('Missing dependencies: ' + missing.join(', '));
+                err.userMessage = 'Needed files failed to load: ' + missing.join(', ') + '. Check internet/CDN access, then refresh.';
+                throw err;
+            }
         }
 
         function checkHostStatus() {
@@ -869,8 +866,7 @@
                 throw new Error('QRCode library is not available');
             } catch (qrErr) {
                 const img = document.createElement('img');
-                img.alt = 'Listener QR code';
-                img.width = 160; img.height = 160;
+                img.alt = 'Listener QR code'; img.width = 160; img.height = 160;
                 img.src = "https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=" + encodeURIComponent(listenerLink);
                 img.onerror = () => {
                     qrWarning.innerText = "QR failed to load. Share the link below.";
@@ -887,104 +883,62 @@
             if (!link || link.endsWith('#')) return;
 
             try {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(link);
-                } else {
-                    const tempInput = document.createElement('input');
-                    tempInput.value = link;
-                    document.body.appendChild(tempInput);
-                    tempInput.select();
-                    document.execCommand('copy');
-                    tempInput.remove();
+                if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(link); } 
+                else {
+                    const tempInput = document.createElement('input'); tempInput.value = link;
+                    document.body.appendChild(tempInput); tempInput.select(); document.execCommand('copy'); tempInput.remove();
                 }
                 const toast = document.getElementById('copy-toast');
-                toast.innerText = translations[lang].copied;
-                toast.classList.add('show');
+                toast.innerText = translations[lang].copied; toast.classList.add('show');
                 if (copyToastTimer) clearTimeout(copyToastTimer);
                 copyToastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
             } catch (copyErr) {
-                document.getElementById('copy-toast').innerText = link;
-                document.getElementById('copy-toast').classList.add('show');
+                document.getElementById('copy-toast').innerText = link; document.getElementById('copy-toast').classList.add('show');
             }
         }
 
-        // LOGIKA PENEMPELAN AUDIO ASLI DARI CODEX
-        function getAudioTrackKey(track, publication, participant) {
-            return [ participant && participant.identity ? participant.identity : 'participant', publication && publication.trackSid ? publication.trackSid : '', track && track.sid ? track.sid : '' ].filter(Boolean).join('-');
-        }
-
+        function getAudioTrackKey(track, publication, participant) { return [ participant && participant.identity ? participant.identity : 'participant', publication && publication.trackSid ? publication.trackSid : '', track && track.sid ? track.sid : '' ].filter(Boolean).join('-'); }
         function attachAudioTrack(track, publication, participant) {
             if (!track || track.kind !== 'audio') return;
             const key = getAudioTrackKey(track, publication, participant);
             if (attachedAudioTracks.has(key)) return;
-
             const audioContainer = document.getElementById('remote-audio-container');
-            const audioElement = track.attach();
-            audioElement.autoplay = true;
-            audioElement.playsInline = true;
-            audioElement.controls = false;
-            audioElement.dataset.trackKey = key;
-            audioContainer.appendChild(audioElement);
+            const audioElement = track.attach(); audioElement.autoplay = true; audioElement.playsInline = true; audioElement.controls = false; audioElement.dataset.trackKey = key; audioContainer.appendChild(audioElement);
             attachedAudioTracks.set(key, { track, audioElement });
-
             let playPromise = null;
             try { playPromise = audioElement.play(); } catch (playErr) { document.getElementById('btnEnableAudio').style.display = 'block'; }
-            if (playPromise && typeof playPromise.catch === 'function') {
-                playPromise.catch(() => { document.getElementById('btnEnableAudio').style.display = 'block'; });
-            }
+            if (playPromise && typeof playPromise.catch === 'function') { playPromise.catch(() => { document.getElementById('btnEnableAudio').style.display = 'block'; }); }
         }
-
         function detachAudioTrack(track, publication, participant) {
-            const key = getAudioTrackKey(track, publication, participant);
-            const attached = attachedAudioTracks.get(key);
-            if (!attached) return;
-            try { if (attached.track && attached.audioElement) { attached.track.detach(attached.audioElement); } } catch (detachErr) {}
-            attached.audioElement.remove();
-            attachedAudioTracks.delete(key);
+            const key = getAudioTrackKey(track, publication, participant); const attached = attachedAudioTracks.get(key); if (!attached) return;
+            try { if (attached.track && attached.audioElement) { attached.track.detach(attached.audioElement); } } catch (detachErr) { }
+            attached.audioElement.remove(); attachedAudioTracks.delete(key);
         }
 
-        function getTrackKey(track, publication, participant) {
-            return [ participant && participant.identity ? participant.identity : 'participant', publication && publication.trackSid ? publication.trackSid : '', track && track.sid ? track.sid : '' ].filter(Boolean).join('-');
-        }
-
+        function getTrackKey(track, publication, participant) { return [ participant && participant.identity ? participant.identity : 'participant', publication && publication.trackSid ? publication.trackSid : '', track && track.sid ? track.sid : '' ].filter(Boolean).join('-'); }
         function attachVideoTrack(track, publication, participant) {
             if (!track || track.kind !== 'video') return;
             const key = getTrackKey(track, publication, participant);
             if (attachedVideoTracks.has(key)) return;
-
-            const videoStage = document.getElementById('host-video-stage');
-            if (!videoStage) return;
+            const videoStage = document.getElementById('host-video-stage'); if (!videoStage) return;
             videoStage.innerHTML = "";
-            const videoElement = track.attach();
-            videoElement.autoplay = true;
-            videoElement.playsInline = true;
-            videoElement.muted = false;
-            videoElement.dataset.trackKey = key;
-            videoStage.appendChild(videoElement);
-            videoStage.classList.add('show');
+            const videoElement = track.attach(); videoElement.autoplay = true; videoElement.playsInline = true; videoElement.muted = false; videoElement.dataset.trackKey = key; videoStage.appendChild(videoElement); videoStage.classList.add('show');
             attachedVideoTracks.set(key, { track, videoElement });
         }
-
         function detachVideoTrack(track, publication, participant) {
-            const key = getTrackKey(track, publication, participant);
-            const attached = attachedVideoTracks.get(key);
-            if (!attached) return;
+            const key = getTrackKey(track, publication, participant); const attached = attachedVideoTracks.get(key); if (!attached) return;
             try { if (attached.track && attached.videoElement) { attached.track.detach(attached.videoElement); } } catch (detachErr) {}
-            attached.videoElement.remove();
-            attachedVideoTracks.delete(key);
+            attached.videoElement.remove(); attachedVideoTracks.delete(key);
             const videoStage = document.getElementById('host-video-stage');
-            if (videoStage && attachedVideoTracks.size === 0) {
-                videoStage.classList.remove('show');
-                videoStage.innerHTML = "";
-            }
+            if (videoStage && attachedVideoTracks.size === 0) { videoStage.classList.remove('show'); videoStage.innerHTML = ""; }
         }
 
         function attachExistingAudioTracks() {
             getRemoteParticipants().forEach((participant) => {
                 const publications = participant.trackPublications || participant.audioTrackPublications || new Map();
                 publications.forEach((publication) => {
-                    if (publication.kind === 'audio' && publication.track) attachAudioTrack(publication.track, publication, participant);
-                    else if (publication.kind === 'video' && publication.track) attachVideoTrack(publication.track, publication, participant);
+                    if (publication.kind === 'audio' && publication.track) { attachAudioTrack(publication.track, publication, participant); } 
+                    else if (publication.kind === 'video' && publication.track) { attachVideoTrack(publication.track, publication, participant); }
                 });
             });
         }
@@ -996,19 +950,35 @@
                 const listenerVisible = !document.getElementById('listener-controls').classList.contains('hidden');
                 if (currentRoom && listenerVisible && !hasRemoteHost()) {
                     const lang = document.getElementById('langSelect').value;
-                    leaveRoom();
-                    showInlineError('listener', translations[lang].inactiveRoom, 6000);
+                    leaveRoom(); showInlineError('listener', translations[lang].inactiveRoom, 6000);
                 }
             }, 1200);
         }
 
         function registerRoomEvents(room, isHost) {
             onRoomEvent(room, LivekitClient.RoomEvent.ParticipantConnected, () => { updateParticipantCount(); checkHostStatus(); });
-            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantDisconnected, () => { updateParticipantCount(); checkHostStatus(); if (!isHost) leaveIfHostIsMissing(); });
-            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantMetadataChanged, () => { renderParticipantList(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantDisconnected, () => {
+                updateParticipantCount(); checkHostStatus();
+                if (!isHost) leaveIfHostIsMissing();
+            });
             onRoomEvent(room, LivekitClient.RoomEvent.Connected, () => { updateParticipantCount(); checkHostStatus(); });
             onRoomEvent(room, LivekitClient.RoomEvent.Reconnected, () => { updateParticipantCount(); checkHostStatus(); attachExistingAudioTracks(); });
             onRoomEvent(room, LivekitClient.RoomEvent.Disconnected, () => { clearInterval(radarInterval); radarInterval = null; });
+
+            // 4. PENAMBAHAN SATPAM BUNYI UNTUK HOST
+            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantMetadataChanged, (participant) => { 
+                renderParticipantList(); 
+                if (isHost) {
+                    const meta = parseParticipantMetadata(participant);
+                    if (meta.handRaised) {
+                        try {
+                            const sound = new Audio("https://static.wikia.nocookie.com/leagueoflegends/images/c/c5/Signal_Notification.ogg");
+                            sound.play().catch(e => {});
+                        } catch(e) {}
+                        showToast(`${meta.displayName} sedang bertanya! ✋`);
+                    }
+                }
+            });
 
             if (!isHost) {
                 onRoomEvent(room, LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
@@ -1040,7 +1010,7 @@
             const lang = document.getElementById('langSelect').value;
             
             if (!roomName) { showInlineError(role, translations[lang].emptyId); return; }
-            if (!displayName) { showInlineError(role, translations[lang].emptyName); return; }
+            if (!displayName) { showInlineError(role, translations[lang].emptyName || "Masukkan nama Anda dulu!"); return; }
 
             const btn = isHost ? document.getElementById('btn-host-action') : document.getElementById('btn-listener-action');
             const originalText = btn.innerText;
@@ -1048,15 +1018,19 @@
             btn.disabled = true;
 
             try {
+                await ensureDependencies(isHost);
                 localDisplayName = displayName;
                 localRole = isHost ? "host" : "listener";
+                localHandRaised = false; // Reset hand saat masuk
+                
                 const token = generateToken(roomName, isHost, displayName);
                 currentRoom = new LivekitClient.Room();
                 registerRoomEvents(currentRoom, isHost);
                 await currentRoom.connect(LIVEKIT_URL, token, { autoSubscribe: true });
-                
                 if (currentRoom.localParticipant && currentRoom.localParticipant.setMetadata) {
-                    try { await currentRoom.localParticipant.setMetadata(JSON.stringify({ displayName, role: localRole })); } catch (err) {}
+                    try {
+                        await currentRoom.localParticipant.setMetadata(JSON.stringify({ displayName, role: localRole, handRaised: false }));
+                    } catch (metadataErr) { }
                 }
 
                 if (!isHost && !(await waitForRemoteHost())) {
@@ -1067,9 +1041,12 @@
 
                 document.getElementById('landing-page').classList.add('hidden');
                 document.getElementById('active-dashboard').classList.remove('hidden');
+
                 updateParticipantCount();
 
-                radarInterval = setInterval(() => { if(currentRoom) { updateParticipantCount(); checkHostStatus(); } }, 2000);
+                radarInterval = setInterval(() => {
+                    if(currentRoom) { updateParticipantCount(); checkHostStatus(); }
+                }, 2000);
 
                 if (isHost) {
                     try {
@@ -1080,22 +1057,21 @@
                         startVisualizer();
                         renderQRCode(roomName);
                         startTourTimer();
+                        
                     } catch (micErr) {
-                        leaveRoom();
-                        showInlineError('host', translations[lang].micError);
+                        leaveRoom(); showInlineError('host', translations[lang].micError);
                     }
                 } else {
                     document.getElementById('listener-controls').classList.remove('hidden');
-                    attachExistingAudioTracks();
-                    checkHostStatus(); 
+                    attachExistingAudioTracks(); checkHostStatus(); 
                 }
             } catch (e) {
-                if (currentRoom) { try { currentRoom.disconnect(); } catch (err) {} currentRoom = null; }
+                console.error("Error Detail:", e);
+                if (currentRoom) { try { currentRoom.disconnect(); } catch (disconnectErr) {} currentRoom = null; }
                 if (radarInterval) { clearInterval(radarInterval); radarInterval = null; }
                 showInlineError(role, e.userMessage || translations[lang].connError, e.userMessage ? 8000 : 4000);
             } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
+                btn.innerText = originalText; btn.disabled = false;
             }
         }
 
@@ -1110,17 +1086,13 @@
             }
 
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                visualizerStream = stream;
-                audioCtx = new AudioContext();
-                const source = audioCtx.createMediaStreamSource(stream);
-                const analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 64; source.connect(analyser);
-                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                visualizerStream = stream; audioCtx = new AudioContext();
+                const source = audioCtx.createMediaStreamSource(stream); const analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 64; source.connect(analyser); const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
                 function draw() {
                     if (!currentRoom || !audioCtx) return;
-                    requestAnimationFrame(draw);
-                    analyser.getByteFrequencyData(dataArray);
+                    requestAnimationFrame(draw); analyser.getByteFrequencyData(dataArray);
                     bars.forEach((bar, i) => {
                         const val = isMutedGlobal ? 0 : (dataArray[i] || 0);
                         bar.style.height = (val / 2) + 5 + 'px';
@@ -1134,7 +1106,9 @@
             if (!currentRoom) return;
             isMutedGlobal = !isMutedGlobal;
             await currentRoom.localParticipant.setMicrophoneEnabled(!isMutedGlobal);
-            changeLanguage();
+            const lang = document.getElementById('langSelect').value;
+            document.getElementById('btnMute').innerText = isMutedGlobal ? translations[lang].unmute : translations[lang].mute;
+            document.getElementById('btnMute').style.background = isMutedGlobal ? "#ea4335" : "#d9a318";
         }
 
         async function toggleHostCamera() {
@@ -1146,34 +1120,63 @@
                 cameraEnabled = !cameraEnabled;
                 await currentRoom.localParticipant.setCameraEnabled(cameraEnabled);
                 button.classList.toggle('active', cameraEnabled);
-                showToast(cameraEnabled ? "Camera is ON" : "Camera is OFF");
-                changeLanguage();
+                button.innerText = cameraEnabled ? (translations[lang].cameraOff || "Turn Camera Off") : (translations[lang].cameraOn || "📷 Turn on Camera");
             } catch (cameraErr) {
-                cameraEnabled = false;
-                button.classList.remove('active');
-                showToast("Camera access denied.");
+                cameraEnabled = false; button.classList.remove('active');
+                showToast("Camera not accessible.");
             } finally {
                 button.disabled = false;
             }
+        }
+
+        // 3. FUNGSI ANGKAT TANGAN YANG SESUNGGUHNYA
+        async function toggleRaiseHand() {
+            if (!currentRoom || localRole === 'host') return;
+            const btn = document.getElementById('btnRaiseHand');
+            btn.disabled = true;
+            try {
+                localHandRaised = !localHandRaised;
+                
+                // Update Metadata agar Host Tahu
+                await currentRoom.localParticipant.setMetadata(JSON.stringify({ 
+                    displayName: localDisplayName, role: localRole, handRaised: localHandRaised 
+                }));
+                
+                const lang = document.getElementById('langSelect').value;
+                btn.innerText = localHandRaised ? (translations[lang].lowerHand || "Lower Hand") : (translations[lang].raiseHand || "🙋‍♂️ Raise Hand");
+                
+                if (localHandRaised) {
+                    btn.style.background = "#ff9800";
+                    btn.style.color = "white";
+                    btn.style.borderColor = "#f57c00";
+                } else {
+                    btn.style.background = "rgba(255,255,255,0.78)";
+                    btn.style.color = "var(--tcu-dark)";
+                    btn.style.borderColor = "rgba(0,122,83,0.14)";
+                }
+                renderParticipantList();
+            } catch(e) {
+                localHandRaised = false;
+            }
+            btn.disabled = false;
         }
 
         function showToast(message) {
             const stack = document.getElementById('toast-stack');
             if (!stack) return;
             const toast = document.createElement('div');
-            toast.className = 'app-toast';
-            toast.innerText = message;
-            stack.appendChild(toast);
-            setTimeout(() => toast.remove(), 2800);
+            toast.className = 'app-toast'; toast.innerText = message;
+            stack.appendChild(toast); setTimeout(() => toast.remove(), 2800);
         }
 
-        function raiseHand() {
-            const lang = document.getElementById('langSelect').value;
-            showToast(translations[lang].handRaised);
+        function openLeaveModal() {
+            const modal = document.getElementById('leave-modal');
+            modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false');
         }
-
-        function openLeaveModal() { document.getElementById('leave-modal').classList.add('show'); document.getElementById('leave-modal').setAttribute('aria-hidden', 'false'); }
-        function closeLeaveModal() { document.getElementById('leave-modal').classList.remove('show'); document.getElementById('leave-modal').setAttribute('aria-hidden', 'true'); }
+        function closeLeaveModal() {
+            const modal = document.getElementById('leave-modal');
+            modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true');
+        }
         function confirmLeaveRoom() { closeLeaveModal(); leaveRoom(); }
 
         function leaveRoom() {
@@ -1184,11 +1187,10 @@
             if (radarInterval) { clearInterval(radarInterval); radarInterval = null; }
             if (copyToastTimer) { clearTimeout(copyToastTimer); copyToastTimer = null; }
             stopTourTimer();
-            attachedAudioTracks.forEach(({ audioElement }) => audioElement.remove());
-            attachedAudioTracks.clear();
-            attachedVideoTracks.forEach(({ videoElement }) => videoElement.remove());
-            attachedVideoTracks.clear();
-            cameraEnabled = false; localDisplayName = ""; localRole = "";
+            attachedAudioTracks.forEach(({ audioElement }) => audioElement.remove()); attachedAudioTracks.clear();
+            attachedVideoTracks.forEach(({ videoElement }) => videoElement.remove()); attachedVideoTracks.clear();
+            
+            cameraEnabled = false; localDisplayName = ""; localRole = ""; localHandRaised = false;
             
             document.getElementById('active-dashboard').classList.add('hidden');
             document.getElementById('host-controls').classList.add('hidden');
@@ -1205,7 +1207,9 @@
             document.getElementById('qr-warning').style.display = 'none';
             document.getElementById('landing-page').classList.remove('hidden');
             
-            changeLanguage();
+            const lang = document.getElementById('langSelect').value;
+            document.getElementById('btn-host-action').innerText = translations[lang].startBtn;
+            document.getElementById('btn-listener-action').innerText = translations[lang].joinBtn;
         }
 
         window.onload = () => {
