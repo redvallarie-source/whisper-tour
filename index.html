@@ -232,14 +232,15 @@
             }
         }
 
+        // RUMUS JAM DIKEMBALIKAN KE VERSI AWAL + TOLERANSI 5 MENIT
         function generateToken(roomName, isHost) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
-            
-            // PERBAIKAN FATAL: Membuang "nbf" (waktu mulai) agar tidak ditolak server jika jam HP sedikit lambat/cepat
+            const now = Math.floor(Date.now() / 1000);
             const payload = JSON.stringify({
                 iss: API_KEY, 
                 sub: isHost ? "host-" + Math.floor(Math.random()*10000) : "listener-" + Math.floor(Math.random()*10000),
-                exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
+                nbf: now - 300, // Mundur 5 menit untuk toleransi jam
+                exp: now + 7200, // Aktif 2 jam
                 video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
             });
             return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
@@ -261,8 +262,6 @@
         async function joinRoom(role) {
             const isHost = role === 'host';
             const roomInput = isHost ? document.getElementById('hostRoom') : document.getElementById('listenerRoom');
-            
-            // PERBAIKAN: Memotong spasi yang tidak sengaja terketik (.trim())
             const roomName = roomInput.value.trim(); 
             const lang = document.getElementById('langSelect').value;
             
@@ -279,11 +278,18 @@
             try {
                 const token = generateToken(roomName, isHost);
                 currentRoom = new LivekitClient.Room();
-                await currentRoom.connect(LIVEKIT_URL, token);
+                
+                // SISTEM KETUK PINTU 2 KALI (Mencegah Connection Failed karena server baru bangun)
+                try {
+                    await currentRoom.connect(LIVEKIT_URL, token);
+                } catch (firstTry) {
+                    console.log("Server sedang bangun, mencoba lagi...");
+                    await new Promise(r => setTimeout(r, 2000));
+                    await currentRoom.connect(LIVEKIT_URL, token);
+                }
 
-                // CEK RUANGAN KOSONG (Kini lebih presisi)
                 if (!isHost) {
-                    await new Promise(resolve => setTimeout(resolve, 800)); 
+                    await new Promise(resolve => setTimeout(resolve, 1500)); 
                     if (currentRoom.participants.size === 0) {
                         currentRoom.disconnect();
                         currentRoom = null;
@@ -309,10 +315,11 @@
                         isMutedGlobal = false;
                         startVisualizer();
                         
-                        // Menjamin QR Code digambar dengan link bersih
+                        // MENGGAMBAR QR CODE DI SINI
                         const listenerLink = window.location.origin + window.location.pathname + "?room=" + encodeURIComponent(roomName);
                         document.getElementById('qrcode').innerHTML = "";
                         new QRCode(document.getElementById("qrcode"), { text: listenerLink, width: 160, height: 160 });
+                        
                     } catch (micErr) {
                         leaveRoom();
                         showInlineError('host', translations[lang].micError);
@@ -328,7 +335,6 @@
                 }
             } catch (e) {
                 console.error("Error Detail:", e);
-                // Menampilkan error nyata jika koneksi gagal
                 showInlineError(role, translations[lang].connError);
             } finally {
                 btn.innerText = originalText;
