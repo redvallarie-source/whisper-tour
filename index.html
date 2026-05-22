@@ -23,58 +23,28 @@
             font-family: 'Poppins', 'Noto Sans TC', sans-serif; 
             background: #f4f7f6; margin: 0; min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
-            position: relative; /* Penting untuk posisi header */
+            position: relative;
         }
 
-        /* --- DESIGN BARU: PREMIUM HEADER DI POJOK KIRI ATAS --- */
         .tcu-premium-header {
-            position: absolute; /* Kunci untuk menaruh di pojok */
-            top: 20px;
-            left: 30px;
-            display: flex;
-            align-items: center; /* Meratakan elemen di tengah secara vertikal */
-            gap: 15px; /* Jarak antar elemen */
+            position: absolute; top: 20px; left: 30px;
+            display: flex; align-items: center; gap: 15px;
         }
 
-        .tcu-logo {
-            width: 70px;
-            height: auto;
-            /* --- TRIK CSS: MEMBUAT BACKGROUND PUTIH JADI TRANSPARAN --- */
-            mix-blend-mode: multiply; 
-        }
+        .tcu-logo { width: 70px; height: auto; mix-blend-mode: multiply; }
+        .vertical-divider { width: 2px; height: 60px; background-color: var(--tcu-green); border-radius: 2px; }
+        .tcu-title { color: var(--tcu-dark); margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
 
-        .vertical-divider {
-            width: 2px;
-            height: 60px; /* Panjang garis */
-            background-color: var(--tcu-green);
-            border-radius: 2px;
-        }
-
-        .tcu-title {
-            color: var(--tcu-dark);
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        /* --- AKHIR DESIGN HEADER BARU --- */
-
-        /* Language Switcher */
-        .nav-lang {
-            width: 100%; display: flex; justify-content: flex-end; padding: 15px 25px; box-sizing: border-box;
-        }
+        .nav-lang { width: 100%; display: flex; justify-content: flex-end; padding: 15px 25px; box-sizing: border-box; }
         .nav-lang select {
             padding: 8px 15px; border-radius: 20px; border: 1px solid var(--tcu-green);
             background: white; color: var(--tcu-green); font-weight: 600; cursor: pointer;
         }
 
-        /* Tampilan Utama Di tengah */
-        .header { text-align: center; margin-top: 100px; /* Jarak dari header atas */ margin-bottom: 30px; padding: 0 20px; }
+        .header { text-align: center; margin-top: 100px; margin-bottom: 30px; padding: 0 20px; }
         .header h1 { color: var(--tcu-dark); margin: 0; font-size: 28px; }
         .header p { color: #666; margin: 5px 0 0; font-size: 14px; }
 
-        /* Role Selection Cards */
         .main-grid {
             display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 850px; padding: 0 20px; box-sizing: border-box;
         }
@@ -82,8 +52,7 @@
         .role-card {
             background: white; flex: 1; min-width: 300px; padding: 35px 25px;
             border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            text-align: center; transition: transform 0.3s ease;
-            border: 2px solid transparent;
+            text-align: center; transition: transform 0.3s ease; border: 2px solid transparent;
         }
         .role-card:hover { transform: translateY(-5px); border-color: var(--tcu-green); }
         .role-card h2 { color: var(--tcu-dark); margin-top: 0; }
@@ -103,13 +72,18 @@
         .btn-listener { background: #444; color: white; }
         button:hover { opacity: 0.9; transform: scale(1.02); }
 
-        /* Dashboard Active */
         .dashboard {
             width: 100%; max-width: 450px; background: white; padding: 40px;
             border-radius: 30px; box-shadow: 0 20px 50px rgba(0,122,83,0.1); text-align: center; margin-top: 50px;
         }
 
-        /* Mic Visualizer */
+        /* Lencana Jumlah Peserta */
+        .participant-badge {
+            background: var(--tcu-light); color: var(--tcu-dark); padding: 8px 20px;
+            border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 20px;
+            border: 1px solid rgba(0, 122, 83, 0.2);
+        }
+
         #visualizer { width: 100%; height: 60px; background: #eee; border-radius: 10px; margin: 15px 0; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 3px; }
         .bar { width: 5px; background: var(--tcu-green); border-radius: 10px; transition: height 0.1s; }
 
@@ -131,6 +105,7 @@
         <div class="vertical-divider"></div>
         <h1 class="tcu-title">Tzu Chi University</h1>
     </div>
+
     <div class="nav-lang">
         <select id="langSelect" onchange="changeLanguage()">
             <option value="en">English</option>
@@ -147,21 +122,26 @@
     <div class="main-grid" id="landing-page">
         <div class="role-card">
             <h2 id="txt-im-host">Host / Guide</h2>
-            <p id="txt-host-desc">Start a tour and broadcast your voice.</p>
+            <p id="txt-host-desc">Create a room and start broadcasting.</p>
             <input type="text" id="hostRoom" placeholder="Room ID (e.g. 1234)" value="1234">
-            <button class="btn-host" onclick="joinRoom('host')">🚀 Start Tour</button>
+            <button class="btn-host" onclick="joinRoom('host')">🚀 Create Room</button>
         </div>
 
         <div class="role-card">
             <h2 id="txt-im-listener">Listener / Guest</h2>
-            <p id="txt-listener-desc">Enter room ID to start listening.</p>
+            <p id="txt-listener-desc">Enter an active room ID to listen.</p>
             <input type="text" id="listenerRoom" placeholder="Room ID" value="">
-            <button class="btn-listener" onclick="joinRoom('listener')">🎧 Join Listening</button>
+            <button class="btn-listener" onclick="joinRoom('listener')">🎧 Join Room</button>
         </div>
     </div>
 
     <div id="active-dashboard" class="dashboard hidden">
         <h2 id="txt-active-room">Room Active</h2>
+        
+        <div class="participant-badge">
+            👥 <span id="txt-part-label">Participants:</span> <span id="participant-count-value">1</span>
+        </div>
+
         <div id="visual-indicator" class="listening-animation hidden"></div>
         
         <div id="host-controls" class="hidden">
@@ -174,162 +154,4 @@
             </div>
         </div>
 
-        <div id="listener-controls" class="hidden">
-            <div id="listener-pulse" class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
-            <p id="txt-connected">Connected. Hearing the guide...</p>
-        </div>
-
-        <button class="btn-danger" style="margin-top:20px" onclick="leaveRoom()" id="txt-end">End / Leave</button>
-    </div>
-
-    <script>
-        // DATA BAHASA
-        const translations = {
-            en: {
-                title: "Whisper Tour", subtitle: "Professional Guide System", imHost: "Host / Guide", imListener: "Listener / Guest",
-                hostDesc: "Start a tour and broadcast your voice.", listenerDesc: "Enter room ID to start listening.",
-                startBtn: "🚀 Start Tour", joinBtn: "🎧 Join Listening", active: "Room Active", micStatus: "Microphone Activity:",
-                mute: "Mute", unmute: "Unmute", scan: "Share this QR with guests:", connected: "Connected. Hearing the guide...", end: "End / Leave"
-            },
-            id: {
-                title: "Whisper Tour", subtitle: "Sistem Pemandu Profesional", imHost: "Host / Pemandu", imListener: "Pendengar / Tamu",
-                hostDesc: "Mulai tur dan siarkan suaramu.", listenerDesc: "Masukkan ID ruangan untuk mendengar.",
-                startBtn: "🚀 Mulai Tur", joinBtn: "🎧 Gabung Mendengar", active: "Ruangan Aktif", micStatus: "Aktivitas Mikrofon:",
-                mute: "Bisu", unmute: "Nyalakan Suara", scan: "Bagikan QR ini ke tamu:", connected: "Terhubung. Mendengarkan pemandu...", end: "Akhiri / Keluar"
-            },
-            zh: {
-                title: "隨身導覽系統", subtitle: "專業語音導覽", imHost: "導覽員 / 主持人", imListener: "聽眾 / 遊客",
-                hostDesc: "開始導覽並廣播您的聲音。", listenerDesc: "輸入房間 ID 開始收聽。",
-                startBtn: "🚀 Mulai Tur", joinBtn: "🎧 加入收聽", active: "房間使用中", micStatus: "麥克風活動：",
-                mute: "靜音", unmute: "解除靜音", scan: "分享二維碼給遊客：", connected: "已連線。正在收聽導覽...", end: "結束 / 離開"
-            }
-        };
-
-        const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
-        const API_KEY = "API5mBWCdaKNLLQ";
-        const API_SECRET = "xfZhky6tUeDAYufb8ewdUZOy2vmaJXqOZpfDhpCybiGB";
-        
-        let currentRoom = null;
-        let audioCtx, analyser, dataArray;
-
-        // Fungsi Ganti Bahasa
-        function changeLanguage() {
-            const lang = document.getElementById('langSelect').value;
-            const t = translations[lang];
-            document.getElementById('txt-title').innerText = t.title;
-            document.getElementById('txt-subtitle').innerText = t.subtitle;
-            document.getElementById('txt-im-host').innerText = t.imHost;
-            document.getElementById('txt-im-listener').innerText = t.imListener;
-            document.getElementById('txt-host-desc').innerText = t.hostDesc;
-            document.getElementById('txt-listener-desc').innerText = t.listenerDesc;
-            document.getElementById('txt-active-room').innerText = t.active;
-            document.getElementById('txt-mic-status').innerText = t.micStatus;
-            document.getElementById('txt-scan-desc').innerText = t.scan;
-            document.getElementById('txt-connected').innerText = t.connected;
-            document.getElementById('txt-end').innerText = t.end;
-            document.getElementById('btnMute').innerText = t.mute;
-        }
-
-        function generateToken(roomName, isHost) {
-            const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
-            const payload = JSON.stringify({
-                iss: API_KEY, sub: isHost ? "host-" + Math.random() : "listener-" + Math.random(),
-                nbf: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
-                video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
-            });
-            return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
-        }
-
-        async function joinRoom(role) {
-            const isHost = role === 'host';
-            const roomName = isHost ? document.getElementById('hostRoom').value : document.getElementById('listenerRoom').value;
-            if (!roomName) return alert("Please enter Room ID!");
-
-            document.getElementById('landing-page').classList.add('hidden');
-            document.getElementById('active-dashboard').classList.remove('hidden');
-
-            try {
-                const token = generateToken(roomName, isHost);
-                currentRoom = new LivekitClient.Room();
-                await currentRoom.connect(LIVEKIT_URL, token);
-
-                if (isHost) {
-                    document.getElementById('host-controls').classList.remove('hidden');
-                    await currentRoom.localParticipant.setMicrophoneEnabled(true);
-                    startVisualizer();
-                    
-                    const listenerLink = window.location.origin + window.location.pathname + "?room=" + roomName;
-                    document.getElementById('qrcode').innerHTML = "";
-                    new QRCode(document.getElementById("qrcode"), { text: listenerLink, width: 150, height: 150 });
-                } else {
-                    document.getElementById('listener-controls').classList.remove('hidden');
-                    currentRoom.on('trackSubscribed', (track) => {
-                        if (track.kind === 'audio') {
-                            const el = track.attach();
-                            document.body.appendChild(el);
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error(e);
-                alert("Connection Failed!");
-                leaveRoom();
-            }
-        }
-
-        function startVisualizer() {
-            const container = document.getElementById('visualizer');
-            container.innerHTML = "";
-            const bars = [];
-            for (let i = 0; i < 20; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'bar';
-                bar.style.height = '10px';
-                container.appendChild(bar);
-                bars.push(bar);
-            }
-
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                audioCtx = new AudioContext();
-                const source = audioCtx.createMediaStreamSource(stream);
-                analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 64;
-                source.connect(analyser);
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-                function draw() {
-                    if (!currentRoom) return;
-                    requestAnimationFrame(draw);
-                    analyser.getByteFrequencyData(dataArray);
-                    bars.forEach((bar, i) => {
-                        const val = dataArray[i] || 0;
-                        bar.style.height = (val / 2) + 5 + 'px';
-                    });
-                }
-                draw();
-            });
-        }
-
-        function toggleMute() {
-            const isMuted = currentRoom.localParticipant.isMicrophoneEnabled;
-            currentRoom.localParticipant.setMicrophoneEnabled(!isMuted);
-            const lang = document.getElementById('langSelect').value;
-            document.getElementById('btnMute').innerText = isMuted ? translations[lang].unmute : translations[lang].mute;
-            document.getElementById('btnMute').style.background = isMuted ? "#ea4335" : "#f4b400";
-        }
-
-        function leaveRoom() {
-            if (currentRoom) currentRoom.disconnect();
-            location.reload();
-        }
-
-        window.onload = () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('room')) {
-                document.getElementById('listenerRoom').value = urlParams.get('room');
-            }
-            changeLanguage();
-        };
-    </script>
-</body>
-</html>
+        <div id="
