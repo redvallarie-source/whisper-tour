@@ -32,13 +32,18 @@
             --tcu-light: #f0f7f4;
             --white: #ffffff;
             --error-red: #d93025;
+            --ink: #1f2933;
+            --muted: #647067;
+            --line: #dfe8e3;
         }
 
         body { 
             font-family: 'Poppins', 'Noto Sans TC', sans-serif; 
-            background: #f4f7f6; margin: 0; min-height: 100vh;
+            background: linear-gradient(180deg, #f7faf8 0%, #eef5f1 100%);
+            margin: 0; min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
             position: relative;
+            color: var(--ink);
         }
 
         .tcu-premium-header {
@@ -46,18 +51,24 @@
             display: flex; align-items: center; gap: 15px;
         }
         .tcu-logo { width: 70px; height: auto; mix-blend-mode: multiply; }
+        .tcu-logo-fallback {
+            width: 70px; height: 52px; display: none; align-items: center; justify-content: center;
+            border: 1px solid var(--line); border-radius: 8px; color: var(--tcu-dark);
+            background: white; font-weight: 700; letter-spacing: 0;
+        }
         .vertical-divider { width: 2px; height: 60px; background-color: var(--tcu-green); border-radius: 2px; }
         .tcu-title { color: var(--tcu-dark); margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
 
-        .nav-lang { width: 100%; display: flex; justify-content: flex-end; padding: 15px 25px; box-sizing: border-box; }
+        .nav-lang { width: 100%; display: flex; justify-content: flex-end; padding: 18px 28px; box-sizing: border-box; }
         .nav-lang select {
-            padding: 8px 15px; border-radius: 20px; border: 1px solid var(--tcu-green);
-            background: white; color: var(--tcu-green); font-weight: 600; cursor: pointer; outline: none;
+            padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line);
+            background: white; color: var(--tcu-dark); font-weight: 600; cursor: pointer; outline: none;
+            box-shadow: 0 6px 16px rgba(0, 86, 59, 0.06);
         }
 
-        .header { text-align: center; margin-top: 100px; margin-bottom: 30px; padding: 0 20px; }
-        .header h1 { color: var(--tcu-dark); margin: 0; font-size: 28px; }
-        .header p { color: #666; margin: 5px 0 0; font-size: 14px; }
+        .header { text-align: center; margin-top: 100px; margin-bottom: 28px; padding: 0 20px; }
+        .header h1 { color: var(--tcu-dark); margin: 0; font-size: 32px; font-weight: 700; }
+        .header p { color: var(--muted); margin: 6px 0 0; font-size: 14px; }
 
         .main-grid {
             display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 850px; padding: 0 20px; box-sizing: border-box;
@@ -65,24 +76,26 @@
         
         .role-card {
             background: white; flex: 1; min-width: 300px; padding: 35px 25px;
-            border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            text-align: center; transition: transform 0.3s ease; border: 2px solid transparent;
+            border-radius: 8px; box-shadow: 0 14px 35px rgba(0, 86, 59, 0.08);
+            text-align: center; transition: transform 0.2s ease, border-color 0.2s ease;
+            border: 1px solid var(--line);
         }
-        .role-card:hover { transform: translateY(-5px); border-color: var(--tcu-green); }
+        .role-card:hover { transform: translateY(-3px); border-color: rgba(0, 122, 83, 0.35); }
         .role-card h2 { color: var(--tcu-dark); margin-top: 0; }
-        .role-card p { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .role-card p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
         
         input { 
-            padding: 15px; width: 100%; box-sizing: border-box; border-radius: 12px; 
-            font-size: 16px; border: 2px solid #eee; text-align: center; 
+            padding: 14px; width: 100%; box-sizing: border-box; border-radius: 8px; 
+            font-size: 16px; border: 1px solid var(--line); text-align: center; 
             margin-bottom: 10px; font-weight: bold; font-family: 'Poppins', sans-serif;
+            background: #fbfdfc;
         }
         input:focus { outline: none; border-color: var(--tcu-green); }
 
         .error-text { color: var(--error-red); font-size: 13px; font-weight: 500; margin-bottom: 15px; min-height: 20px; display: none; }
 
         button { 
-            padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; 
+            padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; 
             font-weight: 700; cursor: pointer; border: none; transition: 0.2s;
             font-family: 'Poppins', sans-serif;
         }
@@ -93,7 +106,8 @@
 
         .dashboard {
             width: 100%; max-width: 450px; background: white; padding: 40px;
-            border-radius: 30px; box-shadow: 0 20px 50px rgba(0,122,83,0.1); text-align: center; margin-top: 50px;
+            border-radius: 8px; box-shadow: 0 20px 45px rgba(0,122,83,0.1);
+            text-align: center; margin-top: 50px; border: 1px solid var(--line);
         }
 
         .participant-badge {
@@ -102,10 +116,10 @@
             border: 1px solid rgba(0, 122, 83, 0.2);
         }
 
-        #visualizer { width: 100%; height: 60px; background: #eee; border-radius: 10px; margin: 15px 0; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 3px; }
+        #visualizer { width: 100%; height: 60px; background: #eef3f0; border-radius: 8px; margin: 15px 0; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 3px; }
         .bar { width: 5px; background: var(--tcu-green); border-radius: 10px; transition: height 0.1s; }
 
-        .qr-area { background: #f9f9f9; padding: 20px; border-radius: 20px; margin-top: 20px; border: 1px dashed #ccc; }
+        .qr-area { background: #fbfdfc; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px dashed #b9cbc2; }
         #qrcode { display: flex; justify-content: center; margin-top: 15px; }
         #qrcode img, #qrcode canvas { width: 160px; height: 160px; }
         .qr-link { display: block; margin-top: 12px; color: var(--tcu-dark); font-size: 12px; overflow-wrap: anywhere; text-decoration: none; }
@@ -129,7 +143,8 @@
 <body>
 
     <div class="tcu-premium-header">
-        <img src="tcu-logo.png" class="tcu-logo" alt="TCU Logo">
+        <img src="tcu-logo.png" class="tcu-logo" alt="TCU Logo" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';">
+        <div id="logoFallback" class="tcu-logo-fallback">TCU</div>
         <div class="vertical-divider"></div>
         <h1 class="tcu-title">Tzu Chi University</h1>
     </div>
@@ -153,7 +168,7 @@
             <p id="txt-host-desc">Create a room and start broadcasting.</p>
             <input type="text" id="hostRoom" placeholder="Room ID (e.g. 1234)" value="1234">
             <div id="host-error" class="error-text"></div>
-            <button class="btn-host" onclick="joinRoom('host')" id="btn-host-action">🚀 Create Room</button>
+            <button class="btn-host" onclick="joinRoom('host')" id="btn-host-action">Create Room</button>
         </div>
 
         <div class="role-card">
@@ -161,7 +176,7 @@
             <p id="txt-listener-desc">Enter an active room ID to listen.</p>
             <input type="text" id="listenerRoom" placeholder="Room ID" value="">
             <div id="listener-error" class="error-text"></div>
-            <button class="btn-listener" onclick="joinRoom('listener')" id="btn-listener-action">🎧 Join Room</button>
+            <button class="btn-listener" onclick="joinRoom('listener')" id="btn-listener-action">Join Room</button>
         </div>
     </div>
 
@@ -199,29 +214,32 @@
             en: {
                 title: "Whisper Tour", subtitle: "Professional Guide System", imHost: "Host / Guide", imListener: "Listener / Guest",
                 hostDesc: "Create a room and start broadcasting.", listenerDesc: "Enter an active room ID to listen.",
-                startBtn: "🚀 Create Room", joinBtn: "🎧 Join Room", active: "Room Active", micStatus: "Microphone Activity:",
+                startBtn: "Create Room", joinBtn: "Join Room", active: "Room Active", micStatus: "Microphone Activity:",
                 mute: "Mute", unmute: "Unmute", scan: "Share this QR with guests:", connected: "Connected. Hearing the guide...", end: "End / Leave",
                 emptyId: "⚠️ Please enter a Room ID!", connecting: "⏳ Connecting...", micError: "⚠️ Microphone blocked by browser!", 
                 connError: "⚠️ Connection Failed. Check internet.", partLabel: "Participants:",
-                waitingHost: "⏳ Room is empty. Waiting for Guide to join..."
+                waitingHost: "⏳ Room is empty. Waiting for Guide to join...",
+                inactiveRoom: "⚠️ Room is not active yet. Please wait for the guide to create it."
             },
             id: {
                 title: "Whisper Tour", subtitle: "Sistem Pemandu Profesional", imHost: "Host / Pemandu", imListener: "Pendengar / Tamu",
                 hostDesc: "Buat ruangan dan siarkan suaramu.", listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
-                startBtn: "🚀 Buat Ruangan", joinBtn: "🎧 Gabung Ruangan", active: "Ruangan Aktif", micStatus: "Aktivitas Mikrofon:",
+                startBtn: "Buat Ruangan", joinBtn: "Gabung Ruangan", active: "Ruangan Aktif", micStatus: "Aktivitas Mikrofon:",
                 mute: "Bisu", unmute: "Nyalakan Suara", scan: "Bagikan QR ini ke tamu:", connected: "Terhubung. Mendengarkan pemandu...", end: "Akhiri / Keluar",
                 emptyId: "⚠️ Masukkan ID Ruangan dulu!", connecting: "⏳ Menghubungkan...", micError: "⚠️ Izin mikrofon ditolak browser!", 
                 connError: "⚠️ Koneksi Gagal. Cek internet.", partLabel: "Peserta:",
-                waitingHost: "⏳ Ruangan kosong. Menunggu Pemandu masuk..."
+                waitingHost: "⏳ Ruangan kosong. Menunggu Pemandu masuk...",
+                inactiveRoom: "⚠️ Ruangan belum aktif. Tunggu pemandu membuat ruangan dulu."
             },
             zh: {
                 title: "隨身導覽系統", subtitle: "專業語音導覽", imHost: "導覽員 / 主持人", imListener: "聽眾 / 遊客",
                 hostDesc: "建立房間並開始廣播。", listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
-                startBtn: "🚀 建立房間", joinBtn: "🎧 加入房間", active: "房間使用中", micStatus: "麥克風活動：",
+                startBtn: "建立房間", joinBtn: "加入房間", active: "房間使用中", micStatus: "麥克風活動：",
                 mute: "靜音", unmute: "解除靜音", scan: "分享二維碼給遊客：", connected: "已連線。正在收聽導覽...", end: "結束 / 離開",
                 emptyId: "⚠️ 請輸入房間 ID！", connecting: "⏳ 連線中...", micError: "⚠️ 瀏覽器拒絕了麥克風權限！", 
                 connError: "⚠️ 連線失敗，請檢查網路。", partLabel: "參與人數:",
-                waitingHost: "⏳ 房間是空的。等待導覽員加入..."
+                waitingHost: "⏳ 房間是空的。等待導覽員加入...",
+                inactiveRoom: "⚠️ 房間尚未啟用，請等待導覽員建立房間。"
             }
         };
 
@@ -277,6 +295,25 @@
             return currentRoom.remoteParticipants || currentRoom.participants || new Map();
         }
 
+        function hasRemoteHost() {
+            let foundHost = false;
+            getRemoteParticipants().forEach((participant) => {
+                if (participant.identity && participant.identity.startsWith('host-')) {
+                    foundHost = true;
+                }
+            });
+            return foundHost;
+        }
+
+        async function waitForRemoteHost(timeoutMs = 2500) {
+            const startTime = Date.now();
+            while (Date.now() - startTime < timeoutMs) {
+                if (hasRemoteHost()) return true;
+                await new Promise(resolve => setTimeout(resolve, 250));
+            }
+            return hasRemoteHost();
+        }
+
         function updateParticipantCount() {
             if (!currentRoom) return;
             const totalCount = getRemoteParticipants().size + 1;
@@ -313,7 +350,7 @@
             const statusText = document.getElementById('txt-connected');
             const lang = document.getElementById('langSelect').value;
             
-            if(getRemoteParticipants().size === 0) {
+            if(!hasRemoteHost()) {
                 statusText.innerText = translations[lang].waitingHost;
                 statusText.style.color = "#d93025"; 
             } else {
@@ -435,9 +472,24 @@
             if (eventName) room.on(eventName, handler);
         }
 
+        function leaveIfHostIsMissing() {
+            setTimeout(() => {
+                const listenerVisible = !document.getElementById('listener-controls').classList.contains('hidden');
+                if (currentRoom && listenerVisible && !hasRemoteHost()) {
+                    const lang = document.getElementById('langSelect').value;
+                    leaveRoom();
+                    showInlineError('listener', translations[lang].inactiveRoom, 6000);
+                }
+            }, 1200);
+        }
+
         function registerRoomEvents(room, isHost) {
             onRoomEvent(room, LivekitClient.RoomEvent.ParticipantConnected, () => { updateParticipantCount(); checkHostStatus(); });
-            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantDisconnected, () => { updateParticipantCount(); checkHostStatus(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantDisconnected, () => {
+                updateParticipantCount();
+                checkHostStatus();
+                if (!isHost) leaveIfHostIsMissing();
+            });
             onRoomEvent(room, LivekitClient.RoomEvent.Connected, () => { updateParticipantCount(); checkHostStatus(); });
             onRoomEvent(room, LivekitClient.RoomEvent.Reconnected, () => { updateParticipantCount(); checkHostStatus(); attachExistingAudioTracks(); });
             onRoomEvent(room, LivekitClient.RoomEvent.Disconnected, () => { clearInterval(radarInterval); radarInterval = null; });
@@ -482,6 +534,12 @@
                 currentRoom = new LivekitClient.Room();
                 registerRoomEvents(currentRoom, isHost);
                 await currentRoom.connect(LIVEKIT_URL, token, { autoSubscribe: true });
+
+                if (!isHost && !(await waitForRemoteHost())) {
+                    const inactiveError = new Error('Room has no active host');
+                    inactiveError.userMessage = translations[lang].inactiveRoom;
+                    throw inactiveError;
+                }
 
                 document.getElementById('landing-page').classList.add('hidden');
                 document.getElementById('active-dashboard').classList.remove('hidden');
