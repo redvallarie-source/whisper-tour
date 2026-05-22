@@ -35,6 +35,7 @@
             --ink: #1f2933;
             --muted: #647067;
             --line: #dfe8e3;
+            --tcu-blue: #1f5d7a;
         }
 
         body { 
@@ -44,6 +45,15 @@
             display: flex; flex-direction: column; align-items: center;
             position: relative;
             color: var(--ink);
+            overflow-x: hidden;
+        }
+        body::before {
+            content: ""; position: fixed; inset: 0; pointer-events: none;
+            background:
+                linear-gradient(90deg, rgba(0,122,83,0.055) 1px, transparent 1px),
+                linear-gradient(180deg, rgba(31,93,122,0.045) 1px, transparent 1px);
+            background-size: 92px 92px;
+            mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.15));
         }
 
         .tcu-premium-header {
@@ -72,6 +82,15 @@
 
         .main-grid {
             display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 850px; padding: 0 20px; box-sizing: border-box;
+            position: relative;
+        }
+        .main-grid::before {
+            content: ""; position: absolute; inset: -18px 8px 18px;
+            border: 1px solid rgba(0, 122, 83, 0.16); border-radius: 8px;
+            background:
+                linear-gradient(90deg, transparent 49.8%, rgba(31,93,122,0.1) 50%, transparent 50.2%),
+                linear-gradient(180deg, rgba(0,122,83,0.08), transparent 18%, transparent 82%, rgba(0,122,83,0.08));
+            pointer-events: none;
         }
         
         .role-card {
@@ -79,6 +98,16 @@
             border-radius: 8px; box-shadow: 0 14px 35px rgba(0, 86, 59, 0.08);
             text-align: center; transition: transform 0.2s ease, border-color 0.2s ease;
             border: 1px solid var(--line);
+            position: relative; overflow: hidden; z-index: 1;
+        }
+        .role-card::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+            background: linear-gradient(90deg, var(--tcu-green), var(--tcu-blue));
+        }
+        .role-card::after {
+            content: ""; position: absolute; right: 18px; bottom: 18px; width: 42px; height: 42px;
+            border-right: 2px solid rgba(0, 122, 83, 0.22);
+            border-bottom: 2px solid rgba(31, 93, 122, 0.2);
         }
         .role-card:hover { transform: translateY(-3px); border-color: rgba(0, 122, 83, 0.35); }
         .role-card h2 { color: var(--tcu-dark); margin-top: 0; }
@@ -108,6 +137,11 @@
             width: 100%; max-width: 450px; background: white; padding: 40px;
             border-radius: 8px; box-shadow: 0 20px 45px rgba(0,122,83,0.1);
             text-align: center; margin-top: 50px; border: 1px solid var(--line);
+            position: relative; overflow: hidden;
+        }
+        .dashboard::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+            background: linear-gradient(90deg, var(--tcu-green), var(--tcu-blue));
         }
 
         .participant-badge {
@@ -134,9 +168,16 @@
         @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(0,122,83,0.4); } 70% { box-shadow: 0 0 0 20px rgba(0,122,83,0); } 100% { box-shadow: 0 0 0 0 rgba(0,122,83,0); } }
         
         @media (max-width: 600px) {
-            .tcu-premium-header { top: 15px; left: 15px; }
-            .tcu-title { display: none; }
-            .nav-lang { top: 15px; right: 15px; }
+            .tcu-premium-header { top: 18px; left: 20px; gap: 9px; max-width: calc(100% - 190px); }
+            .tcu-logo { width: 54px; }
+            .tcu-logo-fallback { width: 54px; height: 46px; font-size: 13px; }
+            .vertical-divider { height: 50px; }
+            .tcu-title { display: block; font-size: 14px; line-height: 1.15; max-width: 92px; letter-spacing: 0; }
+            .nav-lang { padding: 22px 20px 0 0; }
+            .nav-lang select { width: 150px; }
+            .header { margin-top: 150px; }
+            .main-grid { padding: 0 28px 32px; }
+            .main-grid::before { inset: -14px 16px 18px; }
         }
     </style>
 </head>
