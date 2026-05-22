@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whisper Tour - TCU Premium</title>
+    <title>Whisper Tour - TCU Edition</title>
     
     <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.9.0/jsrsasign-all-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
+        /* 100% CSS ORIGINAL DARI NICHELLE LELE.HTML */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
 
         :root {
@@ -57,7 +58,6 @@
             animation: meshDrift 18s ease-in-out infinite alternate;
         }
 
-        /* Full Width Banner */
         .tcu-premium-header {
             width: 100%; min-height: 92px; padding: 16px 30px;
             box-sizing: border-box;
@@ -65,27 +65,43 @@
             border-bottom: 1px solid rgba(0, 122, 83, 0.12);
             box-shadow: 0 18px 44px rgba(0, 86, 59, 0.08);
             display: flex; align-items: center; gap: 15px;
-            z-index: 2; position: relative;
+            z-index: 2;
+            position: relative;
         }
         .tcu-logo { width: 70px; height: auto; mix-blend-mode: multiply; }
+        .tcu-logo-fallback {
+            width: 70px; height: 52px; display: none; align-items: center; justify-content: center;
+            border: 1px solid rgba(0, 122, 83, 0.16); border-radius: 18px; color: var(--tcu-dark);
+            background: rgba(255,255,255,0.84); font-weight: 700; letter-spacing: 0;
+            box-shadow: 0 14px 30px rgba(0, 86, 59, 0.08);
+        }
         .vertical-divider { width: 2px; height: 60px; background-color: var(--tcu-green); border-radius: 2px; }
         .tcu-title { color: var(--tcu-dark); margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
 
-        .nav-lang { position: absolute; top: 25px; right: 30px; z-index: 3; }
+        .nav-lang { width: 100%; display: flex; justify-content: flex-end; padding: 18px 28px; box-sizing: border-box; position: absolute; top: 0; right: 0; z-index: 3; }
         .nav-lang select {
             padding: 11px 16px; border-radius: 16px; border: 1px solid rgba(0, 122, 83, 0.14);
             background: rgba(255,255,255,0.88); color: var(--tcu-dark); font-weight: 600; cursor: pointer; outline: none;
-            box-shadow: 0 14px 28px rgba(0, 86, 59, 0.08); backdrop-filter: blur(12px);
+            box-shadow: 0 14px 28px rgba(0, 86, 59, 0.08);
+            backdrop-filter: blur(12px);
         }
 
         .header { text-align: center; margin-top: 62px; margin-bottom: 44px; padding: 0 20px; position: relative; z-index: 1; }
         .header h1 { color: var(--tcu-dark); margin: 0; font-size: 52px; font-weight: 700; line-height: 1; text-shadow: 0 18px 42px rgba(0, 86, 59, 0.14); }
         .header p { color: #51655d; margin: 14px 0 0; font-size: 15px; font-weight: 600; }
 
-        /* Kartu Kaca (Glassmorphism) */
         .main-grid {
             display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; width: 100%; max-width: 980px; padding: 0 26px 44px; box-sizing: border-box;
             position: relative;
+        }
+        .main-grid::before {
+            content: ""; position: absolute; inset: -22px 10px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.62); border-radius: 38px;
+            background:
+                linear-gradient(90deg, transparent 49.8%, rgba(31,93,122,0.08) 50%, transparent 50.2%),
+                linear-gradient(180deg, rgba(255,255,255,0.5), transparent 18%, transparent 82%, rgba(0,122,83,0.08));
+            pointer-events: none;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 24px 80px rgba(0, 86, 59, 0.08);
         }
         
         .role-card {
@@ -93,14 +109,26 @@
             flex: 1; min-width: 310px; padding: 48px 32px 38px;
             border-radius: 34px; box-shadow: 0 30px 90px rgba(0, 86, 59, 0.15), inset 0 1px 0 rgba(255,255,255,0.82);
             text-align: center; transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-            border: 1px solid rgba(255, 255, 255, 0.64); position: relative; overflow: hidden; z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.64);
+            position: relative; overflow: hidden; z-index: 1;
             backdrop-filter: blur(22px);
+        }
+        .role-card::before {
+            content: ""; position: absolute; top: -55%; left: -25%; right: -25%; height: 85%;
+            background: radial-gradient(circle at 50% 100%, rgba(255,255,255,0.7), transparent 58%);
+            pointer-events: none;
+        }
+        .role-card::after {
+            content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+            background: linear-gradient(135deg, rgba(255,255,255,0.72), transparent 35%, rgba(0,122,83,0.09));
+            opacity: 0.72;
         }
         .role-card:hover { transform: translateY(-8px); border-color: rgba(255, 255, 255, 0.9); box-shadow: 0 38px 110px rgba(0, 86, 59, 0.22), 0 0 38px rgba(0, 122, 83, 0.12); }
         .role-card > * { position: relative; z-index: 1; }
         .role-icon {
             width: 70px; height: 70px; margin: 0 auto 20px; border-radius: 24px;
-            display: flex; align-items: center; justify-content: center; color: var(--tcu-dark);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--tcu-dark);
             background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(229,248,239,0.7));
             box-shadow: 0 18px 40px rgba(0, 86, 59, 0.14), inset 0 1px 0 rgba(255,255,255,0.95);
             border: 1px solid rgba(255,255,255,0.85);
@@ -112,18 +140,22 @@
         .room-input-row { display: flex; gap: 10px; align-items: stretch; margin-bottom: 10px; }
         .room-input-row input { margin-bottom: 0; min-width: 0; }
         .icon-action-btn {
-            width: 54px; min-width: 54px; padding: 0; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center;
-            color: var(--tcu-dark); background: rgba(255,255,255,0.78); border: 1px solid rgba(0,122,83,0.12);
+            width: 54px; min-width: 54px; padding: 0; border-radius: 16px;
+            display: inline-flex; align-items: center; justify-content: center;
+            color: var(--tcu-dark);
+            background: rgba(255,255,255,0.78);
+            border: 1px solid rgba(0,122,83,0.12);
             box-shadow: 0 10px 24px rgba(0, 86, 59, 0.08), inset 0 1px 0 rgba(255,255,255,0.9);
-            cursor: pointer;
         }
+        .icon-action-btn svg { width: 22px; height: 22px; }
         .icon-action-btn:hover { color: white; background: linear-gradient(135deg, var(--tcu-green), var(--sea-blue)); }
         
         input { 
             padding: 15px; width: 100%; box-sizing: border-box; border-radius: 16px; 
             font-size: 16px; border: 1px solid rgba(0, 122, 83, 0.14); text-align: center; 
             margin-bottom: 10px; font-weight: bold; font-family: 'Poppins', sans-serif;
-            background: rgba(255,255,255,0.74); box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 10px 22px rgba(0, 86, 59, 0.05);
+            background: rgba(255,255,255,0.74);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 10px 22px rgba(0, 86, 59, 0.05);
         }
         input:focus { outline: none; border-color: var(--tcu-green); box-shadow: 0 0 0 4px rgba(0, 122, 83, 0.08); }
 
@@ -132,118 +164,216 @@
         button { 
             padding: 15px; width: 100%; border-radius: 16px; font-size: 16px; 
             font-weight: 700; cursor: pointer; border: none; transition: 0.22s cubic-bezier(.2,.8,.2,1);
-            font-family: 'Poppins', sans-serif; position: relative; overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            position: relative; overflow: hidden;
         }
+        button::before {
+            content: ""; position: absolute; top: 0; left: -70%; width: 45%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.42), transparent);
+            transform: skewX(-20deg); transition: left 0.55s ease;
+        }
+        button:hover::before { left: 125%; }
         .btn-host { background: linear-gradient(135deg, #008f65, var(--tcu-green) 48%, var(--sea-blue)); color: white; box-shadow: 0 16px 30px rgba(0, 122, 83, 0.25), inset 0 1px 0 rgba(255,255,255,0.32); }
         .btn-listener { background: linear-gradient(135deg, #253d42, #236176 52%, #0f7664); color: white; box-shadow: 0 16px 30px rgba(31, 93, 122, 0.21), inset 0 1px 0 rgba(255,255,255,0.24); }
         button:hover { opacity: 0.98; transform: translateY(-3px); }
         button:active { transform: translateY(1px) scale(0.985); }
         button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-        /* Dashboard dan Sidebar Peserta */
         .dashboard-shell {
             width: 100%; max-width: 1180px; padding: 0 26px 46px; box-sizing: border-box;
             display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 22px;
             align-items: start; margin-top: 28px;
         }
         .dashboard {
-            width: 100%; background: linear-gradient(145deg, rgba(255,255,255,0.78), rgba(255,255,255,0.54)); padding: 42px;
+            width: 100%; max-width: none; background: linear-gradient(145deg, rgba(255,255,255,0.78), rgba(255,255,255,0.54)); padding: 42px;
             border-radius: 32px; box-shadow: 0 30px 90px rgba(0,122,83,0.16), inset 0 1px 0 rgba(255,255,255,0.86);
-            text-align: center; border: 1px solid rgba(255,255,255,0.64); backdrop-filter: blur(22px);
+            text-align: center; margin-top: 0; border: 1px solid rgba(255,255,255,0.64);
+            position: relative; overflow: hidden;
+            backdrop-filter: blur(22px);
         }
-        
+        .dashboard::before {
+            content: ""; position: absolute; top: -38%; left: -15%; right: -15%; height: 62%;
+            background: radial-gradient(circle at 50% 100%, rgba(255,255,255,0.72), transparent 56%);
+        }
+        .dashboard > * { position: relative; z-index: 1; }
+
         .live-strip {
             display: flex; justify-content: space-between; align-items: center; gap: 12px;
-            margin: -10px 0 20px; padding: 10px 12px; border-radius: 18px; background: rgba(255,255,255,0.58);
+            margin: -10px 0 20px; padding: 10px 12px;
+            border-radius: 18px; background: rgba(255,255,255,0.58);
             border: 1px solid rgba(255,255,255,0.7);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
         }
         .live-badge {
             display: inline-flex; align-items: center; gap: 8px; color: #b42318; font-size: 12px; font-weight: 700;
             padding: 7px 11px; border-radius: 999px; background: #fff1ef; border: 1px solid rgba(180,35,24,0.14);
+            box-shadow: 0 0 24px rgba(225,29,72,0.22);
         }
-        .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #e11d48; animation: livePulse 1.4s infinite; }
+        .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #e11d48; box-shadow: 0 0 0 0 rgba(225,29,72,0.45); animation: livePulse 1.4s infinite; }
         .tour-timer { font-variant-numeric: tabular-nums; color: var(--tcu-dark); font-weight: 700; font-size: 13px; }
 
-        .participant-badge { background: rgba(240, 247, 244, 0.92); color: var(--tcu-dark); padding: 9px 20px; border-radius: 999px; display: inline-block; font-weight: bold; margin-bottom: 20px; border: 1px solid rgba(0, 122, 83, 0.2); }
+        .participant-badge {
+            background: rgba(240, 247, 244, 0.92); color: var(--tcu-dark); padding: 9px 20px;
+            border-radius: 999px; display: inline-block; font-weight: bold; margin-bottom: 20px;
+            border: 1px solid rgba(0, 122, 83, 0.2);
+        }
 
-        /* Avatar dan Visualizer */
         .visualizer-stage {
             display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 14px; align-items: center;
-            margin: 16px 0 18px; padding: 14px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.78);
-            background: radial-gradient(circle at 10% 20%, rgba(0, 122, 83, 0.12), transparent 26%), rgba(255,255,255,0.62);
+            margin: 16px 0 18px; padding: 14px; border-radius: 24px;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(0, 122, 83, 0.12), transparent 26%),
+                radial-gradient(circle at 92% 76%, rgba(31, 93, 122, 0.12), transparent 30%),
+                rgba(255,255,255,0.62);
+            border: 1px solid rgba(255,255,255,0.78);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.82), 0 18px 38px rgba(0, 86, 59, 0.08);
         }
         .guide-avatar {
             width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: var(--tcu-dark); background: linear-gradient(145deg, #ffffff, #dff5ea); border: 1px solid rgba(0, 122, 83, 0.18);
+            color: var(--tcu-dark); background: linear-gradient(145deg, #ffffff, #dff5ea);
+            border: 1px solid rgba(0, 122, 83, 0.18); box-shadow: 0 14px 30px rgba(0, 86, 59, 0.14);
         }
         .guide-avatar svg { width: 38px; height: 38px; stroke-width: 1.6; }
         #visualizer { width: 100%; height: 60px; background: rgba(238,243,240,0.74); border-radius: 18px; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 3px; }
         .bar { width: 5px; background: var(--tcu-green); border-radius: 10px; transition: height 0.1s; }
-
-        .btn-soft { background: rgba(255,255,255,0.78); color: var(--tcu-dark); border: 1px solid rgba(0,122,83,0.14); }
+        .host-action-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 10px 0; }
+        .btn-soft {
+            background: rgba(255,255,255,0.78); color: var(--tcu-dark); border: 1px solid rgba(0,122,83,0.14);
+            box-shadow: 0 12px 26px rgba(0, 86, 59, 0.08);
+        }
         .btn-camera.active { background: linear-gradient(135deg, var(--tcu-green), var(--sea-blue)); color: white; }
-        .video-stage { display: none; width: 100%; aspect-ratio: 16 / 9; border-radius: 24px; overflow: hidden; background: #000; margin-bottom: 18px; }
+        .video-stage {
+            display: none; width: 100%; aspect-ratio: 16 / 9; border-radius: 24px; overflow: hidden;
+            background: linear-gradient(135deg, #113f38, #0b6f8f); margin: 0 0 18px;
+            box-shadow: 0 22px 46px rgba(0, 86, 59, 0.18);
+        }
         .video-stage.show { display: block; }
-        .video-stage video { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Sidebar Peserta */
+        .video-stage video { width: 100%; height: 100%; object-fit: cover; display: block; }
         .participants-panel {
             background: linear-gradient(145deg, rgba(255,255,255,0.82), rgba(255,255,255,0.58));
             border: 1px solid rgba(255,255,255,0.68); border-radius: 28px; padding: 22px;
-            box-shadow: 0 28px 74px rgba(0,122,83,0.13); backdrop-filter: blur(20px); position: sticky; top: 18px;
+            box-shadow: 0 28px 74px rgba(0,122,83,0.13), inset 0 1px 0 rgba(255,255,255,0.86);
+            backdrop-filter: blur(20px); position: sticky; top: 18px;
         }
         .participants-panel h3 { margin: 0 0 14px; color: var(--tcu-dark); font-size: 18px; }
         .participant-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
-        .participant-item { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 10px; border-radius: 18px; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,122,83,0.1); }
-        .participant-initial { width: 40px; height: 40px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: linear-gradient(145deg, #e9f8f1, #ffffff); color: var(--tcu-dark); font-weight: 800; }
-        .participant-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+        .participant-item {
+            display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 10px;
+            padding: 10px; border-radius: 18px; background: rgba(255,255,255,0.7);
+            border: 1px solid rgba(0,122,83,0.1);
+        }
+        .participant-initial {
+            width: 40px; height: 40px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(145deg, #e9f8f1, #ffffff); color: var(--tcu-dark); font-weight: 800;
+        }
+        .participant-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; color: var(--ink); }
         .participant-role { color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .toast-stack { position: fixed; right: 24px; bottom: 24px; z-index: 20; display: grid; gap: 10px; width: min(320px, calc(100vw - 48px)); }
+        .app-toast {
+            padding: 13px 15px; border-radius: 16px; background: rgba(255,255,255,0.94);
+            border: 1px solid rgba(0,122,83,0.14); box-shadow: 0 18px 44px rgba(0, 46, 31, 0.16);
+            color: var(--tcu-dark); font-size: 13px; font-weight: 700;
+            animation: toastIn 0.2s ease both;
+        }
 
-        .qr-area { background: rgba(255,255,255,0.62); padding: 20px; border-radius: 24px; margin-top: 20px; border: 1px dashed rgba(0,122,83,0.22); }
+        .qr-area { background: rgba(255,255,255,0.62); padding: 20px; border-radius: 24px; margin-top: 20px; border: 1px dashed rgba(0,122,83,0.22); box-shadow: inset 0 1px 0 rgba(255,255,255,0.8); }
         #qrcode { display: flex; justify-content: center; margin-top: 15px; }
+        #qrcode img, #qrcode canvas { width: 160px; height: 160px; }
+        .qr-link { display: block; margin-top: 12px; color: var(--tcu-dark); font-size: 12px; overflow-wrap: anywhere; text-decoration: none; }
+        .qr-warning { display: none; color: var(--error-red); font-size: 12px; margin: 10px 0 0; }
+        .copy-link-btn {
+            margin-top: 12px; display: inline-flex; width: auto; align-items: center; justify-content: center; gap: 8px;
+            padding: 11px 15px; border-radius: 14px; color: var(--tcu-dark);
+            background: rgba(255,255,255,0.76); border: 1px solid rgba(0,122,83,0.12);
+            box-shadow: 0 10px 22px rgba(0, 86, 59, 0.08);
+        }
+        .copy-link-btn svg { width: 17px; height: 17px; }
+        .copy-toast {
+            min-height: 18px; margin: 8px 0 0; color: var(--tcu-green);
+            font-size: 12px; font-weight: 700; opacity: 0; transition: opacity 0.2s ease;
+        }
+        .copy-toast.show { opacity: 1; }
+        .btn-audio { background: var(--tcu-green); color: white; margin-top: 12px; display: none; }
+
         .btn-mute { background: #d9a318; color: white; margin-bottom: 10px; }
         .btn-danger { background: linear-gradient(135deg, #c94a40, #e86d5e); color: white; margin-top: 20px; }
 
-        /* Modal Pop-up */
         .modal-backdrop {
-            position: fixed; inset: 0; background: rgba(15, 34, 28, 0.42); display: flex; align-items: center; justify-content: center;
-            padding: 24px; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.22s ease; backdrop-filter: blur(6px);
+            position: fixed; inset: 0; background: rgba(15, 34, 28, 0.42);
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px; z-index: 10; opacity: 0; pointer-events: none;
+            transition: opacity 0.22s ease; backdrop-filter: blur(6px);
         }
         .modal-backdrop.show { opacity: 1; pointer-events: auto; }
         .modal-card {
-            width: 100%; max-width: 390px; background: var(--surface-strong); border-radius: 24px; padding: 30px; text-align: center;
-            border: 1px solid rgba(0, 122, 83, 0.14); transform: translateY(12px) scale(0.98); transition: transform 0.22s ease; position: relative;
+            width: 100%; max-width: 390px; background: var(--surface-strong);
+            border-radius: 24px; padding: 30px; text-align: center;
+            border: 1px solid rgba(0, 122, 83, 0.14);
+            box-shadow: 0 30px 90px rgba(0, 46, 31, 0.28);
+            transform: translateY(12px) scale(0.98); transition: transform 0.22s ease;
+            position: relative; overflow: hidden;
         }
         .modal-backdrop.show .modal-card { transform: translateY(0) scale(1); }
-        .modal-card h3 { margin: 10px 0; color: var(--tcu-dark); font-size: 22px; }
-        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px;}
+        .modal-card::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, var(--tcu-green), var(--tcu-blue));
+        }
+        .modal-icon {
+            width: 54px; height: 54px; border-radius: 18px; margin: 4px auto 16px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--tcu-light); color: var(--tcu-dark); font-size: 24px; font-weight: 700;
+            border: 1px solid rgba(0, 122, 83, 0.15);
+        }
+        .modal-card h3 { margin: 0; color: var(--tcu-dark); font-size: 22px; }
+        .modal-card p { margin: 10px 0 24px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .btn-cancel { background: #edf4f1; color: var(--tcu-dark); border: 1px solid rgba(0, 122, 83, 0.12); }
-        .btn-confirm-leave { background: linear-gradient(135deg, var(--tcu-green), #06986c); color: white; }
+        .btn-confirm-leave { background: linear-gradient(135deg, var(--tcu-green), #06986c); color: white; box-shadow: 0 14px 26px rgba(0, 122, 83, 0.2); }
 
         .hidden { display: none !important; }
         .pulse { animation: pulse-green 2s infinite; }
         @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(0,122,83,0.4); } 70% { box-shadow: 0 0 0 20px rgba(0,122,83,0); } 100% { box-shadow: 0 0 0 0 rgba(0,122,83,0); } }
         @keyframes meshDrift { 0% { transform: translate3d(-1%, -1%, 0) scale(1); } 50% { transform: translate3d(1.8%, 1%, 0) scale(1.04); } 100% { transform: translate3d(-1%, 1.8%, 0) scale(1.02); } }
         @keyframes livePulse { 70% { box-shadow: 0 0 0 8px rgba(225,29,72,0); } 100% { box-shadow: 0 0 0 0 rgba(225,29,72,0); } }
+        @keyframes toastIn { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        @media (max-width: 920px) { .dashboard-shell { grid-template-columns: 1fr; } .participants-panel { position: relative; top: auto; } }
+        @media (max-width: 920px) {
+            .dashboard-shell { grid-template-columns: 1fr; }
+            .participants-panel { position: relative; top: auto; }
+        }
+        @media (max-width: 600px) {
+            .tcu-premium-header { min-height: 86px; padding: 14px 18px; gap: 9px; max-width: calc(100% - 190px); }
+            .tcu-logo { width: 54px; }
+            .tcu-logo-fallback { width: 54px; height: 46px; font-size: 13px; border-radius: 14px; }
+            .vertical-divider { height: 50px; }
+            .tcu-title { display: block; font-size: 14px; line-height: 1.15; max-width: 92px; letter-spacing: 0; }
+            .nav-lang { padding: 22px 20px 0 0; }
+            .nav-lang select { width: 150px; }
+            .header { margin-top: 150px; margin-bottom: 36px; }
+            .header h1 { font-size: 42px; }
+            .main-grid { padding: 0 28px 32px; }
+            .main-grid::before { inset: -14px 16px 18px; }
+            .role-card { border-radius: 24px; padding: 40px 24px 32px; }
+            .dashboard { margin: 28px 20px 0; max-width: calc(100% - 40px); padding: 34px 24px; }
+            .modal-card { padding: 28px 22px; }
+        }
     </style>
 </head>
 <body>
 
     <div class="tcu-premium-header">
-        <img src="tcu-logo.png" class="tcu-logo" alt="TCU Logo">
+        <img src="tcu-logo.png" class="tcu-logo" alt="TCU Logo" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';">
+        <div id="logoFallback" class="tcu-logo-fallback">TCU</div>
         <div class="vertical-divider"></div>
         <h1 class="tcu-title">Tzu Chi University</h1>
-        
-        <div class="nav-lang">
-            <select id="langSelect" onchange="changeLanguage()">
-                <option value="en">English</option>
-                <option value="id">Bahasa Indonesia</option>
-                <option value="zh">繁體中文</option>
-            </select>
-        </div>
+    </div>
+
+    <div class="nav-lang">
+        <select id="langSelect" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="id">Bahasa Indonesia</option>
+            <option value="zh">繁體中文</option>
+        </select>
     </div>
 
     <div class="header">
@@ -253,28 +383,44 @@
 
     <div class="main-grid" id="landing-page">
         <div class="role-card">
-            <div class="role-icon">🎙️</div>
+            <div class="role-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3.75a4.25 4.25 0 0 0-4.25 4.25v3.5A4.25 4.25 0 0 0 12 15.75a4.25 4.25 0 0 0 4.25-4.25V8A4.25 4.25 0 0 0 12 3.75Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5.75 10.75v.75A6.25 6.25 0 0 0 12 17.75a6.25 6.25 0 0 0 6.25-6.25v-.75" stroke="currentColor" stroke-linecap="round"/>
+                    <path d="M12 17.75v2.5M8.75 20.25h6.5" stroke="currentColor" stroke-linecap="round"/>
+                </svg>
+            </div>
             <h2 id="txt-im-host">Host / Guide</h2>
             <p id="txt-host-desc">Create a room and start broadcasting.</p>
-            
             <div class="room-input-row">
                 <input type="text" id="hostRoom" placeholder="Room ID (e.g. 1234)" value="1234">
-                <button type="button" class="icon-action-btn" onclick="generateRandomRoomId()">🎲</button>
+                <button type="button" class="icon-action-btn" onclick="generateRandomRoomId()" title="Generate Room ID" aria-label="Generate Room ID">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M20 7v5h-5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M4 17v-5h5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M6.1 9A7 7 0 0 1 18.4 7.2L20 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M17.9 15A7 7 0 0 1 5.6 16.8L4 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
-            <input type="text" id="hostName" placeholder="Your Name" value="Guide">
-            
+            <input type="text" id="hostName" placeholder="Your Name" value="Pemandu TCU">
             <div id="host-error" class="error-text"></div>
             <button class="btn-host" onclick="joinRoom('host')" id="btn-host-action">Create Room</button>
         </div>
 
         <div class="role-card">
-            <div class="role-icon">🎧</div>
+            <div class="role-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M5.25 13.25v-1.5A6.75 6.75 0 0 1 12 5a6.75 6.75 0 0 1 6.75 6.75v1.5" stroke="currentColor" stroke-linecap="round"/>
+                    <path d="M7.25 12.75H6.4a2.15 2.15 0 0 0-2.15 2.15v1.7a2.15 2.15 0 0 0 2.15 2.15h.85v-6Z" stroke="currentColor" stroke-linejoin="round"/>
+                    <path d="M16.75 12.75h.85a2.15 2.15 0 0 1 2.15 2.15v1.7a2.15 2.15 0 0 1-2.15 2.15h-.85v-6Z" stroke="currentColor" stroke-linejoin="round"/>
+                    <path d="M14.5 19.25h1.4a2.85 2.85 0 0 0 2.85-2.85" stroke="currentColor" stroke-linecap="round"/>
+                </svg>
+            </div>
             <h2 id="txt-im-listener">Listener / Guest</h2>
             <p id="txt-listener-desc">Enter an active room ID to listen.</p>
-            
             <input type="text" id="listenerRoom" placeholder="Room ID" value="">
             <input type="text" id="listenerName" placeholder="Your Name" value="">
-            
             <div id="listener-error" class="error-text"></div>
             <button class="btn-listener" onclick="joinRoom('listener')" id="btn-listener-action">Join Room</button>
         </div>
@@ -282,52 +428,73 @@
 
     <div id="active-dashboard" class="dashboard-shell hidden">
         <div class="dashboard">
-            <h2 id="txt-active-room">Room Active</h2>
-            
-            <div id="host-live-status" class="live-strip hidden">
-                <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-                <span id="tour-timer" class="tour-timer">00:00:00</span>
-            </div>
-            
-            <div class="participant-badge">
-                👥 <span id="txt-part-label">Participants:</span> <span id="participant-count-value">1</span>
-            </div>
-            
-            <div id="host-controls" class="hidden">
-                <div class="visualizer-stage">
-                    <div class="guide-avatar">👤</div>
-                    <div id="visualizer"></div>
+        <h2 id="txt-active-room">Room Active</h2>
+        <div id="host-live-status" class="live-strip hidden">
+            <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+            <span id="tour-timer" class="tour-timer">00:00:00</span>
+        </div>
+        
+        <div class="participant-badge">
+            👥 <span id="txt-part-label">Participants:</span> <span id="participant-count-value">1</span>
+        </div>
+        
+        <div id="host-controls" class="hidden">
+            <p id="txt-mic-status" style="margin:0; font-size:14px; font-weight:bold; color:#666;">Microphone Activity:</p>
+            <div class="visualizer-stage">
+                <div class="guide-avatar" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 12.5a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M4.75 20.25a7.25 7.25 0 0 1 14.5 0" stroke="currentColor" stroke-linecap="round"/>
+                        <path d="M8.75 8.1c1.55.92 3.84.98 6.5.1" stroke="currentColor" stroke-linecap="round"/>
+                    </svg>
                 </div>
-                
-                <button id="btnMute" class="btn-mute" onclick="toggleMute()">🔇 Mute Microphone</button>
-                <button id="btnCamera" class="btn-soft btn-camera" onclick="toggleHostCamera()">📷 Turn on Camera</button>
-                
-                <div class="qr-area">
-                    <p id="txt-scan-desc" style="font-weight:bold;">Share this QR with guests:</p>
-                    <div id="qrcode"></div>
-                </div>
+                <div id="visualizer"></div>
             </div>
-
-            <div id="listener-controls" class="hidden">
-                <div id="host-video-stage" class="video-stage"></div>
-                <div class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
-                <p id="txt-connected" style="font-weight: bold; margin-top: 20px; color: #007A53;">Connected. Hearing the guide...</p>
-                <button id="btnRaiseHand" class="btn-soft" onclick="raiseHand()">🙋‍♂️ Raise Hand</button>
+            <button id="btnMute" class="btn-mute" onclick="toggleMute()">Mute Microphone</button>
+            <div class="host-action-grid">
+                <button id="btnCamera" class="btn-soft btn-camera" onclick="toggleHostCamera()">Turn on Camera</button>
             </div>
-
-            <button class="btn-danger" onclick="openLeaveModal()" id="txt-end">End / Leave</button>
+            <div class="qr-area">
+                <p id="txt-scan-desc" style="margin:0; font-size:14px; font-weight:bold; color:var(--tcu-dark);">Share this QR with guests:</p>
+                <div id="qrcode"></div>
+                <a id="qr-link" class="qr-link" href="#" target="_blank" rel="noopener"></a>
+                <button type="button" id="btn-copy-link" class="copy-link-btn" onclick="copyListenerLink()">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M8.75 8.25h7.5a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-7.5a2 2 0 0 1-2-2v-7.5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-linejoin="round"/>
+                        <path d="M5.75 15.75h-.5a2 2 0 0 1-2-2v-7.5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 2 2v.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span id="txt-copy-link">Copy Link</span>
+                </button>
+                <p id="copy-toast" class="copy-toast"></p>
+                <p id="qr-warning" class="qr-warning" style="display: none;"></p>
+            </div>
         </div>
 
+        <div id="listener-controls" class="hidden">
+            <div id="host-video-stage" class="video-stage"></div>
+            <div id="listener-pulse" class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
+            <p id="txt-connected" style="font-weight: bold; margin-top: 20px; color: rgb(217, 48, 37);">Room is empty. Waiting for Guide to join...</p>
+            <button id="btnRaiseHand" class="btn-soft" onclick="raiseHand()">🙋‍♂️ Angkat Tangan</button>
+            <button id="btnEnableAudio" class="btn-audio" onclick="enableListenerAudio()" style="display: none;">Enable Audio</button>
+            <div id="remote-audio-container" aria-hidden="true"></div>
+        </div>
+
+        <button class="btn-danger" onclick="openLeaveModal()" id="txt-end">End / Leave</button>
+        </div>
+        
         <aside class="participants-panel">
             <h3 id="txt-participant-panel">Participant List</h3>
             <ul id="participant-list" class="participant-list"></ul>
         </aside>
     </div>
+    
+    <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
 
-    <div id="leave-modal" class="modal-backdrop">
+    <div id="leave-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="leave-modal-title" aria-hidden="true">
         <div class="modal-card">
+            <div class="modal-icon">?</div>
             <h3 id="leave-modal-title">Leave this room?</h3>
-            <p id="leave-modal-desc">The audio session will disconnect.</p>
+            <p id="leave-modal-desc">The audio session will disconnect and you will return to the start page.</p>
             <div class="modal-actions">
                 <button type="button" id="btn-modal-cancel" class="btn-cancel" onclick="closeLeaveModal()">Cancel</button>
                 <button type="button" id="btn-modal-confirm" class="btn-confirm-leave" onclick="confirmLeaveRoom()">Yes, Leave</button>
@@ -339,63 +506,143 @@
         // KAMUS BAHASA YANG SUDAH DIBERSIHKAN DAN DILENGKAPI
         const translations = {
             en: {
-                title: "Whisper Tour", subtitle: "Professional Guide System", imHost: "Host / Guide", imListener: "Listener / Guest",
-                hostDesc: "Create a room and start broadcasting.", listenerDesc: "Enter an active room ID to listen.",
-                startBtn: "Create Room", joinBtn: "Join Room", active: "Room Active", 
-                mute: "🔇 Mute Microphone", unmute: "🔊 Unmute Microphone", scan: "Share this QR with guests:",
-                connected: "Connected. Hearing the guide...", end: "End / Leave", emptyId: "Please enter a Room ID!",
-                connecting: "Connecting...", micError: "Microphone blocked by browser!", connError: "Connection failed.",
-                partLabel: "Participants:", waitingHost: "Waiting for Guide to join...",
-                modalTitle: "Leave this room?", modalDesc: "The audio session will disconnect.",
-                modalCancel: "Cancel", modalConfirm: "Yes, Leave",
-                namePlaceholder: "Your Name", participantPanel: "Participant List",
-                roleHost: "Host", roleListener: "Listener", youLabel: "You",
-                cameraOn: "📷 Turn on Camera", cameraOff: "Turn off Camera", raiseHand: "🙋‍♂️ Raise Hand", alertHand: "Your hand is raised!"
+                title: "Whisper Tour",
+                subtitle: "Professional Guide System",
+                imHost: "Host / Guide",
+                imListener: "Listener / Guest",
+                hostDesc: "Create a room and start broadcasting.",
+                listenerDesc: "Enter an active room ID to listen.",
+                startBtn: "Create Room",
+                joinBtn: "Join Room",
+                active: "Room Active",
+                micStatus: "Microphone Activity:",
+                mute: "Mute Microphone",
+                unmute: "Unmute Microphone",
+                scan: "Share this QR with guests:",
+                connected: "Connected. Hearing the guide...",
+                end: "End / Leave",
+                emptyId: "Please enter a Room ID!",
+                connecting: "Connecting...",
+                micError: "Microphone blocked by browser!",
+                connError: "Connection failed. Check internet.",
+                partLabel: "Participants:",
+                waitingHost: "Room is empty. Waiting for Guide to join...",
+                inactiveRoom: "Room is not active yet. Please wait for the guide to create it.",
+                modalTitle: "Leave this room?",
+                modalDesc: "The audio session will disconnect and you will return to the start page.",
+                modalCancel: "Cancel",
+                modalConfirm: "Yes, Leave",
+                copyLink: "Copy Link",
+                copied: "Link copied!",
+                emptyName: "Please enter your name!",
+                namePlaceholder: "Your Name",
+                participantPanel: "Participant List",
+                roleHost: "Host",
+                roleListener: "Listener",
+                youLabel: "You",
+                cameraOn: "Turn on Camera",
+                cameraOff: "Turn off Camera",
+                handRaised: "Your hand is raised."
             },
             id: {
-                title: "Whisper Tour", subtitle: "Sistem Pemandu Profesional", imHost: "Host / Pemandu", imListener: "Pendengar / Tamu",
-                hostDesc: "Buat ruangan dan siarkan suaramu.", listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
-                startBtn: "Buat Ruangan", joinBtn: "Gabung Ruangan", active: "Ruangan Aktif", 
-                mute: "🔇 Bisukan Mikrofon", unmute: "🔊 Nyalakan Mikrofon", scan: "Bagikan QR ini ke tamu:",
-                connected: "Terhubung. Mendengarkan pemandu...", end: "Akhiri / Keluar", emptyId: "Masukkan ID Ruangan!",
-                connecting: "Menghubungkan...", micError: "Izin mikrofon ditolak browser!", connError: "Koneksi gagal.",
-                partLabel: "Peserta:", waitingHost: "Menunggu Pemandu masuk...",
-                modalTitle: "Keluar dari ruangan?", modalDesc: "Sesi audio akan terputus.",
-                modalCancel: "Batal", modalConfirm: "Ya, Keluar",
-                namePlaceholder: "Nama Anda", participantPanel: "Daftar Peserta",
-                roleHost: "Host", roleListener: "Pendengar", youLabel: "Anda",
-                cameraOn: "📷 Nyalakan Kamera", cameraOff: "Matikan Kamera", raiseHand: "🙋‍♂️ Angkat Tangan", alertHand: "Tangan Anda terangkat!"
+                title: "Whisper Tour",
+                subtitle: "Sistem Pemandu Profesional",
+                imHost: "Host / Pemandu",
+                imListener: "Pendengar / Tamu",
+                hostDesc: "Buat ruangan dan siarkan suaramu.",
+                listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
+                startBtn: "Buat Ruangan",
+                joinBtn: "Gabung Ruangan",
+                active: "Ruangan Aktif",
+                micStatus: "Aktivitas Mikrofon:",
+                mute: "Bisukan Mikrofon",
+                unmute: "Nyalakan Mikrofon",
+                scan: "Bagikan QR ini ke tamu:",
+                connected: "Terhubung. Mendengarkan pemandu...",
+                end: "Akhiri / Keluar",
+                emptyId: "Masukkan ID Ruangan dulu!",
+                connecting: "Menghubungkan...",
+                micError: "Izin mikrofon ditolak browser!",
+                connError: "Koneksi gagal. Cek internet.",
+                partLabel: "Peserta:",
+                waitingHost: "Ruangan kosong. Menunggu Pemandu masuk...",
+                inactiveRoom: "Ruangan belum aktif. Tunggu pemandu membuat ruangan dulu.",
+                modalTitle: "Keluar dari ruangan?",
+                modalDesc: "Sesi audio akan terputus dan kamu akan kembali ke halaman awal.",
+                modalCancel: "Batal",
+                modalConfirm: "Ya, Keluar",
+                copyLink: "Salin Link",
+                copied: "Link berhasil disalin!",
+                emptyName: "Masukkan nama Anda dulu!",
+                namePlaceholder: "Nama Anda",
+                participantPanel: "Daftar Peserta",
+                roleHost: "Host",
+                roleListener: "Pendengar",
+                youLabel: "Anda",
+                cameraOn: "Nyalakan Kamera",
+                cameraOff: "Matikan Kamera",
+                handRaised: "Tangan Anda sudah terangkat."
             },
             zh: {
-                title: "隨身導覽系統", subtitle: "專業語音導覽", imHost: "導覽員 / 主持人", imListener: "聽眾 / 遊客",
-                hostDesc: "建立房間並開始廣播。", listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
-                startBtn: "建立房間", joinBtn: "加入房間", active: "房間使用中", 
-                mute: "🔇 麥克風靜音", unmute: "🔊 解除靜音", scan: "分享二維碼給遊客：",
-                connected: "已連線。正在收聽導覽...", end: "結束 / 離開", emptyId: "請輸入房間 ID！",
-                connecting: "連線中...", micError: "瀏覽器拒絕了麥克風權限！", connError: "連線失敗，請檢查網路。",
-                partLabel: "參與人數：", waitingHost: "等待導覽員加入...",
-                modalTitle: "要離開房間嗎？", modalDesc: "語音導覽將會中斷。",
-                modalCancel: "取消", modalConfirm: "是，離開",
-                namePlaceholder: "您的名字", participantPanel: "參與者名單",
-                roleHost: "主持人", roleListener: "聽眾", youLabel: "您",
-                cameraOn: "📷 開啟相機", cameraOff: "關閉相機", raiseHand: "🙋‍♂️ 舉手", alertHand: "您已舉手！"
+                title: "隨身導覽系統",
+                subtitle: "專業語音導覽",
+                imHost: "導覽員 / 主持人",
+                imListener: "聽眾 / 遊客",
+                hostDesc: "建立房間並開始廣播。",
+                listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
+                startBtn: "建立房間",
+                joinBtn: "加入房間",
+                active: "房間使用中",
+                micStatus: "麥克風活動：",
+                mute: "麥克風靜音",
+                unmute: "解除麥克風靜音",
+                scan: "分享二維碼給遊客：",
+                connected: "已連線。正在收聽導覽...",
+                end: "結束 / 離開",
+                emptyId: "請輸入房間 ID！",
+                connecting: "連線中...",
+                micError: "瀏覽器拒絕了麥克風權限！",
+                connError: "連線失敗，請檢查網路。",
+                partLabel: "參與人數：",
+                waitingHost: "房間是空的。等待導覽員加入...",
+                inactiveRoom: "房間尚未啟用，請等待導覽員建立房間。",
+                modalTitle: "要離開房間嗎？",
+                modalDesc: "語音導覽將會中斷，並返回開始頁面。",
+                modalCancel: "取消",
+                modalConfirm: "是，離開",
+                copyLink: "複製連結",
+                copied: "連結已複製！",
+                emptyName: "請輸入您的名字！",
+                namePlaceholder: "您的名字",
+                participantPanel: "參與者名單",
+                roleHost: "主持人",
+                roleListener: "聽眾",
+                youLabel: "您",
+                cameraOn: "開啟相機",
+                cameraOff: "關閉相機",
+                handRaised: "已舉手。"
             }
         };
 
         const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
         const API_KEY = "API5mBWCdaKNLLQ";
         const API_SECRET = "xfZhky6tUeDAYufb8ewdUZOy2vmaJXqOZpfDhpCybiGB";
+        const APP_PUBLIC_URL = "https://redvallarie-source.github.io/whisper-tour/";
         
         let currentRoom = null;
         let audioCtx = null;
         let isMutedGlobal = false;
-        let cameraEnabled = false;
+        let radarInterval = null;
+        let visualizerStream = null;
         let tourStartTime = null;
         let tourTimerInterval = null;
+        let copyToastTimer = null;
         let localDisplayName = "";
         let localRole = "";
+        let cameraEnabled = false;
+        const attachedVideoTracks = new Map();
+        const attachedAudioTracks = new Map();
 
-        // UPDATE BAHASA OTOMATIS
         function changeLanguage() {
             const lang = document.getElementById('langSelect').value;
             const t = translations[lang];
@@ -407,40 +654,43 @@
             document.getElementById('txt-host-desc').innerText = t.hostDesc;
             document.getElementById('txt-listener-desc').innerText = t.listenerDesc;
             document.getElementById('txt-active-room').innerText = t.active;
+            document.getElementById('txt-mic-status').innerText = t.micStatus;
             document.getElementById('txt-scan-desc').innerText = t.scan;
             document.getElementById('txt-end').innerText = t.end;
             document.getElementById('txt-part-label').innerText = t.partLabel;
-            
-            // Elemen Baru
             document.getElementById('leave-modal-title').innerText = t.modalTitle;
             document.getElementById('leave-modal-desc').innerText = t.modalDesc;
             document.getElementById('btn-modal-cancel').innerText = t.modalCancel;
             document.getElementById('btn-modal-confirm').innerText = t.modalConfirm;
+            document.getElementById('txt-copy-link').innerText = t.copyLink;
             document.getElementById('hostName').placeholder = t.namePlaceholder;
             document.getElementById('listenerName').placeholder = t.namePlaceholder;
             document.getElementById('txt-participant-panel').innerText = t.participantPanel;
             document.getElementById('btnRaiseHand').innerText = t.raiseHand;
+            document.getElementById('btnCamera').innerText = cameraEnabled ? t.cameraOff : t.cameraOn;
             
             document.getElementById('btn-host-action').innerText = t.startBtn;
             document.getElementById('btn-listener-action').innerText = t.joinBtn;
             
             if(currentRoom) {
                 document.getElementById('btnMute').innerText = isMutedGlobal ? t.unmute : t.mute;
-                document.getElementById('btnCamera').innerText = cameraEnabled ? t.cameraOff : t.cameraOn;
                 renderParticipantList();
+                checkHostStatus();
             }
         }
 
-        // FUNGSI MESIN UTAMA LIVEKIT
         function generateToken(roomName, isHost, displayName) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
             const now = Math.floor(Date.now() / 1000);
-            const roleStr = isHost ? "host" : "listener";
+            const participantRole = isHost ? "host" : "listener";
+            const nameSlug = displayName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 24) || "guest";
+            const participantId = participantRole + "-" + nameSlug + "-" + Math.floor(Math.random()*10000);
             const payload = JSON.stringify({
                 iss: API_KEY, 
-                sub: roleStr + "-" + Math.floor(Math.random()*10000),
+                sub: participantId,
                 name: displayName,
-                metadata: JSON.stringify({ displayName: displayName, role: roleStr }),
+                metadata: JSON.stringify({ displayName, role: participantRole }),
+                nbf: now - 300, 
                 exp: now + 7200, 
                 video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
             });
@@ -448,66 +698,352 @@
         }
 
         function generateRandomRoomId() {
-            document.getElementById('hostRoom').value = String(Math.floor(10000 + Math.random() * 90000));
+            const randomId = String(Math.floor(10000 + Math.random() * 90000));
+            document.getElementById('hostRoom').value = randomId;
         }
 
-        function updateTimer() {
+        function formatTourTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
+        }
+
+        function updateTourTimer() {
             if (!tourStartTime) return;
-            const diff = Math.floor((Date.now() - tourStartTime) / 1000);
-            const h = String(Math.floor(diff / 3600)).padStart(2, '0');
-            const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
-            const s = String(diff % 60).padStart(2, '0');
-            document.getElementById('tour-timer').innerText = `${h}:${m}:${s}`;
+            document.getElementById('tour-timer').innerText = formatTourTime(Date.now() - tourStartTime);
         }
 
-        function showInlineError(role, message) {
+        function startTourTimer() {
+            tourStartTime = Date.now();
+            document.getElementById('host-live-status').classList.remove('hidden');
+            updateTourTimer();
+            if (tourTimerInterval) clearInterval(tourTimerInterval);
+            tourTimerInterval = setInterval(updateTourTimer, 1000);
+        }
+
+        function stopTourTimer() {
+            if (tourTimerInterval) {
+                clearInterval(tourTimerInterval);
+                tourTimerInterval = null;
+            }
+            tourStartTime = null;
+            document.getElementById('tour-timer').innerText = "00:00:00";
+            document.getElementById('host-live-status').classList.add('hidden');
+        }
+
+        function getRemoteParticipants() {
+            if (!currentRoom) return new Map();
+            return currentRoom.remoteParticipants || currentRoom.participants || new Map();
+        }
+
+        function parseParticipantMetadata(participant) {
+            if (!participant || !participant.metadata) return {};
+            try { return JSON.parse(participant.metadata); } catch (e) { return {}; }
+        }
+
+        function getParticipantDisplayName(participant, fallbackRole) {
+            if (!participant) return localDisplayName || fallbackRole || "Guest";
+            const metadata = parseParticipantMetadata(participant);
+            return metadata.displayName || participant.name || participant.identity || fallbackRole || "Guest";
+        }
+
+        function getParticipantRole(participant) {
+            if (!participant) return localRole || "listener";
+            const metadata = parseParticipantMetadata(participant);
+            if (metadata.role) return metadata.role;
+            return participant.identity && participant.identity.startsWith('host-') ? 'host' : 'listener';
+        }
+
+        function renderParticipantList() {
+            const list = document.getElementById('participant-list');
+            if (!list || !currentRoom) return;
+            const lang = document.getElementById('langSelect').value;
+            const t = translations[lang];
+
+            const participants = [{
+                name: localDisplayName || getParticipantDisplayName(currentRoom.localParticipant, "You"),
+                role: localRole || getParticipantRole(currentRoom.localParticipant),
+                isLocal: true
+            }];
+
+            getRemoteParticipants().forEach((participant) => {
+                participants.push({
+                    name: getParticipantDisplayName(participant, "Guest"),
+                    role: getParticipantRole(participant),
+                    isLocal: false
+                });
+            });
+
+            list.innerHTML = participants.map((participant) => {
+                const initial = (participant.name || "?").trim().charAt(0).toUpperCase() || "?";
+                const roleLabel = participant.role === "host" ? t.roleHost : t.roleListener;
+                const localLabel = participant.isLocal ? ` • ${t.youLabel}` : "";
+                return `
+                    <li class="participant-item">
+                        <span class="participant-initial">${escapeHtml(initial)}</span>
+                        <span class="participant-name" title="${escapeHtml(participant.name)}">${escapeHtml(participant.name)}</span>
+                        <span class="participant-role">${roleLabel}${localLabel}</span>
+                    </li>
+                `;
+            }).join("");
+        }
+
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+        }
+
+        function hasRemoteHost() {
+            let foundHost = false;
+            getRemoteParticipants().forEach((participant) => {
+                if (participant.identity && participant.identity.startsWith('host-')) foundHost = true;
+            });
+            return foundHost;
+        }
+
+        async function waitForRemoteHost(timeoutMs = 2500) {
+            const startTime = Date.now();
+            while (Date.now() - startTime < timeoutMs) {
+                if (hasRemoteHost()) return true;
+                await new Promise(resolve => setTimeout(resolve, 250));
+            }
+            return hasRemoteHost();
+        }
+
+        function updateParticipantCount() {
+            if (!currentRoom) return;
+            const totalCount = getRemoteParticipants().size + 1;
+            document.getElementById('participant-count-value').innerText = totalCount;
+            renderParticipantList();
+        }
+
+        function showInlineError(role, message, duration = 4000) {
             const errorDiv = role === 'host' ? document.getElementById('host-error') : document.getElementById('listener-error');
             errorDiv.innerText = message;
             errorDiv.style.display = 'block';
-            setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
+            setTimeout(() => { errorDiv.style.display = 'none'; }, duration);
         }
 
-        // RENDER DAFTAR PESERTA
-        function renderParticipantList() {
-            if (!currentRoom) return;
+        function checkHostStatus() {
+            if(!currentRoom || document.getElementById('host-controls').classList.contains('hidden') === false) return;
+            const statusText = document.getElementById('txt-connected');
             const lang = document.getElementById('langSelect').value;
-            const t = translations[lang];
-            const list = document.getElementById('participant-list');
             
-            let html = `<li class="participant-item">
-                <div class="participant-initial">${localDisplayName.charAt(0).toUpperCase()}</div>
-                <div class="participant-name">${localDisplayName}</div>
-                <div class="participant-role">${localRole === 'host' ? t.roleHost : t.roleListener} • ${t.youLabel}</div>
-            </li>`;
-
-            currentRoom.remoteParticipants.forEach((p) => {
-                let pName = "Guest"; let pRole = "listener";
-                if(p.metadata) {
-                    try { const meta = JSON.parse(p.metadata); pName = meta.displayName || pName; pRole = meta.role || pRole; } catch(e){}
-                }
-                html += `<li class="participant-item">
-                    <div class="participant-initial">${pName.charAt(0).toUpperCase()}</div>
-                    <div class="participant-name">${pName}</div>
-                    <div class="participant-role">${pRole === 'host' ? t.roleHost : t.roleListener}</div>
-                </li>`;
-            });
-            
-            list.innerHTML = html;
-            document.getElementById('participant-count-value').innerText = currentRoom.remoteParticipants.size + 1;
+            if(!hasRemoteHost()) {
+                statusText.innerText = translations[lang].waitingHost;
+                statusText.style.color = "#d93025"; 
+            } else {
+                statusText.innerText = translations[lang].connected;
+                statusText.style.color = "#007A53"; 
+            }
         }
 
-        // FUNGSI GABUNG RUANGAN
+        function buildListenerLink(roomName) {
+            const url = new URL(APP_PUBLIC_URL);
+            url.searchParams.set('room', roomName);
+            url.searchParams.set('role', 'listener');
+            url.searchParams.set('autoJoin', '1');
+            return url.toString();
+        }
+
+        function renderQRCode(roomName) {
+            const listenerLink = buildListenerLink(roomName);
+            const qrBox = document.getElementById('qrcode');
+            const qrLink = document.getElementById('qr-link');
+            const qrWarning = document.getElementById('qr-warning');
+
+            qrBox.innerHTML = "";
+            qrLink.href = listenerLink;
+            qrLink.innerText = listenerLink;
+            document.getElementById('copy-toast').classList.remove('show');
+            document.getElementById('copy-toast').innerText = "";
+            qrWarning.style.display = 'none';
+            qrWarning.innerText = "";
+
+            try {
+                if (typeof QRCode === 'function') {
+                    new QRCode(qrBox, { text: listenerLink, width: 160, height: 160 });
+                    return;
+                }
+                throw new Error('QRCode library is not available');
+            } catch (qrErr) {
+                const img = document.createElement('img');
+                img.alt = 'Listener QR code';
+                img.width = 160; img.height = 160;
+                img.src = "https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=" + encodeURIComponent(listenerLink);
+                img.onerror = () => {
+                    qrWarning.innerText = "QR failed to load. Share the link below.";
+                    qrWarning.style.display = 'block';
+                    qrBox.innerHTML = "";
+                };
+                qrBox.appendChild(img);
+            }
+        }
+
+        async function copyListenerLink() {
+            const link = document.getElementById('qr-link').href;
+            const lang = document.getElementById('langSelect').value;
+            if (!link || link.endsWith('#')) return;
+
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(link);
+                } else {
+                    const tempInput = document.createElement('input');
+                    tempInput.value = link;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    document.execCommand('copy');
+                    tempInput.remove();
+                }
+                const toast = document.getElementById('copy-toast');
+                toast.innerText = translations[lang].copied;
+                toast.classList.add('show');
+                if (copyToastTimer) clearTimeout(copyToastTimer);
+                copyToastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+            } catch (copyErr) {
+                document.getElementById('copy-toast').innerText = link;
+                document.getElementById('copy-toast').classList.add('show');
+            }
+        }
+
+        // LOGIKA PENEMPELAN AUDIO ASLI DARI CODEX
+        function getAudioTrackKey(track, publication, participant) {
+            return [ participant && participant.identity ? participant.identity : 'participant', publication && publication.trackSid ? publication.trackSid : '', track && track.sid ? track.sid : '' ].filter(Boolean).join('-');
+        }
+
+        function attachAudioTrack(track, publication, participant) {
+            if (!track || track.kind !== 'audio') return;
+            const key = getAudioTrackKey(track, publication, participant);
+            if (attachedAudioTracks.has(key)) return;
+
+            const audioContainer = document.getElementById('remote-audio-container');
+            const audioElement = track.attach();
+            audioElement.autoplay = true;
+            audioElement.playsInline = true;
+            audioElement.controls = false;
+            audioElement.dataset.trackKey = key;
+            audioContainer.appendChild(audioElement);
+            attachedAudioTracks.set(key, { track, audioElement });
+
+            let playPromise = null;
+            try { playPromise = audioElement.play(); } catch (playErr) { document.getElementById('btnEnableAudio').style.display = 'block'; }
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => { document.getElementById('btnEnableAudio').style.display = 'block'; });
+            }
+        }
+
+        function detachAudioTrack(track, publication, participant) {
+            const key = getAudioTrackKey(track, publication, participant);
+            const attached = attachedAudioTracks.get(key);
+            if (!attached) return;
+            try { if (attached.track && attached.audioElement) { attached.track.detach(attached.audioElement); } } catch (detachErr) {}
+            attached.audioElement.remove();
+            attachedAudioTracks.delete(key);
+        }
+
+        function getTrackKey(track, publication, participant) {
+            return [ participant && participant.identity ? participant.identity : 'participant', publication && publication.trackSid ? publication.trackSid : '', track && track.sid ? track.sid : '' ].filter(Boolean).join('-');
+        }
+
+        function attachVideoTrack(track, publication, participant) {
+            if (!track || track.kind !== 'video') return;
+            const key = getTrackKey(track, publication, participant);
+            if (attachedVideoTracks.has(key)) return;
+
+            const videoStage = document.getElementById('host-video-stage');
+            if (!videoStage) return;
+            videoStage.innerHTML = "";
+            const videoElement = track.attach();
+            videoElement.autoplay = true;
+            videoElement.playsInline = true;
+            videoElement.muted = false;
+            videoElement.dataset.trackKey = key;
+            videoStage.appendChild(videoElement);
+            videoStage.classList.add('show');
+            attachedVideoTracks.set(key, { track, videoElement });
+        }
+
+        function detachVideoTrack(track, publication, participant) {
+            const key = getTrackKey(track, publication, participant);
+            const attached = attachedVideoTracks.get(key);
+            if (!attached) return;
+            try { if (attached.track && attached.videoElement) { attached.track.detach(attached.videoElement); } } catch (detachErr) {}
+            attached.videoElement.remove();
+            attachedVideoTracks.delete(key);
+            const videoStage = document.getElementById('host-video-stage');
+            if (videoStage && attachedVideoTracks.size === 0) {
+                videoStage.classList.remove('show');
+                videoStage.innerHTML = "";
+            }
+        }
+
+        function attachExistingAudioTracks() {
+            getRemoteParticipants().forEach((participant) => {
+                const publications = participant.trackPublications || participant.audioTrackPublications || new Map();
+                publications.forEach((publication) => {
+                    if (publication.kind === 'audio' && publication.track) attachAudioTrack(publication.track, publication, participant);
+                    else if (publication.kind === 'video' && publication.track) attachVideoTrack(publication.track, publication, participant);
+                });
+            });
+        }
+
+        function onRoomEvent(room, eventName, handler) { if (eventName) room.on(eventName, handler); }
+
+        function leaveIfHostIsMissing() {
+            setTimeout(() => {
+                const listenerVisible = !document.getElementById('listener-controls').classList.contains('hidden');
+                if (currentRoom && listenerVisible && !hasRemoteHost()) {
+                    const lang = document.getElementById('langSelect').value;
+                    leaveRoom();
+                    showInlineError('listener', translations[lang].inactiveRoom, 6000);
+                }
+            }, 1200);
+        }
+
+        function registerRoomEvents(room, isHost) {
+            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantConnected, () => { updateParticipantCount(); checkHostStatus(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantDisconnected, () => { updateParticipantCount(); checkHostStatus(); if (!isHost) leaveIfHostIsMissing(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantMetadataChanged, () => { renderParticipantList(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.Connected, () => { updateParticipantCount(); checkHostStatus(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.Reconnected, () => { updateParticipantCount(); checkHostStatus(); attachExistingAudioTracks(); });
+            onRoomEvent(room, LivekitClient.RoomEvent.Disconnected, () => { clearInterval(radarInterval); radarInterval = null; });
+
+            if (!isHost) {
+                onRoomEvent(room, LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+                    if (track.kind === 'audio') attachAudioTrack(track, publication, participant);
+                    if (track.kind === 'video') attachVideoTrack(track, publication, participant);
+                    checkHostStatus();
+                });
+                onRoomEvent(room, LivekitClient.RoomEvent.TrackUnsubscribed, (track, publication, participant) => {
+                    if (track.kind === 'audio') detachAudioTrack(track, publication, participant);
+                    if (track.kind === 'video') detachVideoTrack(track, publication, participant);
+                    checkHostStatus();
+                });
+            }
+        }
+
+        async function enableListenerAudio() {
+            const button = document.getElementById('btnEnableAudio');
+            const elements = document.querySelectorAll('#remote-audio-container audio');
+            for (const element of elements) { try { await element.play(); } catch (e) {} }
+            button.style.display = 'none';
+        }
+
         async function joinRoom(role) {
             const isHost = role === 'host';
-            const roomName = isHost ? document.getElementById('hostRoom').value.trim() : document.getElementById('listenerRoom').value.trim();
-            const displayName = isHost ? document.getElementById('hostName').value.trim() : document.getElementById('listenerName').value.trim();
+            const roomInput = isHost ? document.getElementById('hostRoom') : document.getElementById('listenerRoom');
+            const nameInput = isHost ? document.getElementById('hostName') : document.getElementById('listenerName');
+            const roomName = roomInput.value.trim(); 
+            const displayName = nameInput.value.trim();
             const lang = document.getElementById('langSelect').value;
             
-            if (!roomName) return showInlineError(role, translations[lang].emptyId);
-            if (!displayName) return showInlineError(role, "Mohon isi Nama Anda / Please enter Name");
+            if (!roomName) { showInlineError(role, translations[lang].emptyId); return; }
+            if (!displayName) { showInlineError(role, translations[lang].emptyName); return; }
 
             const btn = isHost ? document.getElementById('btn-host-action') : document.getElementById('btn-listener-action');
-            const origText = btn.innerText;
+            const originalText = btn.innerText;
             btn.innerText = translations[lang].connecting;
             btn.disabled = true;
 
@@ -516,63 +1052,49 @@
                 localRole = isHost ? "host" : "listener";
                 const token = generateToken(roomName, isHost, displayName);
                 currentRoom = new LivekitClient.Room();
+                registerRoomEvents(currentRoom, isHost);
+                await currentRoom.connect(LIVEKIT_URL, token, { autoSubscribe: true });
                 
-                await currentRoom.connect(LIVEKIT_URL, token);
+                if (currentRoom.localParticipant && currentRoom.localParticipant.setMetadata) {
+                    try { await currentRoom.localParticipant.setMetadata(JSON.stringify({ displayName, role: localRole })); } catch (err) {}
+                }
+
+                if (!isHost && !(await waitForRemoteHost())) {
+                    const inactiveError = new Error('Room has no active host');
+                    inactiveError.userMessage = translations[lang].inactiveRoom;
+                    throw inactiveError;
+                }
 
                 document.getElementById('landing-page').classList.add('hidden');
                 document.getElementById('active-dashboard').classList.remove('hidden');
+                updateParticipantCount();
 
-                // EVENT LISTENER UNTUK UPDATE PESERTA
-                currentRoom.on('participantConnected', renderParticipantList);
-                currentRoom.on('participantDisconnected', renderParticipantList);
-                currentRoom.on('participantMetadataChanged', renderParticipantList);
-                renderParticipantList();
+                radarInterval = setInterval(() => { if(currentRoom) { updateParticipantCount(); checkHostStatus(); } }, 2000);
 
                 if (isHost) {
-                    document.getElementById('host-controls').classList.remove('hidden');
-                    document.getElementById('host-live-status').classList.remove('hidden');
-                    tourStartTime = Date.now();
-                    tourTimerInterval = setInterval(updateTimer, 1000);
-                    
-                    // Buat QR Code
-                    const listenerLink = window.location.origin + window.location.pathname + "?room=" + encodeURIComponent(roomName);
-                    document.getElementById('qrcode').innerHTML = "";
-                    new QRCode(document.getElementById("qrcode"), { text: listenerLink, width: 160, height: 160 });
-
-                    await currentRoom.localParticipant.setMicrophoneEnabled(true);
-                    startVisualizer();
+                    try {
+                        document.getElementById('host-controls').classList.remove('hidden');
+                        await currentRoom.localParticipant.setMicrophoneEnabled(true);
+                        isMutedGlobal = false;
+                        document.getElementById('btnMute').innerText = translations[lang].mute;
+                        startVisualizer();
+                        renderQRCode(roomName);
+                        startTourTimer();
+                    } catch (micErr) {
+                        leaveRoom();
+                        showInlineError('host', translations[lang].micError);
+                    }
                 } else {
                     document.getElementById('listener-controls').classList.remove('hidden');
-                    
-                    // MENERIMA AUDIO & VIDEO HOST
-                    currentRoom.on('trackSubscribed', (track, publication, participant) => {
-                        if (track.kind === 'audio') {
-                            const audioEl = track.attach();
-                            audioEl.autoplay = true;
-                            document.body.appendChild(audioEl);
-                            audioEl.play().catch(e => console.warn("Browser blocked audio autoplay."));
-                        } else if (track.kind === 'video') {
-                            const videoStage = document.getElementById('host-video-stage');
-                            videoStage.innerHTML = "";
-                            const videoEl = track.attach();
-                            videoEl.autoplay = true;
-                            videoStage.appendChild(videoEl);
-                            videoStage.classList.add('show');
-                        }
-                    });
-
-                    currentRoom.on('trackUnsubscribed', (track) => {
-                        if (track.kind === 'video') {
-                            document.getElementById('host-video-stage').innerHTML = "";
-                            document.getElementById('host-video-stage').classList.remove('show');
-                        }
-                    });
+                    attachExistingAudioTracks();
+                    checkHostStatus(); 
                 }
             } catch (e) {
-                console.error(e);
-                showInlineError(role, translations[lang].connError);
+                if (currentRoom) { try { currentRoom.disconnect(); } catch (err) {} currentRoom = null; }
+                if (radarInterval) { clearInterval(radarInterval); radarInterval = null; }
+                showInlineError(role, e.userMessage || translations[lang].connError, e.userMessage ? 8000 : 4000);
             } finally {
-                btn.innerText = origText;
+                btn.innerText = originalText;
                 btn.disabled = false;
             }
         }
@@ -588,6 +1110,7 @@
             }
 
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                visualizerStream = stream;
                 audioCtx = new AudioContext();
                 const source = audioCtx.createMediaStreamSource(stream);
                 const analyser = audioCtx.createAnalyser();
@@ -615,56 +1138,81 @@
         }
 
         async function toggleHostCamera() {
-            if (!currentRoom) return;
-            const btn = document.getElementById('btnCamera');
-            btn.disabled = true;
+            if (!currentRoom || !currentRoom.localParticipant) return;
+            const lang = document.getElementById('langSelect').value;
+            const button = document.getElementById('btnCamera');
+            button.disabled = true;
             try {
                 cameraEnabled = !cameraEnabled;
                 await currentRoom.localParticipant.setCameraEnabled(cameraEnabled);
-                btn.classList.toggle('active', cameraEnabled);
+                button.classList.toggle('active', cameraEnabled);
+                showToast(cameraEnabled ? "Camera is ON" : "Camera is OFF");
                 changeLanguage();
-            } catch(e) {
+            } catch (cameraErr) {
                 cameraEnabled = false;
-                alert("Kamera ditolak oleh browser!");
+                button.classList.remove('active');
+                showToast("Camera access denied.");
+            } finally {
+                button.disabled = false;
             }
-            btn.disabled = false;
+        }
+
+        function showToast(message) {
+            const stack = document.getElementById('toast-stack');
+            if (!stack) return;
+            const toast = document.createElement('div');
+            toast.className = 'app-toast';
+            toast.innerText = message;
+            stack.appendChild(toast);
+            setTimeout(() => toast.remove(), 2800);
         }
 
         function raiseHand() {
             const lang = document.getElementById('langSelect').value;
-            alert(translations[lang].alertHand);
+            showToast(translations[lang].handRaised);
         }
 
-        // FUNGSI MODAL KELUAR
-        function openLeaveModal() {
-            document.getElementById('leave-modal').classList.add('show');
-        }
-        function closeLeaveModal() {
-            document.getElementById('leave-modal').classList.remove('show');
-        }
+        function openLeaveModal() { document.getElementById('leave-modal').classList.add('show'); document.getElementById('leave-modal').setAttribute('aria-hidden', 'false'); }
+        function closeLeaveModal() { document.getElementById('leave-modal').classList.remove('show'); document.getElementById('leave-modal').setAttribute('aria-hidden', 'true'); }
+        function confirmLeaveRoom() { closeLeaveModal(); leaveRoom(); }
 
-        function confirmLeaveRoom() {
+        function leaveRoom() {
+            closeLeaveModal();
             if (currentRoom) { currentRoom.disconnect(); currentRoom = null; }
             if (audioCtx) { audioCtx.close(); audioCtx = null; }
-            if (tourTimerInterval) clearInterval(tourTimerInterval);
+            if (visualizerStream) { visualizerStream.getTracks().forEach(track => track.stop()); visualizerStream = null; }
+            if (radarInterval) { clearInterval(radarInterval); radarInterval = null; }
+            if (copyToastTimer) { clearTimeout(copyToastTimer); copyToastTimer = null; }
+            stopTourTimer();
+            attachedAudioTracks.forEach(({ audioElement }) => audioElement.remove());
+            attachedAudioTracks.clear();
+            attachedVideoTracks.forEach(({ videoElement }) => videoElement.remove());
+            attachedVideoTracks.clear();
+            cameraEnabled = false; localDisplayName = ""; localRole = "";
             
-            document.getElementById('host-video-stage').innerHTML = "";
-            document.getElementById('host-video-stage').classList.remove('show');
             document.getElementById('active-dashboard').classList.add('hidden');
             document.getElementById('host-controls').classList.add('hidden');
             document.getElementById('listener-controls').classList.add('hidden');
-            document.getElementById('host-live-status').classList.add('hidden');
+            document.getElementById('host-video-stage').classList.remove('show');
+            document.getElementById('host-video-stage').innerHTML = "";
+            document.getElementById('participant-list').innerHTML = "";
+            document.getElementById('btnCamera').classList.remove('active');
+            document.getElementById('btnEnableAudio').style.display = 'none';
+            document.getElementById('qrcode').innerHTML = "";
+            document.getElementById('qr-link').innerText = "";
+            document.getElementById('copy-toast').innerText = "";
+            document.getElementById('copy-toast').classList.remove('show');
+            document.getElementById('qr-warning').style.display = 'none';
             document.getElementById('landing-page').classList.remove('hidden');
-            closeLeaveModal();
+            
             changeLanguage();
         }
 
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('room')) {
-                document.getElementById('listenerRoom').value = urlParams.get('room');
-            }
+            if (urlParams.get('room')) { document.getElementById('listenerRoom').value = urlParams.get('room'); }
             changeLanguage();
+            if (urlParams.get('autoJoin') === '1' && urlParams.get('role') === 'listener') { joinRoom('listener'); }
         };
     </script>
 </body>
