@@ -67,14 +67,9 @@
         }
         input:focus { outline: none; border-color: var(--tcu-green); }
 
-        /* Teks Peringatan Inline Baru */
         .error-text {
-            color: var(--error-red);
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 15px;
-            min-height: 20px;
-            display: none;
+            color: var(--error-red); font-size: 13px; font-weight: 500;
+            margin-bottom: 15px; min-height: 20px; display: none;
         }
 
         button { 
@@ -186,7 +181,7 @@
                 startBtn: "🚀 Create Room", joinBtn: "🎧 Join Room", active: "Room Active", micStatus: "Microphone Activity:",
                 mute: "Mute", unmute: "Unmute", scan: "Share this QR with guests:", connected: "Connected. Hearing the guide...", end: "End / Leave",
                 emptyId: "⚠️ Please enter a Room ID!", roomNotExist: "⚠️ Room not found! Wait for Host.", connecting: "⏳ Connecting...",
-                micError: "⚠️ Microphone blocked by browser!", serverWake: "⚠️ Server waking up, try again in 5s!"
+                micError: "⚠️ Microphone blocked by browser!", connError: "⚠️ Connection Failed. Check internet or ID."
             },
             id: {
                 title: "Whisper Tour", subtitle: "Sistem Pemandu Profesional", imHost: "Host / Pemandu", imListener: "Pendengar / Tamu",
@@ -194,7 +189,7 @@
                 startBtn: "🚀 Buat Ruangan", joinBtn: "🎧 Gabung Ruangan", active: "Ruangan Aktif", micStatus: "Aktivitas Mikrofon:",
                 mute: "Bisu", unmute: "Nyalakan Suara", scan: "Bagikan QR ini ke tamu:", connected: "Terhubung. Mendengarkan pemandu...", end: "Akhiri / Keluar",
                 emptyId: "⚠️ Masukkan ID Ruangan dulu!", roomNotExist: "⚠️ Ruangan belum ada! Tunggu Pemandu.", connecting: "⏳ Menghubungkan...",
-                micError: "⚠️ Izin mikrofon ditolak browser!", serverWake: "⚠️ Server sedang bangun, coba lagi dalam 5 detik!"
+                micError: "⚠️ Izin mikrofon ditolak browser!", connError: "⚠️ Koneksi Gagal. Cek internet atau ID."
             },
             zh: {
                 title: "隨身導覽系統", subtitle: "專業語音導覽", imHost: "導覽員 / 主持人", imListener: "聽眾 / 遊客",
@@ -202,7 +197,7 @@
                 startBtn: "🚀 建立房間", joinBtn: "🎧 加入房間", active: "房間使用中", micStatus: "麥克風活動：",
                 mute: "靜音", unmute: "解除靜音", scan: "分享二維碼給遊客：", connected: "已連線。正在收聽導覽...", end: "結束 / 離開",
                 emptyId: "⚠️ 請輸入房間 ID！", roomNotExist: "⚠️ 找不到房間！請等待導覽員。", connecting: "⏳ 連線中...",
-                micError: "⚠️ 瀏覽器拒絕了麥克風權限！", serverWake: "⚠️ 伺服器喚醒中，請稍後再試！"
+                micError: "⚠️ 瀏覽器拒絕了麥克風權限！", connError: "⚠️ 連線失敗，請檢查網路或 ID。"
             }
         };
 
@@ -239,9 +234,12 @@
 
         function generateToken(roomName, isHost) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
+            
+            // PERBAIKAN FATAL: Membuang "nbf" (waktu mulai) agar tidak ditolak server jika jam HP sedikit lambat/cepat
             const payload = JSON.stringify({
-                iss: API_KEY, sub: isHost ? "host-" + Math.random() : "listener-" + Math.random(),
-                nbf: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
+                iss: API_KEY, 
+                sub: isHost ? "host-" + Math.floor(Math.random()*10000) : "listener-" + Math.floor(Math.random()*10000),
+                exp: Math.floor(Date.now() / 1000) + (3600 * 2), 
                 video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
             });
             return KJUR.jws.JWS.sign("HS256", header, payload, {utf8: API_SECRET});
@@ -253,31 +251,26 @@
             document.getElementById('participant-count-value').innerText = totalCount;
         }
 
-        // FUNGSI BARU: Menampilkan Peringatan Teks Elegan (Tanpa Pop-up)
         function showInlineError(role, message) {
             const errorDiv = role === 'host' ? document.getElementById('host-error') : document.getElementById('listener-error');
             errorDiv.innerText = message;
             errorDiv.style.display = 'block';
-            
-            // Hilangkan otomatis setelah 4 detik
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 4000);
+            setTimeout(() => { errorDiv.style.display = 'none'; }, 4000);
         }
 
         async function joinRoom(role) {
             const isHost = role === 'host';
             const roomInput = isHost ? document.getElementById('hostRoom') : document.getElementById('listenerRoom');
-            const roomName = roomInput.value;
+            
+            // PERBAIKAN: Memotong spasi yang tidak sengaja terketik (.trim())
+            const roomName = roomInput.value.trim(); 
             const lang = document.getElementById('langSelect').value;
             
-            // 1. Cek jika kotak ID kosong
             if (!roomName) {
                 showInlineError(role, translations[lang].emptyId);
                 return; 
             }
 
-            // 2. Ubah tombol jadi status Loading
             const btn = isHost ? document.getElementById('btn-host-action') : document.getElementById('btn-listener-action');
             const originalText = btn.innerText;
             btn.innerText = translations[lang].connecting;
@@ -288,22 +281,20 @@
                 currentRoom = new LivekitClient.Room();
                 await currentRoom.connect(LIVEKIT_URL, token);
 
-                // 3. JIKA LISTENER: Cek apakah Pemandu ada di dalam ruangan
+                // CEK RUANGAN KOSONG (Kini lebih presisi)
                 if (!isHost) {
-                    await new Promise(resolve => setTimeout(resolve, 500)); // Tunggu server ngecek
+                    await new Promise(resolve => setTimeout(resolve, 800)); 
                     if (currentRoom.participants.size === 0) {
                         currentRoom.disconnect();
                         currentRoom = null;
                         
-                        // Tampilkan pesan error di bawah input, dan kembalikan tombol
                         showInlineError('listener', translations[lang].roomNotExist);
                         btn.innerText = originalText;
                         btn.disabled = false;
-                        return; // Berhenti masuk!
+                        return; 
                     }
                 }
 
-                // 4. Jika Koneksi Berhasil, Ganti Tampilan ke Dashboard!
                 document.getElementById('landing-page').classList.add('hidden');
                 document.getElementById('active-dashboard').classList.remove('hidden');
 
@@ -318,11 +309,11 @@
                         isMutedGlobal = false;
                         startVisualizer();
                         
-                        const listenerLink = window.location.origin + window.location.pathname + "?room=" + roomName;
+                        // Menjamin QR Code digambar dengan link bersih
+                        const listenerLink = window.location.origin + window.location.pathname + "?room=" + encodeURIComponent(roomName);
                         document.getElementById('qrcode').innerHTML = "";
-                        new QRCode(document.getElementById("qrcode"), { text: listenerLink, width: 150, height: 150 });
+                        new QRCode(document.getElementById("qrcode"), { text: listenerLink, width: 160, height: 160 });
                     } catch (micErr) {
-                        // Jika Mic error di laptop
                         leaveRoom();
                         showInlineError('host', translations[lang].micError);
                     }
@@ -336,11 +327,10 @@
                     });
                 }
             } catch (e) {
-                // Jika Connection Failed (Server masih tidur)
-                console.error(e);
-                showInlineError(role, translations[lang].serverWake);
+                console.error("Error Detail:", e);
+                // Menampilkan error nyata jika koneksi gagal
+                showInlineError(role, translations[lang].connError);
             } finally {
-                // Selalu kembalikan bentuk tombol seperti semula jika ada error
                 btn.innerText = originalText;
                 btn.disabled = false;
             }
@@ -403,7 +393,6 @@
             document.getElementById('listener-controls').classList.add('hidden');
             document.getElementById('landing-page').classList.remove('hidden');
             
-            // Kembalikan tombol ke keadaan normal
             const lang = document.getElementById('langSelect').value;
             document.getElementById('btn-host-action').innerText = translations[lang].startBtn;
             document.getElementById('btn-listener-action').innerText = translations[lang].joinBtn;
