@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)http://127.0.0.1:8765/gemini-code-1779436327835.html -->
+<!-- saved from url=(0075)file:///C:/Users/redva/OneDrive/%EB%AC%B8%EC%84%9C/New%20project/index.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -375,7 +375,7 @@
         <p id="txt-subtitle">Professional Guide System</p>
     </div>
 
-    <div class="main-grid" id="landing-page">
+    <div class="main-grid hidden" id="landing-page">
         <div class="role-card">
             <div class="role-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none">
@@ -420,19 +420,19 @@
         </div>
     </div>
 
-    <div id="active-dashboard" class="dashboard-shell hidden">
+    <div id="active-dashboard" class="dashboard-shell">
         <div class="dashboard">
         <h2 id="txt-active-room">Room Active</h2>
-        <div id="host-live-status" class="live-strip hidden">
+        <div id="host-live-status" class="live-strip">
             <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-            <span id="tour-timer" class="tour-timer">00:00:00</span>
+            <span id="tour-timer" class="tour-timer">00:00:07</span>
         </div>
         
         <div class="participant-badge">
             👥 <span id="txt-part-label">Participants:</span> <span id="participant-count-value">1</span>
         </div>
         
-        <div id="host-controls" class="hidden">
+        <div id="host-controls" class="">
             <p id="txt-mic-status" style="margin:0; font-size:14px; font-weight:bold; color:#666;">Microphone Activity:</p>
             <div class="visualizer-stage">
                 <div class="guide-avatar" aria-hidden="true">
@@ -442,16 +442,16 @@
                         <path d="M8.75 8.1c1.55.92 3.84.98 6.5.1" stroke="currentColor" stroke-linecap="round"></path>
                     </svg>
                 </div>
-                <div id="visualizer"></div>
+                <div id="visualizer"><div class="bar" style="height: 85px;"></div><div class="bar" style="height: 79px;"></div><div class="bar" style="height: 61px;"></div><div class="bar" style="height: 53px;"></div><div class="bar" style="height: 52px;"></div><div class="bar" style="height: 41.5px;"></div><div class="bar" style="height: 38.5px;"></div><div class="bar" style="height: 42px;"></div><div class="bar" style="height: 46.5px;"></div><div class="bar" style="height: 53px;"></div><div class="bar" style="height: 51.5px;"></div><div class="bar" style="height: 50px;"></div><div class="bar" style="height: 48px;"></div><div class="bar" style="height: 48px;"></div><div class="bar" style="height: 46.5px;"></div><div class="bar" style="height: 43.5px;"></div><div class="bar" style="height: 56px;"></div><div class="bar" style="height: 60px;"></div><div class="bar" style="height: 56.5px;"></div><div class="bar" style="height: 51.5px;"></div></div>
             </div>
-            <button id="btnMute" class="btn-mute" onclick="toggleMute()">🔇 Mute</button>
+            <button id="btnMute" class="btn-mute" onclick="toggleMute()">Mute Microphone</button>
             <div class="host-action-grid">
                 <button id="btnCamera" class="btn-soft btn-camera" onclick="toggleHostCamera()">Turn on Camera</button>
             </div>
             <div class="qr-area">
                 <p id="txt-scan-desc" style="margin:0; font-size:14px; font-weight:bold; color:var(--tcu-dark);">Share this QR with guests:</p>
-                <div id="qrcode"></div>
-                <a id="qr-link" class="qr-link" href="http://127.0.0.1:8765/gemini-code-1779436327835.html#" target="_blank" rel="noopener"></a>
+                <div id="qrcode" title="https://redvallarie-source.github.io/whisper-tour/?room=1234&amp;role=listener&amp;autoJoin=1"><canvas width="160" height="160" style="display: none;"></canvas><img src="data:image/png;base64,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" style="display: block;"></div>
+                <a id="qr-link" class="qr-link" href="https://redvallarie-source.github.io/whisper-tour/?room=1234&amp;role=listener&amp;autoJoin=1" target="_blank" rel="noopener">https://redvallarie-source.github.io/whisper-tour/?room=1234&amp;role=listener&amp;autoJoin=1</a>
                 <button type="button" id="btn-copy-link" class="copy-link-btn" onclick="copyListenerLink()">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M8.75 8.25h7.5a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-7.5a2 2 0 0 1-2-2v-7.5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-linejoin="round"></path>
@@ -460,14 +460,14 @@
                     <span id="txt-copy-link">Copy Link</span>
                 </button>
                 <p id="copy-toast" class="copy-toast"></p>
-                <p id="qr-warning" class="qr-warning"></p>
+                <p id="qr-warning" class="qr-warning" style="display: none;"></p>
             </div>
         </div>
 
         <div id="listener-controls" class="hidden">
             <div id="host-video-stage" class="video-stage"></div>
             <div id="listener-pulse" class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
-            <p id="txt-connected" style="font-weight: bold; margin-top: 20px;">Connected. Hearing the guide...</p>
+            <p id="txt-connected" style="font-weight: bold; margin-top: 20px; color: rgb(217, 48, 37);">Room is empty. Waiting for Guide to join...</p>
             <button id="btnRaiseHand" class="btn-soft" onclick="raiseHand()">🙋‍♂️ Angkat Tangan</button>
             <button id="btnEnableAudio" class="btn-audio" onclick="enableListenerAudio()">Enable Audio</button>
             <div id="remote-audio-container" aria-hidden="true"></div>
@@ -477,7 +477,13 @@
         </div>
         <aside class="participants-panel">
             <h3 id="txt-participant-panel">Participant List</h3>
-            <ul id="participant-list" class="participant-list"></ul>
+            <ul id="participant-list" class="participant-list">
+                    <li class="participant-item">
+                        <span class="participant-initial">P</span>
+                        <span class="participant-name" title="Pemandu TCU">Pemandu TCU</span>
+                        <span class="participant-role">Host - You</span>
+                    </li>
+                </ul>
         </aside>
     </div>
     <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
@@ -708,6 +714,7 @@
         const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
         const API_KEY = "API5mBWCdaKNLLQ";
         const API_SECRET = "xfZhky6tUeDAYufb8ewdUZOy2vmaJXqOZpfDhpCybiGB";
+        const APP_PUBLIC_URL = "https://redvallarie-source.github.io/whisper-tour/";
         
         let currentRoom = null;
         let audioCtx = null;
@@ -930,7 +937,7 @@
         }
 
         function buildListenerLink(roomName) {
-            const url = new URL(window.location.href);
+            const url = new URL(APP_PUBLIC_URL);
             url.searchParams.set('room', roomName);
             url.searchParams.set('role', 'listener');
             url.searchParams.set('autoJoin', '1');
