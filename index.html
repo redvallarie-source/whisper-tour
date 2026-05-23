@@ -3,25 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whisper Tour - TCU Edition</title>
+    <title>Whisper Tour - Premium TCU Edition</title>
     
-    <script>
-        window.dependencyLoaders = [];
-        function loadScriptFallback(url) {
-            const promise = new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = url;
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-            window.dependencyLoaders.push(promise);
-            return promise;
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js" onerror="loadScriptFallback('https://unpkg.com/livekit-client/dist/livekit-client.umd.min.js')"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.9.0/jsrsasign-all-min.js" onerror="loadScriptFallback('https://cdn.jsdelivr.net/npm/jsrsasign/lib/jsrsasign-all-min.js')"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" onerror="loadScriptFallback('https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.9.0/jsrsasign-all-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
@@ -44,14 +30,22 @@
         body { 
             font-family: 'Poppins', 'Noto Sans TC', sans-serif; 
             background: #eef8f4;
-            margin: 0; min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center;
+            margin: 0; 
+            min-height: 100vh;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
             position: relative;
             color: var(--ink);
             overflow-x: hidden;
         }
+
         body::before {
-            content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+            content: ""; 
+            position: fixed; 
+            inset: 0; 
+            pointer-events: none; 
+            z-index: -1;
             background:
                 radial-gradient(circle at center, rgba(255,255,255,0.26), transparent 0.5px),
                 linear-gradient(90deg, rgba(0,122,83,0.055) 1px, transparent 1px),
@@ -59,8 +53,13 @@
             background-size: 4px 4px, 92px 92px, 92px 92px;
             mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.15));
         }
+
         body::after {
-            content: ""; position: fixed; inset: -22%; z-index: -2; pointer-events: none;
+            content: ""; 
+            position: fixed; 
+            inset: -22%; 
+            z-index: -2; 
+            pointer-events: none;
             background:
                 radial-gradient(circle at 18% 18%, rgba(0, 122, 83, 0.34), transparent 30%),
                 radial-gradient(circle at 78% 18%, rgba(11, 111, 143, 0.26), transparent 28%),
@@ -72,44 +71,124 @@
         }
 
         .tcu-premium-header {
-            width: 100%; min-height: 92px; padding: 16px 30px;
+            width: 100%; 
+            min-height: 92px; 
+            padding: 16px 30px;
             box-sizing: border-box;
             background: linear-gradient(135deg, rgba(219, 246, 232, 0.96), rgba(235, 250, 242, 0.92));
             border-bottom: 1px solid rgba(0, 122, 83, 0.12);
             box-shadow: 0 18px 44px rgba(0, 86, 59, 0.08);
-            display: flex; align-items: center; gap: 15px;
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
             z-index: 2;
             position: relative;
         }
-        .tcu-logo { width: 70px; height: auto; mix-blend-mode: multiply; }
+
+        .tcu-logo { 
+            width: 70px; 
+            height: auto; 
+            mix-blend-mode: multiply; 
+        }
+
         .tcu-logo-fallback {
-            width: 70px; height: 52px; display: none; align-items: center; justify-content: center;
-            border: 1px solid rgba(0, 122, 83, 0.16); border-radius: 18px; color: var(--tcu-dark);
-            background: rgba(255,255,255,0.84); font-weight: 700; letter-spacing: 0;
+            width: 70px; 
+            height: 52px; 
+            display: none; 
+            align-items: center; 
+            justify-content: center;
+            border: 1px solid rgba(0, 122, 83, 0.16); 
+            border-radius: 18px; 
+            color: var(--tcu-dark);
+            background: rgba(255,255,255,0.84); 
+            font-weight: 700; 
+            letter-spacing: 0;
             box-shadow: 0 14px 30px rgba(0, 86, 59, 0.08);
         }
-        .vertical-divider { width: 2px; height: 60px; background-color: var(--tcu-green); border-radius: 2px; }
-        .tcu-title { color: var(--tcu-dark); margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
 
-        .nav-lang { width: 100%; display: flex; justify-content: flex-end; padding: 18px 28px; box-sizing: border-box; position: absolute; top: 0; right: 0; z-index: 3; }
+        .vertical-divider { 
+            width: 2px; 
+            height: 60px; 
+            background-color: var(--tcu-green); 
+            border-radius: 2px; 
+        }
+
+        .tcu-title { 
+            color: var(--tcu-dark); 
+            margin: 0; 
+            font-size: 24px; 
+            font-weight: 700; 
+            letter-spacing: -0.5px; 
+        }
+
+        .nav-lang { 
+            width: 100%; 
+            display: flex; 
+            justify-content: flex-end; 
+            padding: 18px 28px; 
+            box-sizing: border-box; 
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            z-index: 3; 
+        }
+
         .nav-lang select {
-            padding: 11px 16px; border-radius: 16px; border: 1px solid rgba(0, 122, 83, 0.14);
-            background: rgba(255,255,255,0.88); color: var(--tcu-dark); font-weight: 600; cursor: pointer; outline: none;
+            padding: 11px 16px; 
+            border-radius: 16px; 
+            border: 1px solid rgba(0, 122, 83, 0.14);
+            background: rgba(255,255,255,0.88); 
+            color: var(--tcu-dark); 
+            font-weight: 600; 
+            cursor: pointer; 
+            outline: none;
             box-shadow: 0 14px 28px rgba(0, 86, 59, 0.08);
             backdrop-filter: blur(12px);
         }
 
-        .header { text-align: center; margin-top: 62px; margin-bottom: 44px; padding: 0 20px; position: relative; z-index: 1; }
-        .header h1 { color: var(--tcu-dark); margin: 0; font-size: 52px; font-weight: 700; line-height: 1; text-shadow: 0 18px 42px rgba(0, 86, 59, 0.14); }
-        .header p { color: #51655d; margin: 14px 0 0; font-size: 15px; font-weight: 600; }
+        .header { 
+            text-align: center; 
+            margin-top: 62px; 
+            margin-bottom: 44px; 
+            padding: 0 20px; 
+            position: relative; 
+            z-index: 1; 
+        }
+
+        .header h1 { 
+            color: var(--tcu-dark); 
+            margin: 0; 
+            font-size: 52px; 
+            font-weight: 700; 
+            line-height: 1; 
+            text-shadow: 0 18px 42px rgba(0, 86, 59, 0.14); 
+        }
+
+        .header p { 
+            color: #51655d; 
+            margin: 14px 0 0; 
+            font-size: 15px; 
+            font-weight: 600; 
+        }
 
         .main-grid {
-            display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; width: 100%; max-width: 980px; padding: 0 26px 44px; box-sizing: border-box;
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 30px; 
+            justify-content: center; 
+            width: 100%; 
+            max-width: 980px; 
+            padding: 0 26px 44px; 
+            box-sizing: border-box;
             position: relative;
         }
+
         .main-grid::before {
-            content: ""; position: absolute; inset: -22px 10px 22px;
-            border: 1px solid rgba(255, 255, 255, 0.62); border-radius: 38px;
+            content: ""; 
+            position: absolute; 
+            inset: -22px 10px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.62); 
+            border-radius: 38px;
             background:
                 linear-gradient(90deg, transparent 49.8%, rgba(31,93,122,0.08) 50%, transparent 50.2%),
                 linear-gradient(180deg, rgba(255,255,255,0.5), transparent 18%, transparent 82%, rgba(0,122,83,0.08));
@@ -119,121 +198,314 @@
         
         .role-card {
             background: linear-gradient(145deg, rgba(255,255,255,0.76), rgba(255,255,255,0.46));
-            flex: 1; min-width: 310px; padding: 48px 32px 38px;
-            border-radius: 34px; box-shadow: 0 30px 90px rgba(0, 86, 59, 0.15), inset 0 1px 0 rgba(255,255,255,0.82);
-            text-align: center; transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+            flex: 1; 
+            min-width: 310px; 
+            padding: 48px 32px 38px;
+            border-radius: 34px; 
+            box-shadow: 0 30px 90px rgba(0, 86, 59, 0.15), inset 0 1px 0 rgba(255,255,255,0.82);
+            text-align: center; 
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
             border: 1px solid rgba(255, 255, 255, 0.64);
-            position: relative; overflow: hidden; z-index: 1;
+            position: relative; 
+            overflow: hidden; 
+            z-index: 1;
             backdrop-filter: blur(22px);
         }
+
         .role-card::before {
-            content: ""; position: absolute; top: -55%; left: -25%; right: -25%; height: 85%;
+            content: ""; 
+            position: absolute; 
+            top: -55%; 
+            left: -25%; 
+            right: -25%; 
+            height: 85%;
             background: radial-gradient(circle at 50% 100%, rgba(255,255,255,0.7), transparent 58%);
             pointer-events: none;
         }
+
         .role-card::after {
-            content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+            content: ""; 
+            position: absolute; 
+            inset: 0; 
+            border-radius: inherit; 
+            pointer-events: none;
             background: linear-gradient(135deg, rgba(255,255,255,0.72), transparent 35%, rgba(0,122,83,0.09));
             opacity: 0.72;
         }
-        .role-card:hover { transform: translateY(-8px); border-color: rgba(255, 255, 255, 0.9); box-shadow: 0 38px 110px rgba(0, 86, 59, 0.22), 0 0 38px rgba(0, 122, 83, 0.12); }
-        .role-card > * { position: relative; z-index: 1; }
+
+        .role-card:hover { 
+            transform: translateY(-8px); 
+            border-color: rgba(255, 255, 255, 0.9); 
+            box-shadow: 0 38px 110px rgba(0, 86, 59, 0.22), 0 0 38px rgba(0, 122, 83, 0.12); 
+        }
+
+        .role-card > * { 
+            position: relative; 
+            z-index: 1; 
+        }
+
         .role-icon {
-            width: 70px; height: 70px; margin: 0 auto 20px; border-radius: 24px;
-            display: flex; align-items: center; justify-content: center;
+            width: 70px; 
+            height: 70px; 
+            margin: 0 auto 20px; 
+            border-radius: 24px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
             color: var(--tcu-dark);
             background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(229,248,239,0.7));
             box-shadow: 0 18px 40px rgba(0, 86, 59, 0.14), inset 0 1px 0 rgba(255,255,255,0.95);
             border: 1px solid rgba(255,255,255,0.85);
         }
-        .role-icon svg { width: 34px; height: 34px; stroke-width: 1.8; }
-        .role-card h2 { color: var(--tcu-dark); margin: 0; font-size: 31px; letter-spacing: 0; }
-        .role-card p { color: #52665e; font-size: 14px; margin: 16px 0 24px; line-height: 1.6; }
 
-        .room-input-row { display: flex; gap: 10px; align-items: stretch; margin-bottom: 10px; }
-        .room-input-row input { margin-bottom: 0; min-width: 0; }
+        .role-icon svg { 
+            width: 34px; 
+            height: 34px; 
+            stroke-width: 1.8; 
+        }
+
+        .role-card h2 { 
+            color: var(--tcu-dark); 
+            margin: 0; 
+            font-size: 31px; 
+            letter-spacing: 0; 
+        }
+
+        .role-card p { 
+            color: #52665e; 
+            font-size: 14px; 
+            margin: 16px 0 24px; 
+            line-height: 1.6; 
+        }
+
+        .room-input-row { 
+            display: flex; 
+            gap: 10px; 
+            align-items: stretch; 
+            margin-bottom: 10px; 
+        }
+
+        .room-input-row input { 
+            margin-bottom: 0; 
+            min-width: 0; 
+        }
+
         .icon-action-btn {
-            width: 54px; min-width: 54px; padding: 0; border-radius: 16px;
-            display: inline-flex; align-items: center; justify-content: center;
+            width: 54px; 
+            min-width: 54px; 
+            padding: 0; 
+            border-radius: 16px;
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center;
             color: var(--tcu-dark);
             background: rgba(255,255,255,0.78);
             border: 1px solid rgba(0,122,83,0.12);
             box-shadow: 0 10px 24px rgba(0, 86, 59, 0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+            cursor: pointer;
         }
-        .icon-action-btn svg { width: 22px; height: 22px; }
-        .icon-action-btn:hover { color: white; background: linear-gradient(135deg, var(--tcu-green), var(--sea-blue)); }
+
+        .icon-action-btn svg { 
+            width: 22px; 
+            height: 22px; 
+        }
+
+        .icon-action-btn:hover { 
+            color: white; 
+            background: linear-gradient(135deg, var(--tcu-green), var(--sea-blue)); 
+        }
         
         input { 
-            padding: 15px; width: 100%; box-sizing: border-box; border-radius: 16px; 
-            font-size: 16px; border: 1px solid rgba(0, 122, 83, 0.14); text-align: center; 
-            margin-bottom: 10px; font-weight: bold; font-family: 'Poppins', sans-serif;
+            padding: 15px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            border-radius: 16px; 
+            font-size: 16px; 
+            border: 1px solid rgba(0, 122, 83, 0.14); 
+            text-align: center; 
+            margin-bottom: 10px; 
+            font-weight: bold; 
+            font-family: 'Poppins', sans-serif;
             background: rgba(255,255,255,0.74);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 10px 22px rgba(0, 86, 59, 0.05);
         }
-        input:focus { outline: none; border-color: var(--tcu-green); box-shadow: 0 0 0 4px rgba(0, 122, 83, 0.08); }
 
-        .error-text { color: var(--error-red); font-size: 13px; font-weight: 500; margin-bottom: 15px; min-height: 20px; display: none; }
+        input:focus { 
+            outline: none; 
+            border-color: var(--tcu-green); 
+            box-shadow: 0 0 0 4px rgba(0, 122, 83, 0.08); 
+        }
+
+        .error-text { 
+            color: var(--error-red); 
+            font-size: 13px; 
+            font-weight: 500; 
+            margin-bottom: 15px; 
+            min-height: 20px; 
+            display: none; 
+        }
 
         button { 
-            padding: 15px; width: 100%; border-radius: 16px; font-size: 16px; 
-            font-weight: 700; cursor: pointer; border: none; transition: 0.22s cubic-bezier(.2,.8,.2,1);
+            padding: 15px; 
+            width: 100%; 
+            border-radius: 16px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            border: none; 
+            transition: 0.22s cubic-bezier(.2,.8,.2,1);
             font-family: 'Poppins', sans-serif;
-            position: relative; overflow: hidden;
+            position: relative; 
+            overflow: hidden;
         }
+
         button::before {
-            content: ""; position: absolute; top: 0; left: -70%; width: 45%; height: 100%;
+            content: ""; 
+            position: absolute; 
+            top: 0; 
+            left: -70%; 
+            width: 45%; 
+            height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.42), transparent);
-            transform: skewX(-20deg); transition: left 0.55s ease;
+            transform: skewX(-20deg); 
+            transition: left 0.55s ease;
         }
-        button:hover::before { left: 125%; }
-        .btn-host { background: linear-gradient(135deg, #008f65, var(--tcu-green) 48%, var(--sea-blue)); color: white; box-shadow: 0 16px 30px rgba(0, 122, 83, 0.25), inset 0 1px 0 rgba(255,255,255,0.32); }
-        .btn-listener { background: linear-gradient(135deg, #253d42, #236176 52%, #0f7664); color: white; box-shadow: 0 16px 30px rgba(31, 93, 122, 0.21), inset 0 1px 0 rgba(255,255,255,0.24); }
-        button:hover { opacity: 0.98; transform: translateY(-3px); }
-        button:active { transform: translateY(1px) scale(0.985); }
-        button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        button:hover::before { 
+            left: 125%; 
+        }
+
+        .btn-host { 
+            background: linear-gradient(135deg, #008f65, var(--tcu-green) 48%, var(--sea-blue)); 
+            color: white; 
+            box-shadow: 0 16px 30px rgba(0, 122, 83, 0.25), inset 0 1px 0 rgba(255,255,255,0.32); 
+        }
+
+        .btn-listener { 
+            background: linear-gradient(135deg, #253d42, #236176 52%, #0f7664); 
+            color: white; 
+            box-shadow: 0 16px 30px rgba(31, 93, 122, 0.21), inset 0 1px 0 rgba(255,255,255,0.24); 
+        }
+
+        button:hover { 
+            opacity: 0.98; 
+            transform: translateY(-3px); 
+        }
+
+        button:active { 
+            transform: translateY(1px) scale(0.985); 
+        }
+
+        button:disabled { 
+            opacity: 0.6; 
+            cursor: not-allowed; 
+            transform: none; 
+        }
 
         .dashboard-shell {
-            width: 100%; max-width: 1180px; padding: 0 26px 46px; box-sizing: border-box;
-            display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 22px;
-            align-items: start; margin-top: 28px;
+            width: 100%; 
+            max-width: 1180px; 
+            padding: 0 26px 46px; 
+            box-sizing: border-box;
+            display: grid; 
+            grid-template-columns: minmax(0, 1fr) 330px; 
+            gap: 22px;
+            align-items: start; 
+            margin-top: 28px;
         }
+
         .dashboard {
-            width: 100%; max-width: none; background: linear-gradient(145deg, rgba(255,255,255,0.78), rgba(255,255,255,0.54)); padding: 42px;
-            border-radius: 32px; box-shadow: 0 30px 90px rgba(0,122,83,0.16), inset 0 1px 0 rgba(255,255,255,0.86);
-            text-align: center; margin-top: 0; border: 1px solid rgba(255,255,255,0.64);
-            position: relative; overflow: hidden;
+            width: 100%; 
+            max-width: none; 
+            background: linear-gradient(145deg, rgba(255,255,255,0.78), rgba(255,255,255,0.54)); 
+            padding: 42px;
+            border-radius: 32px; 
+            box-shadow: 0 30px 90px rgba(0,122,83,0.16), inset 0 1px 0 rgba(255,255,255,0.86);
+            text-align: center; 
+            margin-top: 0; 
+            border: 1px solid rgba(255,255,255,0.64);
+            position: relative; 
+            overflow: hidden;
             backdrop-filter: blur(22px);
         }
+
         .dashboard::before {
-            content: ""; position: absolute; top: -38%; left: -15%; right: -15%; height: 62%;
+            content: ""; 
+            position: absolute; 
+            top: -38%; 
+            left: -15%; 
+            right: -15%; 
+            height: 62%;
             background: radial-gradient(circle at 50% 100%, rgba(255,255,255,0.72), transparent 56%);
         }
-        .dashboard > * { position: relative; z-index: 1; }
+
+        .dashboard > * { 
+            position: relative; 
+            z-index: 1; 
+        }
 
         .live-strip {
-            display: flex; justify-content: space-between; align-items: center; gap: 12px;
-            margin: -10px 0 20px; padding: 10px 12px;
-            border-radius: 18px; background: rgba(255,255,255,0.58);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 12px;
+            margin: -10px 0 20px; 
+            padding: 10px 12px;
+            border-radius: 18px; 
+            background: rgba(255,255,255,0.58);
             border: 1px solid rgba(255,255,255,0.7);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
         }
+
         .live-badge {
-            display: inline-flex; align-items: center; gap: 8px; color: #b42318; font-size: 12px; font-weight: 700;
-            padding: 7px 11px; border-radius: 999px; background: #fff1ef; border: 1px solid rgba(180,35,24,0.14);
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            color: #b42318; 
+            font-size: 12px; 
+            font-weight: 700;
+            padding: 7px 11px; 
+            border-radius: 999px; 
+            background: #fff1ef; 
+            border: 1px solid rgba(180,35,24,0.14);
             box-shadow: 0 0 24px rgba(225,29,72,0.22);
         }
-        .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #e11d48; box-shadow: 0 0 0 0 rgba(225,29,72,0.45); animation: livePulse 1.4s infinite; }
-        .tour-timer { font-variant-numeric: tabular-nums; color: var(--tcu-dark); font-weight: 700; font-size: 13px; }
+
+        .live-dot { 
+            width: 8px; 
+            height: 8px; 
+            border-radius: 50%; 
+            background: #e11d48; 
+            box-shadow: 0 0 0 0 rgba(225,29,72,0.45); 
+            animation: livePulse 1.4s infinite; 
+        }
+
+        .tour-timer { 
+            font-variant-numeric: tabular-nums; 
+            color: var(--tcu-dark); 
+            font-weight: 700; 
+            font-size: 13px; 
+        }
 
         .participant-badge {
-            background: rgba(240, 247, 244, 0.92); color: var(--tcu-dark); padding: 9px 20px;
-            border-radius: 999px; display: inline-block; font-weight: bold; margin-bottom: 20px;
+            background: rgba(240, 247, 244, 0.92); 
+            color: var(--tcu-dark); 
+            padding: 9px 20px;
+            border-radius: 999px; 
+            display: inline-block; 
+            font-weight: bold; 
+            margin-bottom: 20px;
             border: 1px solid rgba(0, 122, 83, 0.2);
         }
 
         .visualizer-stage {
-            display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 14px; align-items: center;
-            margin: 16px 0 18px; padding: 14px; border-radius: 24px;
+            display: grid; 
+            grid-template-columns: 78px minmax(0, 1fr); 
+            gap: 14px; 
+            align-items: center;
+            margin: 16px 0 18px; 
+            padding: 14px; 
+            border-radius: 24px;
             background:
                 radial-gradient(circle at 10% 20%, rgba(0, 122, 83, 0.12), transparent 26%),
                 radial-gradient(circle at 92% 76%, rgba(31, 93, 122, 0.12), transparent 30%),
@@ -241,107 +513,355 @@
             border: 1px solid rgba(255,255,255,0.78);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.82), 0 18px 38px rgba(0, 86, 59, 0.08);
         }
+
         .guide-avatar {
-            width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: var(--tcu-dark); background: linear-gradient(145deg, #ffffff, #dff5ea);
-            border: 1px solid rgba(0, 122, 83, 0.18); box-shadow: 0 14px 30px rgba(0, 86, 59, 0.14);
+            width: 70px; 
+            height: 70px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            color: var(--tcu-dark); 
+            background: linear-gradient(145deg, #ffffff, #dff5ea);
+            border: 1px solid rgba(0, 122, 83, 0.18); 
+            box-shadow: 0 14px 30px rgba(0, 86, 59, 0.14);
         }
-        .guide-avatar svg { width: 38px; height: 38px; stroke-width: 1.6; }
-        #visualizer { width: 100%; height: 60px; background: rgba(238,243,240,0.74); border-radius: 18px; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 3px; }
-        .bar { width: 5px; background: var(--tcu-green); border-radius: 10px; transition: height 0.1s; }
-        .host-action-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 10px 0; }
+
+        .guide-avatar svg { 
+            width: 38px; 
+            height: 38px; 
+            stroke-width: 1.6; 
+        }
+
+        #visualizer { 
+            width: 100%; 
+            height: 60px; 
+            background: rgba(238,243,240,0.74); 
+            border-radius: 18px; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 3px; 
+        }
+
+        .bar { 
+            width: 5px; 
+            background: var(--tcu-green); 
+            border-radius: 10px; 
+            transition: height 0.1s; 
+        }
+
+        .host-action-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, minmax(0, 1fr)); 
+            gap: 10px; 
+            margin: 10px 0; 
+        }
+
         .btn-soft {
-            background: rgba(255,255,255,0.78); color: var(--tcu-dark); border: 1px solid rgba(0,122,83,0.14);
+            background: rgba(255,255,255,0.78); 
+            color: var(--tcu-dark); 
+            border: 1px solid rgba(0,122,83,0.14);
             box-shadow: 0 12px 26px rgba(0, 86, 59, 0.08);
         }
-        .btn-camera.active { background: linear-gradient(135deg, var(--tcu-green), var(--sea-blue)); color: white; }
+
+        .btn-camera.active { 
+            background: linear-gradient(135deg, var(--tcu-green), var(--sea-blue)); 
+            color: white; 
+        }
+
         .video-stage {
-            display: none; width: 100%; aspect-ratio: 16 / 9; border-radius: 24px; overflow: hidden;
-            background: linear-gradient(135deg, #113f38, #0b6f8f); margin: 0 0 18px;
+            display: none; 
+            width: 100%; 
+            aspect-ratio: 16 / 9; 
+            border-radius: 24px; 
+            overflow: hidden;
+            background: linear-gradient(135deg, #113f38, #0b6f8f); 
+            margin: 0 0 18px;
             box-shadow: 0 22px 46px rgba(0, 86, 59, 0.18);
         }
-        .video-stage.show { display: block; }
-        .video-stage video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .video-stage.show { 
+            display: block; 
+        }
+
+        .video-stage video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
+        }
+
         .participants-panel {
             background: linear-gradient(145deg, rgba(255,255,255,0.82), rgba(255,255,255,0.58));
-            border: 1px solid rgba(255,255,255,0.68); border-radius: 28px; padding: 22px;
+            border: 1px solid rgba(255,255,255,0.68); 
+            border-radius: 28px; 
+            padding: 22px;
             box-shadow: 0 28px 74px rgba(0,122,83,0.13), inset 0 1px 0 rgba(255,255,255,0.86);
-            backdrop-filter: blur(20px); position: sticky; top: 18px;
+            backdrop-filter: blur(20px); 
+            position: sticky; 
+            top: 18px;
         }
-        .participants-panel h3 { margin: 0 0 14px; color: var(--tcu-dark); font-size: 18px; }
-        .participant-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+
+        .participants-panel h3 { 
+            margin: 0 0 14px; 
+            color: var(--tcu-dark); 
+            font-size: 18px; 
+        }
+
+        .participant-list { 
+            display: grid; 
+            gap: 10px; 
+            margin: 0; 
+            padding: 0; 
+            list-style: none; 
+        }
+
         .participant-item {
-            display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 10px;
-            padding: 10px; border-radius: 18px; background: rgba(255,255,255,0.7);
+            display: grid; 
+            grid-template-columns: 40px minmax(0, 1fr) auto; 
+            align-items: center; 
+            gap: 10px;
+            padding: 10px; 
+            border-radius: 18px; 
+            background: rgba(255,255,255,0.7);
             border: 1px solid rgba(0,122,83,0.1);
         }
+
         .participant-initial {
-            width: 40px; height: 40px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(145deg, #e9f8f1, #ffffff); color: var(--tcu-dark); font-weight: 800;
+            width: 40px; 
+            height: 40px; 
+            border-radius: 14px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            background: linear-gradient(145deg, #e9f8f1, #ffffff); 
+            color: var(--tcu-dark); 
+            font-weight: 800;
         }
-        .participant-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; color: var(--ink); }
-        .participant-role { color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; }
-        .toast-stack { position: fixed; right: 24px; bottom: 24px; z-index: 20; display: grid; gap: 10px; width: min(320px, calc(100vw - 48px)); }
+
+        .participant-name { 
+            min-width: 0; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+            font-weight: 700; 
+            color: var(--ink); 
+        }
+
+        .participant-role { 
+            color: var(--muted); 
+            font-size: 11px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+        }
+
+        .toast-stack { 
+            position: fixed; 
+            right: 24px; 
+            bottom: 24px; 
+            z-index: 20; 
+            display: grid; 
+            gap: 10px; 
+            width: min(320px, calc(100vw - 48px)); 
+        }
+
         .app-toast {
-            padding: 13px 15px; border-radius: 16px; background: rgba(255,255,255,0.94);
-            border: 1px solid rgba(0,122,83,0.14); box-shadow: 0 18px 44px rgba(0, 46, 31, 0.16);
-            color: var(--tcu-dark); font-size: 13px; font-weight: 700;
+            padding: 13px 15px; 
+            border-radius: 16px; 
+            background: rgba(255,255,255,0.94);
+            border: 1px solid rgba(0,122,83,0.14); 
+            box-shadow: 0 18px 44px rgba(0, 46, 31, 0.16);
+            color: var(--tcu-dark); 
+            font-size: 13px; 
+            font-weight: 700;
             animation: toastIn 0.2s ease both;
         }
 
-        .qr-area { background: rgba(255,255,255,0.62); padding: 20px; border-radius: 24px; margin-top: 20px; border: 1px dashed rgba(0,122,83,0.22); box-shadow: inset 0 1px 0 rgba(255,255,255,0.8); }
-        #qrcode { display: flex; justify-content: center; margin-top: 15px; }
-        #qrcode img, #qrcode canvas { width: 160px; height: 160px; }
-        .qr-link { display: block; margin-top: 12px; color: var(--tcu-dark); font-size: 12px; overflow-wrap: anywhere; text-decoration: none; }
-        .qr-warning { display: none; color: var(--error-red); font-size: 12px; margin: 10px 0 0; }
+        .qr-area { 
+            background: rgba(255,255,255,0.62); 
+            padding: 20px; 
+            border-radius: 24px; 
+            margin-top: 20px; 
+            border: 1px dashed rgba(0,122,83,0.22); 
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.8); 
+        }
+
+        #qrcode { 
+            display: flex; 
+            justify-content: center; 
+            margin-top: 15px; 
+        }
+
+        #qrcode img, #qrcode canvas { 
+            width: 160px; 
+            height: 160px; 
+        }
+
+        .qr-link { 
+            display: block; 
+            margin-top: 12px; 
+            color: var(--tcu-dark); 
+            font-size: 12px; 
+            overflow-wrap: anywhere; 
+            text-decoration: none; 
+        }
+
+        .qr-warning { 
+            display: none; 
+            color: var(--error-red); 
+            font-size: 12px; 
+            margin: 10px 0 0; 
+        }
+
         .copy-link-btn {
-            margin-top: 12px; display: inline-flex; width: auto; align-items: center; justify-content: center; gap: 8px;
-            padding: 11px 15px; border-radius: 14px; color: var(--tcu-dark);
-            background: rgba(255,255,255,0.76); border: 1px solid rgba(0,122,83,0.12);
+            margin-top: 12px; 
+            display: inline-flex; 
+            width: auto; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            padding: 11px 15px; 
+            border-radius: 14px; 
+            color: var(--tcu-dark);
+            background: rgba(255,255,255,0.76); 
+            border: 1px solid rgba(0,122,83,0.12);
             box-shadow: 0 10px 22px rgba(0, 86, 59, 0.08);
         }
-        .copy-link-btn svg { width: 17px; height: 17px; }
-        .copy-toast {
-            min-height: 18px; margin: 8px 0 0; color: var(--tcu-green);
-            font-size: 12px; font-weight: 700; opacity: 0; transition: opacity 0.2s ease;
-        }
-        .copy-toast.show { opacity: 1; }
-        .btn-audio { background: var(--tcu-green); color: white; margin-top: 12px; display: none; }
 
-        .btn-mute { background: #d9a318; color: white; margin-bottom: 10px; }
-        .btn-danger { background: linear-gradient(135deg, #c94a40, #e86d5e); color: white; margin-top: 20px; }
+        .copy-link-btn svg { 
+            width: 17px; 
+            height: 17px; 
+        }
+
+        .copy-toast {
+            min-height: 18px; 
+            margin: 8px 0 0; 
+            color: var(--tcu-green);
+            font-size: 12px; 
+            font-weight: 700; 
+            opacity: 0; 
+            transition: opacity 0.2s ease;
+        }
+
+        .copy-toast.show { 
+            opacity: 1; 
+        }
+
+        .btn-audio { 
+            background: var(--tcu-green); 
+            color: white; 
+            margin-top: 12px; 
+            display: none; 
+        }
+
+        .btn-mute { 
+            background: #d9a318; 
+            color: white; 
+            margin-bottom: 10px; 
+        }
+
+        .btn-danger { 
+            background: linear-gradient(135deg, #c94a40, #e86d5e); 
+            color: white; 
+            margin-top: 20px; 
+        }
 
         .modal-backdrop {
-            position: fixed; inset: 0; background: rgba(15, 34, 28, 0.42);
-            display: flex; align-items: center; justify-content: center;
-            padding: 24px; z-index: 10; opacity: 0; pointer-events: none;
-            transition: opacity 0.22s ease; backdrop-filter: blur(6px);
+            position: fixed; 
+            inset: 0; 
+            background: rgba(15, 34, 28, 0.42);
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            padding: 24px; 
+            z-index: 10; 
+            opacity: 0; 
+            pointer-events: none;
+            transition: opacity 0.22s ease; 
+            backdrop-filter: blur(6px);
         }
-        .modal-backdrop.show { opacity: 1; pointer-events: auto; }
+
+        .modal-backdrop.show { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+
         .modal-card {
-            width: 100%; max-width: 390px; background: var(--surface-strong);
-            border-radius: 24px; padding: 30px; text-align: center;
+            width: 100%; 
+            max-width: 390px; 
+            background: var(--surface-strong);
+            border-radius: 24px; 
+            padding: 30px; 
+            text-align: center;
             border: 1px solid rgba(0, 122, 83, 0.14);
             box-shadow: 0 30px 90px rgba(0, 46, 31, 0.28);
-            transform: translateY(12px) scale(0.98); transition: transform 0.22s ease;
-            position: relative; overflow: hidden;
+            transform: translateY(12px) scale(0.98); 
+            transition: transform 0.22s ease;
+            position: relative; 
+            overflow: hidden;
         }
-        .modal-backdrop.show .modal-card { transform: translateY(0) scale(1); }
+
+        .modal-backdrop.show .modal-card { 
+            transform: translateY(0) scale(1); 
+        }
+
         .modal-card::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            content: ""; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            height: 6px;
             background: linear-gradient(90deg, var(--tcu-green), var(--tcu-blue));
         }
+
         .modal-icon {
-            width: 54px; height: 54px; border-radius: 18px; margin: 4px auto 16px;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--tcu-light); color: var(--tcu-dark); font-size: 24px; font-weight: 700;
+            width: 54px; 
+            height: 54px; 
+            border-radius: 18px; 
+            margin: 4px auto 16px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            background: var(--tcu-light); 
+            color: var(--tcu-dark); 
+            font-size: 24px; 
+            font-weight: 700;
             border: 1px solid rgba(0, 122, 83, 0.15);
         }
-        .modal-card h3 { margin: 0; color: var(--tcu-dark); font-size: 22px; }
-        .modal-card p { margin: 10px 0 24px; color: var(--muted); font-size: 14px; line-height: 1.6; }
-        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .btn-cancel { background: #edf4f1; color: var(--tcu-dark); border: 1px solid rgba(0, 122, 83, 0.12); }
-        .btn-confirm-leave { background: linear-gradient(135deg, var(--tcu-green), #06986c); color: white; box-shadow: 0 14px 26px rgba(0, 122, 83, 0.2); }
+
+        .modal-card h3 { 
+            margin: 0; 
+            color: var(--tcu-dark); 
+            font-size: 22px; 
+        }
+
+        .modal-card p { 
+            margin: 10px 0 24px; 
+            color: var(--muted); 
+            font-size: 14px; 
+            line-height: 1.6; 
+        }
+
+        .modal-actions { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+        }
+
+        .btn-cancel { 
+            background: #edf4f1; 
+            color: var(--tcu-dark); 
+            border: 1px solid rgba(0, 122, 83, 0.12); 
+        }
+
+        .btn-confirm-leave { 
+            background: linear-gradient(135deg, var(--tcu-green), #06986c); 
+            color: white; 
+            box-shadow: 0 14px 26px rgba(0, 122, 83, 0.2); 
+        }
 
         .hidden { display: none !important; }
         .pulse { animation: pulse-green 2s infinite; }
@@ -355,33 +875,53 @@
             .participants-panel { position: relative; top: auto; }
         }
 
-        /* --- 1. PERBAIKAN HEADER UNTUK HP --- */
+        /* 1. PERBAIKAN HEADER UNTUK HP DI SINI (SESUAI PERMINTAAN TATA LETAK) */
         @media (max-width: 600px) {
             .tcu-premium-header { 
-                min-height: auto; padding: 18px 20px; 
-                flex-direction: column; align-items: flex-start; gap: 12px; 
-                border-radius: 0 0 26px 26px; box-shadow: 0 20px 50px rgba(0, 86, 59, 0.14); max-width: 100%;
+                min-height: 70px; 
+                padding: 10px 15px; 
+                flex-direction: row; 
+                align-items: center; 
+                gap: 10px; 
             }
-            .tcu-premium-header img { order: 1; margin-right: 0; }
-            .tcu-logo { width: 54px; }
-            .tcu-logo-fallback { width: 54px; height: 46px; font-size: 13px; border-radius: 14px; }
-            .vertical-divider { display: none; }
-            .tcu-title { order: 2; display: block; font-size: 18px; line-height: 1.2; max-width: 100%; letter-spacing: 0; margin: 0; }
+            .tcu-logo { 
+                width: 45px; 
+            }
+            .tcu-logo-fallback { 
+                width: 45px; 
+                height: 38px; 
+                font-size: 12px; 
+            }
+            .vertical-divider { 
+                display: none; 
+            }
+            .tcu-title { 
+                display: block; 
+                font-size: 16px; 
+                margin: 0; 
+            }
+            .nav-lang { 
+                position: absolute; 
+                top: 15px; 
+                right: 15px; 
+                padding: 0;
+                width: auto;
+            }
+            .nav-lang select { 
+                padding: 6px 10px; 
+                font-size: 12px; 
+                width: auto; 
+            }
             
-            .nav-lang { order: 3; position: relative; width: 100%; justify-content: center; padding: 0; top: auto; right: auto; margin-top: 10px; }
-            .nav-lang select { width: 100%; }
-            
-            .header { margin-top: 50px; margin-bottom: 36px; }
-            .header h1 { font-size: 42px; }
-            .main-grid { padding: 0 28px 32px; }
-            .main-grid::before { inset: -14px 16px 18px; }
-            .role-card { border-radius: 24px; padding: 40px 24px 32px; }
-            .dashboard-shell { grid-template-columns: 1fr; padding: 0 20px 32px; }
-            .dashboard { padding: 34px 24px; margin-top: 0; }
+            .header { margin-top: 90px; margin-bottom: 30px; }
+            .header h1 { font-size: 36px; }
+            .main-grid { padding: 0 20px 20px; }
+            .role-card { padding: 30px 20px 25px; border-radius: 24px; }
+            .dashboard-shell { grid-template-columns: 1fr; padding: 0 15px 30px; }
+            .dashboard { padding: 25px 15px; }
             .visualizer-stage { grid-template-columns: 1fr; justify-items: center; }
             .host-action-grid { grid-template-columns: 1fr; }
             .modal-card { padding: 28px 22px; }
-            .participants-panel { position: relative; top: auto; }
         }
     </style>
 </head>
@@ -500,6 +1040,7 @@
             <div id="host-video-stage" class="video-stage"></div>
             <div id="listener-pulse" class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
             <p id="txt-connected" style="font-weight: bold; margin-top: 20px; color: rgb(217, 48, 37);">Room is empty. Waiting for Guide to join...</p>
+            
             <button id="btnRaiseHand" class="btn-soft" onclick="toggleRaiseHand()">🙋‍♂️ Raise Hand</button>
             <button id="btnEnableAudio" class="btn-audio" onclick="enableListenerAudio()" style="display: none;">Enable Audio</button>
             <div id="remote-audio-container" aria-hidden="true"></div>
@@ -507,11 +1048,13 @@
 
         <button class="btn-danger" onclick="openLeaveModal()" id="txt-end">End / Leave</button>
         </div>
+        
         <aside class="participants-panel">
             <h3 id="txt-participant-panel">Participant List</h3>
             <ul id="participant-list" class="participant-list"></ul>
         </aside>
     </div>
+    
     <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
 
     <div id="leave-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="leave-modal-title" aria-hidden="true">
@@ -527,76 +1070,129 @@
     </div>
 
     <script>
+        // 2. KAMUS BAHASA YANG SUDAH DILENGKAPI FULL 
         const translations = {
-            en: {}, id: {}, zh: {}
-        };
-
-        // 2. PERBAIKAN KAMUS BAHASA "UNDEFINED"
-        Object.assign(translations, {
             en: {
-                title: "Whisper Tour", subtitle: "Professional Guide System",
-                imHost: "Host / Guide", imListener: "Listener / Guest",
-                hostDesc: "Create a room and start broadcasting.", listenerDesc: "Enter an active room ID to listen.",
-                startBtn: "Create Room", joinBtn: "Join Room",
-                active: "Room Active", micStatus: "Microphone Activity:",
-                mute: "Mute Microphone", unmute: "Unmute Microphone",
-                scan: "Share this QR with guests:", connected: "Connected. Hearing the guide...",
-                end: "End / Leave", emptyId: "Please enter a Room ID!",
-                connecting: "Connecting...", micError: "Microphone blocked by browser!",
-                connError: "Connection failed. Check internet.", partLabel: "Participants:",
+                title: "Whisper Tour",
+                subtitle: "Professional Guide System",
+                imHost: "Host / Guide",
+                imListener: "Listener / Guest",
+                hostDesc: "Create a room and start broadcasting.",
+                listenerDesc: "Enter an active room ID to listen.",
+                startBtn: "Create Room",
+                joinBtn: "Join Room",
+                active: "Room Active",
+                micStatus: "Microphone Activity:",
+                mute: "Mute Microphone",
+                unmute: "Unmute Microphone",
+                scan: "Share this QR with guests:",
+                connected: "Connected. Hearing the guide...",
+                end: "End / Leave",
+                emptyId: "Please enter a Room ID!",
+                connecting: "Connecting...",
+                micError: "Microphone blocked by browser!",
+                connError: "Connection failed. Check internet.",
+                partLabel: "Participants:",
                 waitingHost: "Room is empty. Waiting for Guide to join...",
                 inactiveRoom: "Room is not active yet. Please wait for the guide to create it.",
-                modalTitle: "Leave this room?", modalDesc: "The audio session will disconnect and you will return to the start page.",
-                modalCancel: "Cancel", modalConfirm: "Yes, Leave",
-                copyLink: "Copy Link", copied: "Link copied!",
-                emptyName: "Please enter your name!", namePlaceholder: "Your Name",
-                participantPanel: "Participant List", roleHost: "Host", roleListener: "Listener",
-                youLabel: "You", cameraOn: "Turn on Camera", cameraOff: "Turn off Camera",
-                raiseHand: "🙋‍♂️ Raise Hand", lowerHand: "Lower Hand"
+                modalTitle: "Leave this room?",
+                modalDesc: "The audio session will disconnect and you will return to the start page.",
+                modalCancel: "Cancel",
+                modalConfirm: "Yes, Leave",
+                copyLink: "Copy Link",
+                copied: "Link copied!",
+                emptyName: "Please enter your name!",
+                namePlaceholder: "Your Name",
+                participantPanel: "Participant List",
+                roleHost: "Host",
+                roleListener: "Listener",
+                youLabel: "You",
+                cameraOn: "Turn on Camera",
+                cameraOff: "Turn off Camera",
+                raiseHand: "🙋‍♂️ Raise Hand",
+                lowerHand: "Lower Hand"
             },
             id: {
-                title: "Whisper Tour", subtitle: "Sistem Pemandu Profesional",
-                imHost: "Host / Pemandu", imListener: "Pendengar / Tamu",
-                hostDesc: "Buat ruangan dan siarkan suaramu.", listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
-                startBtn: "Buat Ruangan", joinBtn: "Gabung Ruangan",
-                active: "Ruangan Aktif", micStatus: "Aktivitas Mikrofon:",
-                mute: "Bisukan Mikrofon", unmute: "Nyalakan Mikrofon",
-                scan: "Bagikan QR ini ke tamu:", connected: "Terhubung. Mendengarkan pemandu...",
-                end: "Akhiri / Keluar", emptyId: "Masukkan ID Ruangan dulu!",
-                connecting: "Menghubungkan...", micError: "Izin mikrofon ditolak browser!",
-                connError: "Koneksi gagal. Cek internet.", partLabel: "Peserta:",
+                title: "Whisper Tour",
+                subtitle: "Sistem Pemandu Profesional",
+                imHost: "Host / Pemandu",
+                imListener: "Pendengar / Tamu",
+                hostDesc: "Buat ruangan dan siarkan suaramu.",
+                listenerDesc: "Masukkan ID ruangan aktif untuk mendengar.",
+                startBtn: "Buat Ruangan",
+                joinBtn: "Gabung Ruangan",
+                active: "Ruangan Aktif",
+                micStatus: "Aktivitas Mikrofon:",
+                mute: "Bisukan Mikrofon",
+                unmute: "Nyalakan Mikrofon",
+                scan: "Bagikan QR ini ke tamu:",
+                connected: "Terhubung. Mendengarkan pemandu...",
+                end: "Akhiri / Keluar",
+                emptyId: "Masukkan ID Ruangan dulu!",
+                connecting: "Menghubungkan...",
+                micError: "Izin mikrofon ditolak browser!",
+                connError: "Koneksi gagal. Cek internet.",
+                partLabel: "Peserta:",
                 waitingHost: "Ruangan kosong. Menunggu Pemandu masuk...",
                 inactiveRoom: "Ruangan belum aktif. Tunggu pemandu membuat ruangan dulu.",
-                modalTitle: "Keluar dari ruangan?", modalDesc: "Sesi audio akan terputus dan kamu akan kembali ke halaman awal.",
-                modalCancel: "Batal", modalConfirm: "Ya, Keluar",
-                copyLink: "Salin Link", copied: "Link berhasil disalin!",
-                emptyName: "Masukkan nama Anda dulu!", namePlaceholder: "Nama Anda",
-                participantPanel: "Daftar Peserta", roleHost: "Host", roleListener: "Pendengar",
-                youLabel: "Anda", cameraOn: "Nyalakan Kamera", cameraOff: "Matikan Kamera",
-                raiseHand: "🙋‍♂️ Angkat Tangan", lowerHand: "Turunkan Tangan"
+                modalTitle: "Keluar dari ruangan?",
+                modalDesc: "Sesi audio akan terputus dan kamu akan kembali ke halaman awal.",
+                modalCancel: "Batal",
+                modalConfirm: "Ya, Keluar",
+                copyLink: "Salin Link",
+                copied: "Link berhasil disalin!",
+                emptyName: "Masukkan nama Anda dulu!",
+                namePlaceholder: "Nama Anda",
+                participantPanel: "Daftar Peserta",
+                roleHost: "Host",
+                roleListener: "Pendengar",
+                youLabel: "Anda",
+                cameraOn: "Nyalakan Kamera",
+                cameraOff: "Matikan Kamera",
+                raiseHand: "🙋‍♂️ Angkat Tangan",
+                lowerHand: "Turunkan Tangan"
             },
             zh: {
-                title: "隨身導覽系統", subtitle: "專業語音導覽",
-                imHost: "導覽員 / 主持人", imListener: "聽眾 / 遊客",
-                hostDesc: "建立房間並開始廣播。", listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
-                startBtn: "建立房間", joinBtn: "加入房間",
-                active: "房間使用中", micStatus: "麥克風活動：",
-                mute: "麥克風靜音", unmute: "解除麥克風靜音",
-                scan: "分享二維碼給遊客：", connected: "已連線。正在收聽導覽...",
-                end: "結束 / 離開", emptyId: "請輸入房間 ID！",
-                connecting: "連線中...", micError: "瀏覽器拒絕了麥克風權限！",
-                connError: "連線失敗，請檢查網路。", partLabel: "參與人數：",
+                title: "隨身導覽系統",
+                subtitle: "專業語音導覽",
+                imHost: "導覽員 / 主持人",
+                imListener: "聽眾 / 遊客",
+                hostDesc: "建立房間並開始廣播。",
+                listenerDesc: "輸入正在使用的房間 ID 開始收聽。",
+                startBtn: "建立房間",
+                joinBtn: "加入房間",
+                active: "房間使用中",
+                micStatus: "麥克風活動：",
+                mute: "麥克風靜音",
+                unmute: "解除麥克風靜音",
+                scan: "分享二維碼給遊客：",
+                connected: "已連線。正在收聽導覽...",
+                end: "結束 / 離開",
+                emptyId: "請輸入房間 ID！",
+                connecting: "連線中...",
+                micError: "瀏覽器拒絕了麥克風權限！",
+                connError: "連線失敗，請檢查網路。",
+                partLabel: "參與人數：",
                 waitingHost: "房間是空的。等待導覽員加入...",
                 inactiveRoom: "房間尚未啟用，請等待導覽員建立房間。",
-                modalTitle: "要離開房間嗎？", modalDesc: "語音導覽將會中斷，並返回開始頁面。",
-                modalCancel: "取消", modalConfirm: "是，離開",
-                copyLink: "複製連結", copied: "連結已複製！",
-                emptyName: "請輸入您的名字！", namePlaceholder: "您的名字",
-                participantPanel: "參與者名單", roleHost: "主持人", roleListener: "聽眾",
-                youLabel: "您", cameraOn: "開啟相機", cameraOff: "關閉相機",
-                raiseHand: "🙋‍♂️ 舉手", lowerHand: "放下手"
+                modalTitle: "要離開房間嗎？",
+                modalDesc: "語音導覽將會中斷，並返回開始頁面。",
+                modalCancel: "取消",
+                modalConfirm: "是，離開",
+                copyLink: "複製連結",
+                copied: "連結已複製！",
+                emptyName: "請輸入您的名字！",
+                namePlaceholder: "您的名字",
+                participantPanel: "參與者名單",
+                roleHost: "主持人",
+                roleListener: "聽眾",
+                youLabel: "您",
+                cameraOn: "開啟相機",
+                cameraOff: "關閉相機",
+                raiseHand: "🙋‍♂️ 舉手",
+                lowerHand: "放下手"
             }
-        });
+        };
 
         const LIVEKIT_URL = "wss://whisper-tour-app-yqygtof5.livekit.cloud";
         const API_KEY = "API5mBWCdaKNLLQ";
@@ -614,7 +1210,7 @@
         let localDisplayName = "";
         let localRole = "";
         let cameraEnabled = false;
-        let localHandRaised = false; // VARIABEL BARU UNTUK ANGKAT TANGAN
+        let localHandRaised = false; // Status lokal angkat tangan
         
         const attachedVideoTracks = new Map();
         const attachedAudioTracks = new Map();
@@ -622,6 +1218,7 @@
         function changeLanguage() {
             const lang = document.getElementById('langSelect').value;
             const t = translations[lang];
+            
             document.getElementById('txt-title').innerText = t.title;
             document.getElementById('txt-subtitle').innerText = t.subtitle;
             document.getElementById('txt-im-host').innerText = t.imHost;
@@ -640,18 +1237,16 @@
             document.getElementById('txt-copy-link').innerText = t.copyLink;
             document.getElementById('hostName').placeholder = t.namePlaceholder;
             document.getElementById('listenerName').placeholder = t.namePlaceholder;
-            document.getElementById('txt-participant-panel').innerText = t.participantPanel || "Daftar Peserta";
-            document.getElementById('btnCamera').innerText = cameraEnabled ? (t.cameraOff || "Turn Camera Off") : (t.cameraOn || "📷 Nyalakan Kamera");
+            document.getElementById('txt-participant-panel').innerText = t.participantPanel;
+            document.getElementById('btnCamera').innerText = cameraEnabled ? t.cameraOff : t.cameraOn;
             
-            // PERBAIKAN TEKS TOMBOL ANGKAT TANGAN BERDASARKAN STATUS
-            if (currentRoom && localRole === 'listener') {
-                document.getElementById('btnRaiseHand').innerText = localHandRaised ? (t.lowerHand || "Lower Hand") : (t.raiseHand || "🙋‍♂️ Raise Hand");
-            } else {
-                document.getElementById('btnRaiseHand').innerText = t.raiseHand || "🙋‍♂️ Raise Hand";
+            if (document.getElementById('btnRaiseHand')) {
+                document.getElementById('btnRaiseHand').innerText = localHandRaised ? t.lowerHand : t.raiseHand;
             }
             
             document.getElementById('btn-host-action').innerText = t.startBtn;
             document.getElementById('btn-listener-action').innerText = t.joinBtn;
+            
             if(currentRoom) {
                 document.getElementById('btnMute').innerText = isMutedGlobal ? t.unmute : t.mute;
                 renderParticipantList();
@@ -659,13 +1254,13 @@
             }
         }
 
-        // PENAMBAHAN 'handRaised' KE TIKET MASUK
         function generateToken(roomName, isHost, displayName) {
             const header = JSON.stringify({ alg: "HS256", typ: "JWT" });
             const now = Math.floor(Date.now() / 1000);
             const participantRole = isHost ? "host" : "listener";
             const nameSlug = displayName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 24) || "guest";
             const participantId = participantRole + "-" + nameSlug + "-" + Math.floor(Math.random()*10000);
+            
             const payload = JSON.stringify({
                 iss: API_KEY, 
                 sub: participantId,
@@ -705,7 +1300,10 @@
         }
 
         function stopTourTimer() {
-            if (tourTimerInterval) { clearInterval(tourTimerInterval); tourTimerInterval = null; }
+            if (tourTimerInterval) {
+                clearInterval(tourTimerInterval);
+                tourTimerInterval = null;
+            }
             tourStartTime = null;
             document.getElementById('tour-timer').innerText = "00:00:00";
             document.getElementById('host-live-status').classList.add('hidden');
@@ -718,7 +1316,11 @@
 
         function parseParticipantMetadata(participant) {
             if (!participant || !participant.metadata) return {};
-            try { return JSON.parse(participant.metadata); } catch (e) { return {}; }
+            try {
+                return JSON.parse(participant.metadata);
+            } catch (e) {
+                return {};
+            }
         }
 
         function getParticipantDisplayName(participant, fallbackRole) {
@@ -734,7 +1336,6 @@
             return participant.identity && participant.identity.startsWith('host-') ? 'host' : 'listener';
         }
 
-        // PERBAIKAN DAFTAR PESERTA: MENAMBAHKAN IKON ✋
         function renderParticipantList() {
             const list = document.getElementById('participant-list');
             if (!list || !currentRoom) return;
@@ -761,7 +1362,7 @@
             list.innerHTML = participants.map((participant) => {
                 const initial = (participant.name || "?").trim().charAt(0).toUpperCase() || "?";
                 const roleLabel = participant.role === "host" ? (t.roleHost || "Host") : (t.roleListener || "Listener");
-                const localLabel = participant.isLocal ? ` - ${t.youLabel || "You"}` : "";
+                const localLabel = participant.isLocal ? ` • ${t.youLabel || "You"}` : "";
                 const handIcon = participant.handRaised ? " ✋" : "";
                 return `
                     <li class="participant-item">
@@ -774,12 +1375,22 @@
         }
 
         function escapeHtml(value) {
-            return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+            return String(value).replace(/[&<>"']/g, (char) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[char]));
         }
 
         function hasRemoteHost() {
             let foundHost = false;
-            getRemoteParticipants().forEach((participant) => { if (participant.identity && participant.identity.startsWith('host-')) foundHost = true; });
+            getRemoteParticipants().forEach((participant) => {
+                if (participant.identity && participant.identity.startsWith('host-')) {
+                    foundHost = true;
+                }
+            });
             return foundHost;
         }
 
@@ -801,29 +1412,14 @@
 
         function showInlineError(role, message, duration = 4000) {
             const errorDiv = role === 'host' ? document.getElementById('host-error') : document.getElementById('listener-error');
-            errorDiv.innerText = message; errorDiv.style.display = 'block';
+            errorDiv.innerText = message;
+            errorDiv.style.display = 'block';
             setTimeout(() => { errorDiv.style.display = 'none'; }, duration);
-        }
-
-        // SATPAM CEK DEPENDENSI YANG TIDAK ERROR (Sesuai aslinya)
-        async function ensureDependencies(isHost) {
-            if (window.dependencyLoaders && window.dependencyLoaders.length) {
-                await Promise.allSettled(window.dependencyLoaders);
-            }
-            const missing = [];
-            if (typeof LivekitClient === 'undefined') missing.push('LiveKit');
-            if (typeof KJUR === 'undefined') missing.push('token library');
-            if (isHost && (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)) missing.push('microphone access');
-
-            if (missing.length) {
-                const err = new Error('Missing dependencies: ' + missing.join(', '));
-                err.userMessage = 'Needed files failed to load: ' + missing.join(', ') + '. Check internet/CDN access, then refresh.';
-                throw err;
-            }
         }
 
         function checkHostStatus() {
             if(!currentRoom || document.getElementById('host-controls').classList.contains('hidden') === false) return;
+            
             const statusText = document.getElementById('txt-connected');
             const lang = document.getElementById('langSelect').value;
             
@@ -866,7 +1462,9 @@
                 throw new Error('QRCode library is not available');
             } catch (qrErr) {
                 const img = document.createElement('img');
-                img.alt = 'Listener QR code'; img.width = 160; img.height = 160;
+                img.alt = 'Listener QR code';
+                img.width = 160;
+                img.height = 160;
                 img.src = "https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=" + encodeURIComponent(listenerLink);
                 img.onerror = () => {
                     qrWarning.innerText = "QR failed to load. Share the link below.";
@@ -874,6 +1472,11 @@
                     qrBox.innerHTML = "";
                 };
                 qrBox.appendChild(img);
+            }
+
+            if (window.location.protocol === 'file:') {
+                qrWarning.innerText = "For phones, open this page from a shared URL or local server. file:// links only work on this computer.";
+                qrWarning.style.display = 'block';
             }
         }
 
@@ -883,74 +1486,149 @@
             if (!link || link.endsWith('#')) return;
 
             try {
-                if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(link); } 
-                else {
-                    const tempInput = document.createElement('input'); tempInput.value = link;
-                    document.body.appendChild(tempInput); tempInput.select(); document.execCommand('copy'); tempInput.remove();
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(link);
+                } else {
+                    const tempInput = document.createElement('input');
+                    tempInput.value = link;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    document.execCommand('copy');
+                    tempInput.remove();
                 }
                 const toast = document.getElementById('copy-toast');
-                toast.innerText = translations[lang].copied; toast.classList.add('show');
+                toast.innerText = translations[lang].copied;
+                toast.classList.add('show');
                 if (copyToastTimer) clearTimeout(copyToastTimer);
                 copyToastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
             } catch (copyErr) {
-                document.getElementById('copy-toast').innerText = link; document.getElementById('copy-toast').classList.add('show');
+                document.getElementById('copy-toast').innerText = link;
+                document.getElementById('copy-toast').classList.add('show');
             }
         }
 
-        function getAudioTrackKey(track, publication, participant) { return [ participant && participant.identity ? participant.identity : 'participant', publication && publication.trackSid ? publication.trackSid : '', track && track.sid ? track.sid : '' ].filter(Boolean).join('-'); }
-        function attachAudioTrack(track, publication, participant) {
-            if (!track || track.kind !== 'audio') return;
-            const key = getAudioTrackKey(track, publication, participant);
-            if (attachedAudioTracks.has(key)) return;
-            const audioContainer = document.getElementById('remote-audio-container');
-            const audioElement = track.attach(); audioElement.autoplay = true; audioElement.playsInline = true; audioElement.controls = false; audioElement.dataset.trackKey = key; audioContainer.appendChild(audioElement);
-            attachedAudioTracks.set(key, { track, audioElement });
-            let playPromise = null;
-            try { playPromise = audioElement.play(); } catch (playErr) { document.getElementById('btnEnableAudio').style.display = 'block'; }
-            if (playPromise && typeof playPromise.catch === 'function') { playPromise.catch(() => { document.getElementById('btnEnableAudio').style.display = 'block'; }); }
-        }
-        function detachAudioTrack(track, publication, participant) {
-            const key = getAudioTrackKey(track, publication, participant); const attached = attachedAudioTracks.get(key); if (!attached) return;
-            try { if (attached.track && attached.audioElement) { attached.track.detach(attached.audioElement); } } catch (detachErr) { }
-            attached.audioElement.remove(); attachedAudioTracks.delete(key);
+        function getAudioTrackKey(track, publication, participant) {
+            return [
+                participant && participant.identity ? participant.identity : 'participant',
+                publication && publication.trackSid ? publication.trackSid : '',
+                track && track.sid ? track.sid : ''
+            ].filter(Boolean).join('-');
         }
 
-        function getTrackKey(track, publication, participant) { return [ participant && participant.identity ? participant.identity : 'participant', publication && publication.trackSid ? publication.trackSid : '', track && track.sid ? track.sid : '' ].filter(Boolean).join('-'); }
+        function attachAudioTrack(track, publication, participant) {
+            if (!track || track.kind !== 'audio') return;
+
+            const key = getAudioTrackKey(track, publication, participant);
+            if (attachedAudioTracks.has(key)) return;
+
+            const audioContainer = document.getElementById('remote-audio-container');
+            const audioElement = track.attach();
+            audioElement.autoplay = true;
+            audioElement.playsInline = true;
+            audioElement.controls = false;
+            audioElement.dataset.trackKey = key;
+            audioContainer.appendChild(audioElement);
+            attachedAudioTracks.set(key, { track, audioElement });
+
+            let playPromise = null;
+            try {
+                playPromise = audioElement.play();
+            } catch (playErr) {
+                document.getElementById('btnEnableAudio').style.display = 'block';
+            }
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => {
+                    document.getElementById('btnEnableAudio').style.display = 'block';
+                });
+            }
+        }
+
+        function detachAudioTrack(track, publication, participant) {
+            const key = getAudioTrackKey(track, publication, participant);
+            const attached = attachedAudioTracks.get(key);
+            if (!attached) return;
+
+            try {
+                if (attached.track && attached.audioElement) {
+                    attached.track.detach(attached.audioElement);
+                }
+            } catch (detachErr) {
+            }
+            attached.audioElement.remove();
+            attachedAudioTracks.delete(key);
+        }
+
+        function getTrackKey(track, publication, participant) {
+            return [
+                participant && participant.identity ? participant.identity : 'participant',
+                publication && publication.trackSid ? publication.trackSid : '',
+                track && track.sid ? track.sid : ''
+            ].filter(Boolean).join('-');
+        }
+
         function attachVideoTrack(track, publication, participant) {
             if (!track || track.kind !== 'video') return;
+
             const key = getTrackKey(track, publication, participant);
             if (attachedVideoTracks.has(key)) return;
-            const videoStage = document.getElementById('host-video-stage'); if (!videoStage) return;
+
+            const videoStage = document.getElementById('host-video-stage');
+            if (!videoStage) return;
             videoStage.innerHTML = "";
-            const videoElement = track.attach(); videoElement.autoplay = true; videoElement.playsInline = true; videoElement.muted = false; videoElement.dataset.trackKey = key; videoStage.appendChild(videoElement); videoStage.classList.add('show');
+            const videoElement = track.attach();
+            videoElement.autoplay = true;
+            videoElement.playsInline = true;
+            videoElement.muted = false;
+            videoElement.dataset.trackKey = key;
+            videoStage.appendChild(videoElement);
+            videoStage.classList.add('show');
             attachedVideoTracks.set(key, { track, videoElement });
         }
+
         function detachVideoTrack(track, publication, participant) {
-            const key = getTrackKey(track, publication, participant); const attached = attachedVideoTracks.get(key); if (!attached) return;
-            try { if (attached.track && attached.videoElement) { attached.track.detach(attached.videoElement); } } catch (detachErr) {}
-            attached.videoElement.remove(); attachedVideoTracks.delete(key);
+            const key = getTrackKey(track, publication, participant);
+            const attached = attachedVideoTracks.get(key);
+            if (!attached) return;
+
+            try {
+                if (attached.track && attached.videoElement) {
+                    attached.track.detach(attached.videoElement);
+                }
+            } catch (detachErr) {}
+            attached.videoElement.remove();
+            attachedVideoTracks.delete(key);
+
             const videoStage = document.getElementById('host-video-stage');
-            if (videoStage && attachedVideoTracks.size === 0) { videoStage.classList.remove('show'); videoStage.innerHTML = ""; }
+            if (videoStage && attachedVideoTracks.size === 0) {
+                videoStage.classList.remove('show');
+                videoStage.innerHTML = "";
+            }
         }
 
         function attachExistingAudioTracks() {
             getRemoteParticipants().forEach((participant) => {
                 const publications = participant.trackPublications || participant.audioTrackPublications || new Map();
                 publications.forEach((publication) => {
-                    if (publication.kind === 'audio' && publication.track) { attachAudioTrack(publication.track, publication, participant); } 
-                    else if (publication.kind === 'video' && publication.track) { attachVideoTrack(publication.track, publication, participant); }
+                    if (publication.kind === 'audio' && publication.track) {
+                        attachAudioTrack(publication.track, publication, participant);
+                    } else if (publication.kind === 'video' && publication.track) {
+                        attachVideoTrack(publication.track, publication, participant);
+                    }
                 });
             });
         }
 
-        function onRoomEvent(room, eventName, handler) { if (eventName) room.on(eventName, handler); }
+        function onRoomEvent(room, eventName, handler) {
+            if (eventName) room.on(eventName, handler);
+        }
 
         function leaveIfHostIsMissing() {
             setTimeout(() => {
                 const listenerVisible = !document.getElementById('listener-controls').classList.contains('hidden');
                 if (currentRoom && listenerVisible && !hasRemoteHost()) {
                     const lang = document.getElementById('langSelect').value;
-                    leaveRoom(); showInlineError('listener', translations[lang].inactiveRoom, 6000);
+                    leaveRoom();
+                    showInlineError('listener', translations[lang].inactiveRoom, 6000);
                 }
             }, 1200);
         }
@@ -958,16 +1636,17 @@
         function registerRoomEvents(room, isHost) {
             onRoomEvent(room, LivekitClient.RoomEvent.ParticipantConnected, () => { updateParticipantCount(); checkHostStatus(); });
             onRoomEvent(room, LivekitClient.RoomEvent.ParticipantDisconnected, () => {
-                updateParticipantCount(); checkHostStatus();
+                updateParticipantCount();
+                checkHostStatus();
                 if (!isHost) leaveIfHostIsMissing();
             });
             onRoomEvent(room, LivekitClient.RoomEvent.Connected, () => { updateParticipantCount(); checkHostStatus(); });
             onRoomEvent(room, LivekitClient.RoomEvent.Reconnected, () => { updateParticipantCount(); checkHostStatus(); attachExistingAudioTracks(); });
             onRoomEvent(room, LivekitClient.RoomEvent.Disconnected, () => { clearInterval(radarInterval); radarInterval = null; });
 
-            // 4. PENAMBAHAN SATPAM BUNYI UNTUK HOST
-            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantMetadataChanged, (participant) => { 
-                renderParticipantList(); 
+            // 3. LOGIKA HOST BERBUNYI SAAT ADA YANG ANGKAT TANGAN
+            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantMetadataChanged, (participant) => {
+                renderParticipantList();
                 if (isHost) {
                     const meta = parseParticipantMetadata(participant);
                     if (meta.handRaised) {
@@ -997,7 +1676,9 @@
         async function enableListenerAudio() {
             const button = document.getElementById('btnEnableAudio');
             const elements = document.querySelectorAll('#remote-audio-container audio');
-            for (const element of elements) { try { await element.play(); } catch (e) {} }
+            for (const element of elements) {
+                try { await element.play(); } catch (e) {}
+            }
             button.style.display = 'none';
         }
 
@@ -1018,20 +1699,14 @@
             btn.disabled = true;
 
             try {
-                await ensureDependencies(isHost);
                 localDisplayName = displayName;
                 localRole = isHost ? "host" : "listener";
-                localHandRaised = false; // Reset hand saat masuk
+                localHandRaised = false;
                 
                 const token = generateToken(roomName, isHost, displayName);
                 currentRoom = new LivekitClient.Room();
                 registerRoomEvents(currentRoom, isHost);
                 await currentRoom.connect(LIVEKIT_URL, token, { autoSubscribe: true });
-                if (currentRoom.localParticipant && currentRoom.localParticipant.setMetadata) {
-                    try {
-                        await currentRoom.localParticipant.setMetadata(JSON.stringify({ displayName, role: localRole, handRaised: false }));
-                    } catch (metadataErr) { }
-                }
 
                 if (!isHost && !(await waitForRemoteHost())) {
                     const inactiveError = new Error('Room has no active host');
@@ -1045,7 +1720,10 @@
                 updateParticipantCount();
 
                 radarInterval = setInterval(() => {
-                    if(currentRoom) { updateParticipantCount(); checkHostStatus(); }
+                    if(currentRoom) {
+                        updateParticipantCount();
+                        checkHostStatus();
+                    }
                 }, 2000);
 
                 if (isHost) {
@@ -1059,19 +1737,25 @@
                         startTourTimer();
                         
                     } catch (micErr) {
-                        leaveRoom(); showInlineError('host', translations[lang].micError);
+                        leaveRoom();
+                        showInlineError('host', translations[lang].micError);
                     }
                 } else {
                     document.getElementById('listener-controls').classList.remove('hidden');
-                    attachExistingAudioTracks(); checkHostStatus(); 
+                    attachExistingAudioTracks();
+                    checkHostStatus(); 
                 }
             } catch (e) {
                 console.error("Error Detail:", e);
-                if (currentRoom) { try { currentRoom.disconnect(); } catch (disconnectErr) {} currentRoom = null; }
+                if (currentRoom) {
+                    try { currentRoom.disconnect(); } catch (disconnectErr) {}
+                    currentRoom = null;
+                }
                 if (radarInterval) { clearInterval(radarInterval); radarInterval = null; }
                 showInlineError(role, e.userMessage || translations[lang].connError, e.userMessage ? 8000 : 4000);
             } finally {
-                btn.innerText = originalText; btn.disabled = false;
+                btn.innerText = originalText;
+                btn.disabled = false;
             }
         }
 
@@ -1086,13 +1770,17 @@
             }
 
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                visualizerStream = stream; audioCtx = new AudioContext();
-                const source = audioCtx.createMediaStreamSource(stream); const analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 64; source.connect(analyser); const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                visualizerStream = stream;
+                audioCtx = new AudioContext();
+                const source = audioCtx.createMediaStreamSource(stream);
+                const analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 64; source.connect(analyser);
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
                 function draw() {
                     if (!currentRoom || !audioCtx) return;
-                    requestAnimationFrame(draw); analyser.getByteFrequencyData(dataArray);
+                    requestAnimationFrame(draw);
+                    analyser.getByteFrequencyData(dataArray);
                     bars.forEach((bar, i) => {
                         const val = isMutedGlobal ? 0 : (dataArray[i] || 0);
                         bar.style.height = (val / 2) + 5 + 'px';
@@ -1108,28 +1796,10 @@
             await currentRoom.localParticipant.setMicrophoneEnabled(!isMutedGlobal);
             const lang = document.getElementById('langSelect').value;
             document.getElementById('btnMute').innerText = isMutedGlobal ? translations[lang].unmute : translations[lang].mute;
-            document.getElementById('btnMute').style.background = isMutedGlobal ? "#ea4335" : "#d9a318";
+            document.getElementById('btnMute').style.background = isMutedGlobal ? "#ea4335" : "#f4b400";
         }
 
-        async function toggleHostCamera() {
-            if (!currentRoom || !currentRoom.localParticipant) return;
-            const lang = document.getElementById('langSelect').value;
-            const button = document.getElementById('btnCamera');
-            button.disabled = true;
-            try {
-                cameraEnabled = !cameraEnabled;
-                await currentRoom.localParticipant.setCameraEnabled(cameraEnabled);
-                button.classList.toggle('active', cameraEnabled);
-                button.innerText = cameraEnabled ? (translations[lang].cameraOff || "Turn Camera Off") : (translations[lang].cameraOn || "📷 Turn on Camera");
-            } catch (cameraErr) {
-                cameraEnabled = false; button.classList.remove('active');
-                showToast("Camera not accessible.");
-            } finally {
-                button.disabled = false;
-            }
-        }
-
-        // 3. FUNGSI ANGKAT TANGAN YANG SESUNGGUHNYA
+        // FUNGSI ANGKAT TANGAN YANG SESUNGGUHNYA 
         async function toggleRaiseHand() {
             if (!currentRoom || localRole === 'host') return;
             const btn = document.getElementById('btnRaiseHand');
@@ -1137,13 +1807,12 @@
             try {
                 localHandRaised = !localHandRaised;
                 
-                // Update Metadata agar Host Tahu
                 await currentRoom.localParticipant.setMetadata(JSON.stringify({ 
                     displayName: localDisplayName, role: localRole, handRaised: localHandRaised 
                 }));
                 
                 const lang = document.getElementById('langSelect').value;
-                btn.innerText = localHandRaised ? (translations[lang].lowerHand || "Lower Hand") : (translations[lang].raiseHand || "🙋‍♂️ Raise Hand");
+                btn.innerText = localHandRaised ? translations[lang].lowerHand : translations[lang].raiseHand;
                 
                 if (localHandRaised) {
                     btn.style.background = "#ff9800";
@@ -1165,32 +1834,49 @@
             const stack = document.getElementById('toast-stack');
             if (!stack) return;
             const toast = document.createElement('div');
-            toast.className = 'app-toast'; toast.innerText = message;
-            stack.appendChild(toast); setTimeout(() => toast.remove(), 2800);
+            toast.className = 'app-toast';
+            toast.innerText = message;
+            stack.appendChild(toast);
+            setTimeout(() => toast.remove(), 2800);
         }
 
         function openLeaveModal() {
             const modal = document.getElementById('leave-modal');
-            modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false');
+            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
         }
+
         function closeLeaveModal() {
             const modal = document.getElementById('leave-modal');
-            modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true');
+            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
         }
-        function confirmLeaveRoom() { closeLeaveModal(); leaveRoom(); }
+
+        function confirmLeaveRoom() {
+            closeLeaveModal();
+            leaveRoom();
+        }
 
         function leaveRoom() {
             closeLeaveModal();
             if (currentRoom) { currentRoom.disconnect(); currentRoom = null; }
             if (audioCtx) { audioCtx.close(); audioCtx = null; }
-            if (visualizerStream) { visualizerStream.getTracks().forEach(track => track.stop()); visualizerStream = null; }
+            if (visualizerStream) {
+                visualizerStream.getTracks().forEach(track => track.stop());
+                visualizerStream = null;
+            }
             if (radarInterval) { clearInterval(radarInterval); radarInterval = null; }
             if (copyToastTimer) { clearTimeout(copyToastTimer); copyToastTimer = null; }
             stopTourTimer();
-            attachedAudioTracks.forEach(({ audioElement }) => audioElement.remove()); attachedAudioTracks.clear();
-            attachedVideoTracks.forEach(({ videoElement }) => videoElement.remove()); attachedVideoTracks.clear();
+            attachedAudioTracks.forEach(({ audioElement }) => audioElement.remove());
+            attachedAudioTracks.clear();
+            attachedVideoTracks.forEach(({ videoElement }) => videoElement.remove());
+            attachedVideoTracks.clear();
             
-            cameraEnabled = false; localDisplayName = ""; localRole = ""; localHandRaised = false;
+            cameraEnabled = false;
+            localDisplayName = "";
+            localRole = "";
+            localHandRaised = false;
             
             document.getElementById('active-dashboard').classList.add('hidden');
             document.getElementById('host-controls').classList.add('hidden');
@@ -1198,7 +1884,6 @@
             document.getElementById('host-video-stage').classList.remove('show');
             document.getElementById('host-video-stage').innerHTML = "";
             document.getElementById('participant-list').innerHTML = "";
-            document.getElementById('btnCamera').classList.remove('active');
             document.getElementById('btnEnableAudio').style.display = 'none';
             document.getElementById('qrcode').innerHTML = "";
             document.getElementById('qr-link').innerText = "";
@@ -1207,16 +1892,27 @@
             document.getElementById('qr-warning').style.display = 'none';
             document.getElementById('landing-page').classList.remove('hidden');
             
+            // RESET TOMBOL ANGKAT TANGAN
+            const btnRaise = document.getElementById('btnRaiseHand');
+            btnRaise.style.background = "rgba(255,255,255,0.78)";
+            btnRaise.style.color = "var(--tcu-dark)";
+            btnRaise.style.borderColor = "rgba(0,122,83,0.14)";
+            
             const lang = document.getElementById('langSelect').value;
             document.getElementById('btn-host-action').innerText = translations[lang].startBtn;
             document.getElementById('btn-listener-action').innerText = translations[lang].joinBtn;
+            btnRaise.innerText = translations[lang].raiseHand;
         }
 
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('room')) { document.getElementById('listenerRoom').value = urlParams.get('room'); }
+            if (urlParams.get('room')) {
+                document.getElementById('listenerRoom').value = urlParams.get('room');
+            }
             changeLanguage();
-            if (urlParams.get('autoJoin') === '1' && urlParams.get('role') === 'listener') { joinRoom('listener'); }
+            if (urlParams.get('autoJoin') === '1' && urlParams.get('role') === 'listener') {
+                joinRoom('listener');
+            }
         };
     </script>
 </body>
