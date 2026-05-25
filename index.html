@@ -552,45 +552,11 @@
             transition: height 0.1s; 
         }
 
-        .host-action-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, minmax(0, 1fr)); 
-            gap: 10px; 
-            margin: 10px 0; 
-        }
-
         .btn-soft {
             background: rgba(255,255,255,0.78); 
             color: var(--tcu-dark); 
             border: 1px solid rgba(0,122,83,0.14);
             box-shadow: 0 12px 26px rgba(0, 86, 59, 0.08);
-        }
-
-        .btn-camera.active { 
-            background: linear-gradient(135deg, var(--tcu-green), var(--sea-blue)); 
-            color: white; 
-        }
-
-        .video-stage {
-            display: none; 
-            width: 100%; 
-            aspect-ratio: 16 / 9; 
-            border-radius: 24px; 
-            overflow: hidden;
-            background: linear-gradient(135deg, #113f38, #0b6f8f); 
-            margin: 0 0 18px;
-            box-shadow: 0 22px 46px rgba(0, 86, 59, 0.18);
-        }
-
-        .video-stage.show { 
-            display: block; 
-        }
-
-        .video-stage video { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            display: block; 
         }
 
         .participants-panel {
@@ -875,7 +841,6 @@
             .participants-panel { position: relative; top: auto; }
         }
 
-        /* 1. PERBAIKAN HEADER UNTUK HP DI SINI (SESUAI PERMINTAAN TATA LETAK) */
         @media (max-width: 600px) {
             .tcu-premium-header { 
                 min-height: 70px; 
@@ -920,7 +885,6 @@
             .dashboard-shell { grid-template-columns: 1fr; padding: 0 15px 30px; }
             .dashboard { padding: 25px 15px; }
             .visualizer-stage { grid-template-columns: 1fr; justify-items: center; }
-            .host-action-grid { grid-template-columns: 1fr; }
             .modal-card { padding: 28px 22px; }
         }
     </style>
@@ -1017,9 +981,6 @@
                 <div id="visualizer"></div>
             </div>
             <button id="btnMute" class="btn-mute" onclick="toggleMute()">Mute Microphone</button>
-            <div class="host-action-grid">
-                <button id="btnCamera" class="btn-soft btn-camera" onclick="toggleHostCamera()">Turn on Camera</button>
-            </div>
             <div class="qr-area">
                 <p id="txt-scan-desc" style="margin:0; font-size:14px; font-weight:bold; color:var(--tcu-dark);">Share this QR with guests:</p>
                 <div id="qrcode" title=""></div>
@@ -1037,7 +998,6 @@
         </div>
 
         <div id="listener-controls" class="hidden">
-            <div id="host-video-stage" class="video-stage"></div>
             <div id="listener-pulse" class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
             <p id="txt-connected" style="font-weight: bold; margin-top: 20px; color: rgb(217, 48, 37);">Room is empty. Waiting for Guide to join...</p>
             
@@ -1070,7 +1030,6 @@
     </div>
 
     <script>
-        // 2. KAMUS BAHASA YANG SUDAH DILENGKAPI FULL 
         const translations = {
             en: {
                 title: "Whisper Tour",
@@ -1107,8 +1066,6 @@
                 roleHost: "Host",
                 roleListener: "Listener",
                 youLabel: "You",
-                cameraOn: "Turn on Camera",
-                cameraOff: "Turn off Camera",
                 raiseHand: "🙋‍♂️ Raise Hand",
                 lowerHand: "Lower Hand"
             },
@@ -1147,8 +1104,6 @@
                 roleHost: "Host",
                 roleListener: "Pendengar",
                 youLabel: "Anda",
-                cameraOn: "Nyalakan Kamera",
-                cameraOff: "Matikan Kamera",
                 raiseHand: "🙋‍♂️ Angkat Tangan",
                 lowerHand: "Turunkan Tangan"
             },
@@ -1187,8 +1142,6 @@
                 roleHost: "主持人",
                 roleListener: "聽眾",
                 youLabel: "您",
-                cameraOn: "開啟相機",
-                cameraOff: "關閉相機",
                 raiseHand: "🙋‍♂️ 舉手",
                 lowerHand: "放下手"
             }
@@ -1209,10 +1162,8 @@
         let copyToastTimer = null;
         let localDisplayName = "";
         let localRole = "";
-        let cameraEnabled = false;
-        let localHandRaised = false; // Status lokal angkat tangan
+        let localHandRaised = false;
         
-        const attachedVideoTracks = new Map();
         const attachedAudioTracks = new Map();
 
         function changeLanguage() {
@@ -1238,7 +1189,6 @@
             document.getElementById('hostName').placeholder = t.namePlaceholder;
             document.getElementById('listenerName').placeholder = t.namePlaceholder;
             document.getElementById('txt-participant-panel').innerText = t.participantPanel;
-            document.getElementById('btnCamera').innerText = cameraEnabled ? t.cameraOff : t.cameraOn;
             
             if (document.getElementById('btnRaiseHand')) {
                 document.getElementById('btnRaiseHand').innerText = localHandRaised ? t.lowerHand : t.raiseHand;
@@ -1558,61 +1508,12 @@
             attachedAudioTracks.delete(key);
         }
 
-        function getTrackKey(track, publication, participant) {
-            return [
-                participant && participant.identity ? participant.identity : 'participant',
-                publication && publication.trackSid ? publication.trackSid : '',
-                track && track.sid ? track.sid : ''
-            ].filter(Boolean).join('-');
-        }
-
-        function attachVideoTrack(track, publication, participant) {
-            if (!track || track.kind !== 'video') return;
-
-            const key = getTrackKey(track, publication, participant);
-            if (attachedVideoTracks.has(key)) return;
-
-            const videoStage = document.getElementById('host-video-stage');
-            if (!videoStage) return;
-            videoStage.innerHTML = "";
-            const videoElement = track.attach();
-            videoElement.autoplay = true;
-            videoElement.playsInline = true;
-            videoElement.muted = false;
-            videoElement.dataset.trackKey = key;
-            videoStage.appendChild(videoElement);
-            videoStage.classList.add('show');
-            attachedVideoTracks.set(key, { track, videoElement });
-        }
-
-        function detachVideoTrack(track, publication, participant) {
-            const key = getTrackKey(track, publication, participant);
-            const attached = attachedVideoTracks.get(key);
-            if (!attached) return;
-
-            try {
-                if (attached.track && attached.videoElement) {
-                    attached.track.detach(attached.videoElement);
-                }
-            } catch (detachErr) {}
-            attached.videoElement.remove();
-            attachedVideoTracks.delete(key);
-
-            const videoStage = document.getElementById('host-video-stage');
-            if (videoStage && attachedVideoTracks.size === 0) {
-                videoStage.classList.remove('show');
-                videoStage.innerHTML = "";
-            }
-        }
-
         function attachExistingAudioTracks() {
             getRemoteParticipants().forEach((participant) => {
                 const publications = participant.trackPublications || participant.audioTrackPublications || new Map();
                 publications.forEach((publication) => {
                     if (publication.kind === 'audio' && publication.track) {
                         attachAudioTrack(publication.track, publication, participant);
-                    } else if (publication.kind === 'video' && publication.track) {
-                        attachVideoTrack(publication.track, publication, participant);
                     }
                 });
             });
@@ -1644,7 +1545,6 @@
             onRoomEvent(room, LivekitClient.RoomEvent.Reconnected, () => { updateParticipantCount(); checkHostStatus(); attachExistingAudioTracks(); });
             onRoomEvent(room, LivekitClient.RoomEvent.Disconnected, () => { clearInterval(radarInterval); radarInterval = null; });
 
-            // 3. LOGIKA HOST BERBUNYI SAAT ADA YANG ANGKAT TANGAN
             onRoomEvent(room, LivekitClient.RoomEvent.ParticipantMetadataChanged, (participant) => {
                 renderParticipantList();
                 if (isHost) {
@@ -1662,12 +1562,10 @@
             if (!isHost) {
                 onRoomEvent(room, LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
                     if (track.kind === 'audio') attachAudioTrack(track, publication, participant);
-                    if (track.kind === 'video') attachVideoTrack(track, publication, participant);
                     checkHostStatus();
                 });
                 onRoomEvent(room, LivekitClient.RoomEvent.TrackUnsubscribed, (track, publication, participant) => {
                     if (track.kind === 'audio') detachAudioTrack(track, publication, participant);
-                    if (track.kind === 'video') detachVideoTrack(track, publication, participant);
                     checkHostStatus();
                 });
             }
@@ -1799,7 +1697,6 @@
             document.getElementById('btnMute').style.background = isMutedGlobal ? "#ea4335" : "#f4b400";
         }
 
-        // FUNGSI ANGKAT TANGAN YANG SESUNGGUHNYA 
         async function toggleRaiseHand() {
             if (!currentRoom || localRole === 'host') return;
             const btn = document.getElementById('btnRaiseHand');
@@ -1870,10 +1767,7 @@
             stopTourTimer();
             attachedAudioTracks.forEach(({ audioElement }) => audioElement.remove());
             attachedAudioTracks.clear();
-            attachedVideoTracks.forEach(({ videoElement }) => videoElement.remove());
-            attachedVideoTracks.clear();
             
-            cameraEnabled = false;
             localDisplayName = "";
             localRole = "";
             localHandRaised = false;
@@ -1881,8 +1775,6 @@
             document.getElementById('active-dashboard').classList.add('hidden');
             document.getElementById('host-controls').classList.add('hidden');
             document.getElementById('listener-controls').classList.add('hidden');
-            document.getElementById('host-video-stage').classList.remove('show');
-            document.getElementById('host-video-stage').innerHTML = "";
             document.getElementById('participant-list').innerHTML = "";
             document.getElementById('btnEnableAudio').style.display = 'none';
             document.getElementById('qrcode').innerHTML = "";
@@ -1892,7 +1784,6 @@
             document.getElementById('qr-warning').style.display = 'none';
             document.getElementById('landing-page').classList.remove('hidden');
             
-            // RESET TOMBOL ANGKAT TANGAN
             const btnRaise = document.getElementById('btnRaiseHand');
             btnRaise.style.background = "rgba(255,255,255,0.78)";
             btnRaise.style.color = "var(--tcu-dark)";
@@ -1910,7 +1801,11 @@
                 document.getElementById('listenerRoom').value = urlParams.get('room');
             }
             changeLanguage();
+            
+            // BYPASS PENGISIAN NAMA OTOMATIS JIKA LEWAT QR CODE
             if (urlParams.get('autoJoin') === '1' && urlParams.get('role') === 'listener') {
+                const randomGuestNumber = Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('listenerName').value = "Guest-" + randomGuestNumber;
                 joinRoom('listener');
             }
         };
