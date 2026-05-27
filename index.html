@@ -950,7 +950,6 @@
             <h2 id="txt-im-listener">Listener / Guest</h2>
             <p id="txt-listener-desc">Enter an active room ID to listen.</p>
             <input type="text" id="listenerRoom" placeholder="Room ID" value="">
-            <input type="text" id="listenerName" placeholder="Your Name" value="">
             <div id="listener-error" class="error-text"></div>
             <button class="btn-listener" onclick="joinRoom('listener')" id="btn-listener-action">Join Room</button>
         </div>
@@ -1001,7 +1000,6 @@
             <div id="listener-pulse" class="listening-animation pulse" style="width:80px; height:80px; background:var(--tcu-green); border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; color:white; font-size:30px;">🔊</div>
             <p id="txt-connected" style="font-weight: bold; margin-top: 20px; color: rgb(217, 48, 37);">Room is empty. Waiting for Guide to join...</p>
             
-            <button id="btnRaiseHand" class="btn-soft" onclick="toggleRaiseHand()">🙋‍♂️ Raise Hand</button>
             <button id="btnEnableAudio" class="btn-audio" onclick="enableListenerAudio()" style="display: none;">Enable Audio</button>
             <div id="remote-audio-container" aria-hidden="true"></div>
         </div>
@@ -1065,9 +1063,7 @@
                 participantPanel: "Participant List",
                 roleHost: "Host",
                 roleListener: "Listener",
-                youLabel: "You",
-                raiseHand: "🙋‍♂️ Raise Hand",
-                lowerHand: "Lower Hand"
+                youLabel: "You"
             },
             id: {
                 title: "Whisper Tour",
@@ -1103,9 +1099,7 @@
                 participantPanel: "Daftar Peserta",
                 roleHost: "Host",
                 roleListener: "Pendengar",
-                youLabel: "Anda",
-                raiseHand: "🙋‍♂️ Angkat Tangan",
-                lowerHand: "Turunkan Tangan"
+                youLabel: "Anda"
             },
             zh: {
                 title: "隨身導覽系統",
@@ -1141,9 +1135,7 @@
                 participantPanel: "參與者名單",
                 roleHost: "主持人",
                 roleListener: "聽眾",
-                youLabel: "您",
-                raiseHand: "🙋‍♂️ 舉手",
-                lowerHand: "放下手"
+                youLabel: "您"
             }
         };
 
@@ -1162,7 +1154,6 @@
         let copyToastTimer = null;
         let localDisplayName = "";
         let localRole = "";
-        let localHandRaised = false;
         
         const attachedAudioTracks = new Map();
 
@@ -1187,12 +1178,7 @@
             document.getElementById('btn-modal-confirm').innerText = t.modalConfirm;
             document.getElementById('txt-copy-link').innerText = t.copyLink;
             document.getElementById('hostName').placeholder = t.namePlaceholder;
-            document.getElementById('listenerName').placeholder = t.namePlaceholder;
             document.getElementById('txt-participant-panel').innerText = t.participantPanel;
-            
-            if (document.getElementById('btnRaiseHand')) {
-                document.getElementById('btnRaiseHand').innerText = localHandRaised ? t.lowerHand : t.raiseHand;
-            }
             
             document.getElementById('btn-host-action').innerText = t.startBtn;
             document.getElementById('btn-listener-action').innerText = t.joinBtn;
@@ -1215,7 +1201,7 @@
                 iss: API_KEY, 
                 sub: participantId,
                 name: displayName,
-                metadata: JSON.stringify({ displayName, role: participantRole, handRaised: false }),
+                metadata: JSON.stringify({ displayName, role: participantRole }),
                 nbf: now - 300, 
                 exp: now + 7200, 
                 video: { roomJoin: true, room: roomName, canPublish: isHost, canSubscribe: true }
@@ -1295,17 +1281,14 @@
             const participants = [{
                 name: localDisplayName || getParticipantDisplayName(currentRoom.localParticipant, "You"),
                 role: localRole || getParticipantRole(currentRoom.localParticipant),
-                isLocal: true,
-                handRaised: localHandRaised
+                isLocal: true
             }];
 
             getRemoteParticipants().forEach((participant) => {
-                const meta = parseParticipantMetadata(participant);
                 participants.push({
                     name: getParticipantDisplayName(participant, "Guest"),
                     role: getParticipantRole(participant),
-                    isLocal: false,
-                    handRaised: meta.handRaised || false
+                    isLocal: false
                 });
             });
 
@@ -1313,11 +1296,10 @@
                 const initial = (participant.name || "?").trim().charAt(0).toUpperCase() || "?";
                 const roleLabel = participant.role === "host" ? (t.roleHost || "Host") : (t.roleListener || "Listener");
                 const localLabel = participant.isLocal ? ` • ${t.youLabel || "You"}` : "";
-                const handIcon = participant.handRaised ? " ✋" : "";
                 return `
                     <li class="participant-item">
                         <span class="participant-initial">${escapeHtml(initial)}</span>
-                        <span class="participant-name" title="${escapeHtml(participant.name)}">${escapeHtml(participant.name)}${handIcon}</span>
+                        <span class="participant-name" title="${escapeHtml(participant.name)}">${escapeHtml(participant.name)}</span>
                         <span class="participant-role">${roleLabel}${localLabel}</span>
                     </li>
                 `;
@@ -1545,18 +1527,8 @@
             onRoomEvent(room, LivekitClient.RoomEvent.Reconnected, () => { updateParticipantCount(); checkHostStatus(); attachExistingAudioTracks(); });
             onRoomEvent(room, LivekitClient.RoomEvent.Disconnected, () => { clearInterval(radarInterval); radarInterval = null; });
 
-            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantMetadataChanged, (participant) => {
+            onRoomEvent(room, LivekitClient.RoomEvent.ParticipantMetadataChanged, () => {
                 renderParticipantList();
-                if (isHost) {
-                    const meta = parseParticipantMetadata(participant);
-                    if (meta.handRaised) {
-                        try {
-                            const sound = new Audio("https://static.wikia.nocookie.com/leagueoflegends/images/c/c5/Signal_Notification.ogg");
-                            sound.play().catch(e => {});
-                        } catch(e) {}
-                        showToast(`${meta.displayName} sedang bertanya! ✋`);
-                    }
-                }
             });
 
             if (!isHost) {
@@ -1583,13 +1555,18 @@
         async function joinRoom(role) {
             const isHost = role === 'host';
             const roomInput = isHost ? document.getElementById('hostRoom') : document.getElementById('listenerRoom');
-            const nameInput = isHost ? document.getElementById('hostName') : document.getElementById('listenerName');
             const roomName = roomInput.value.trim(); 
-            const displayName = nameInput.value.trim();
             const lang = document.getElementById('langSelect').value;
             
             if (!roomName) { showInlineError(role, translations[lang].emptyId); return; }
-            if (!displayName) { showInlineError(role, translations[lang].emptyName || "Masukkan nama Anda dulu!"); return; }
+
+            let displayName = "";
+            if (isHost) {
+                displayName = document.getElementById('hostName').value.trim();
+                if (!displayName) { showInlineError(role, translations[lang].emptyName || "Masukkan nama Anda dulu!"); return; }
+            } else {
+                displayName = "Guest-" + Math.floor(1000 + Math.random() * 9000);
+            }
 
             const btn = isHost ? document.getElementById('btn-host-action') : document.getElementById('btn-listener-action');
             const originalText = btn.innerText;
@@ -1599,7 +1576,6 @@
             try {
                 localDisplayName = displayName;
                 localRole = isHost ? "host" : "listener";
-                localHandRaised = false;
                 
                 const token = generateToken(roomName, isHost, displayName);
                 currentRoom = new LivekitClient.Room();
@@ -1697,36 +1673,6 @@
             document.getElementById('btnMute').style.background = isMutedGlobal ? "#ea4335" : "#f4b400";
         }
 
-        async function toggleRaiseHand() {
-            if (!currentRoom || localRole === 'host') return;
-            const btn = document.getElementById('btnRaiseHand');
-            btn.disabled = true;
-            try {
-                localHandRaised = !localHandRaised;
-                
-                await currentRoom.localParticipant.setMetadata(JSON.stringify({ 
-                    displayName: localDisplayName, role: localRole, handRaised: localHandRaised 
-                }));
-                
-                const lang = document.getElementById('langSelect').value;
-                btn.innerText = localHandRaised ? translations[lang].lowerHand : translations[lang].raiseHand;
-                
-                if (localHandRaised) {
-                    btn.style.background = "#ff9800";
-                    btn.style.color = "white";
-                    btn.style.borderColor = "#f57c00";
-                } else {
-                    btn.style.background = "rgba(255,255,255,0.78)";
-                    btn.style.color = "var(--tcu-dark)";
-                    btn.style.borderColor = "rgba(0,122,83,0.14)";
-                }
-                renderParticipantList();
-            } catch(e) {
-                localHandRaised = false;
-            }
-            btn.disabled = false;
-        }
-
         function showToast(message) {
             const stack = document.getElementById('toast-stack');
             if (!stack) return;
@@ -1770,7 +1716,6 @@
             
             localDisplayName = "";
             localRole = "";
-            localHandRaised = false;
             
             document.getElementById('active-dashboard').classList.add('hidden');
             document.getElementById('host-controls').classList.add('hidden');
@@ -1784,15 +1729,9 @@
             document.getElementById('qr-warning').style.display = 'none';
             document.getElementById('landing-page').classList.remove('hidden');
             
-            const btnRaise = document.getElementById('btnRaiseHand');
-            btnRaise.style.background = "rgba(255,255,255,0.78)";
-            btnRaise.style.color = "var(--tcu-dark)";
-            btnRaise.style.borderColor = "rgba(0,122,83,0.14)";
-            
             const lang = document.getElementById('langSelect').value;
             document.getElementById('btn-host-action').innerText = translations[lang].startBtn;
             document.getElementById('btn-listener-action').innerText = translations[lang].joinBtn;
-            btnRaise.innerText = translations[lang].raiseHand;
         }
 
         window.onload = () => {
@@ -1802,10 +1741,7 @@
             }
             changeLanguage();
             
-            // BYPASS PENGISIAN NAMA OTOMATIS JIKA LEWAT QR CODE
             if (urlParams.get('autoJoin') === '1' && urlParams.get('role') === 'listener') {
-                const randomGuestNumber = Math.floor(1000 + Math.random() * 9000);
-                document.getElementById('listenerName').value = "Guest-" + randomGuestNumber;
                 joinRoom('listener');
             }
         };
